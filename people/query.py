@@ -4,16 +4,16 @@ This is our interface to some people data.
 # You might need this import:
 # import backendcore.data.db_connect as dbc
 
-from common.constants import OBJ_ID_NM
+from backendcore.common.constants import OBJ_ID_NM
 
-from data.caching import needs_cache, get_cache
+from backendcore.data.caching import needs_cache, get_cache
 
 import user_data.users as usrs
 
-from journal.common.common import get_collect_name
+from common.common import get_collect_name
 
-import journal.people.roles as rls
-from journal.people.fields import (  # noqa 401
+import people.roles as rls
+from people.fields import (  # noqa 401
     NAME,
     ROLES,
     USER_ID,

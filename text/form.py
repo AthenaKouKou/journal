@@ -4,7 +4,7 @@ This module provides a sample query form.
 
 import backendcore.data.form_filler as ff
 
-from journal.text.fields import (
+from text.fields import (
     TITLE,
     TITLE_DISP_NAME,
     TEXT,

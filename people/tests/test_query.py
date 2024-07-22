@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 
-import journal.people.query as qry
+import people.query as qry
 
 USER_MOD = 'user_data.users'
 

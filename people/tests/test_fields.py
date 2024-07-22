@@ -1,4 +1,4 @@
-import journal.people.fields as flds
+import people.fields as flds
 
 
 def test_get_flds():

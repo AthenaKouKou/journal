@@ -13,8 +13,8 @@ from common.fields import (
     MAP,
 )
 
-import journal.people.roles as rls
-from journal.people.roles import ROLES
+import people.roles as rls
+from people.roles import ROLES
 
 AFFILIATION = 'affiliation'
 BIO = 'bio'

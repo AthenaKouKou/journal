@@ -1,4 +1,4 @@
-import journal.people.roles as rls
+import people.roles as rls
 
 
 def test_get_masthead_roles():

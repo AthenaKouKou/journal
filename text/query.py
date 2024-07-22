@@ -5,11 +5,11 @@ so we make no provisions for that.
 """
 import backendcore.common.time_fmts as tfmt
 
-from data.caching import needs_cache, get_cache
+from backendcore.data.caching import needs_cache, get_cache
 
-from journal.common.common import get_collect_name
+from common.common import get_collect_name
 
-from journal.text.fields import (
+from text.fields import (
     EDITOR,
     LAST_EDIT,
     TEXT,

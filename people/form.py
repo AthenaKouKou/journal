@@ -4,8 +4,8 @@ This module provides the journal query form.
 
 import backendcore.data.form_filler as ff
 
-from journal.people.fields import NAME
-import journal.people.roles as rls
+from people.fields import NAME
+import people.roles as rls
 
 FORM_FLDS = [
     {

@@ -1,4 +1,4 @@
-import journal.people.form as form
+import people.form as form
 
 
 def test_get_form():
