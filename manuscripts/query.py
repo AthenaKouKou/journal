@@ -8,7 +8,7 @@ so we make no provisions for that.
 from backendcore.data.caching import needs_cache, get_cache
 from backendcore.common.constants import CODE
 
-from common.common import get_collect_name
+from journal_common.common import get_collect_name
 
 from manuscripts.fields import (
     TITLE,

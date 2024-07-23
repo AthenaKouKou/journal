@@ -7,7 +7,7 @@ import backendcore.common.time_fmts as tfmt
 
 from backendcore.data.caching import needs_cache, get_cache
 
-from common.common import get_collect_name
+from journal_common.common import get_collect_name
 
 from text.fields import (
     EDITOR,

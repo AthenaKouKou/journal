@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-import common.common as jcmn
+import journal_common.common as jcmn
 
 
 @patch('os.getenv', return_value='SFA', autospec=True)

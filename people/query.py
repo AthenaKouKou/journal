@@ -4,7 +4,7 @@ This is our interface to journal people data.
 from backendcore.common.constants import OBJ_ID_NM
 from backendcore.data.caching import needs_cache, get_cache
 
-from common.common import get_collect_name
+from journal_common.common import get_collect_name
 
 import people.roles as rls
 from people.fields import (  # noqa 401
