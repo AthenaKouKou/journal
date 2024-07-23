@@ -41,7 +41,7 @@ COLUMN_OPTIONS_MAP = {
         }
     },
     UNDER_REFEREE: {
-        TEXT: SUBMITTED_COL_TEXT,
+        TEXT: UNDER_REFEREE_COL_TEXT,
         OPTIONS: {
             'Accept With Revisions': AUTHOR_REVISION_EP,
             'Accept Without Revisions': COPY_EDITING_EP,
@@ -49,31 +49,31 @@ COLUMN_OPTIONS_MAP = {
         }
     },
     AUTHOR_REVISION: {
-        TEXT: SUBMITTED_COL_TEXT,
+        TEXT: AUTHOR_REVISION_COL_TEXT,
         OPTIONS: {
             'Accept Revisions': COPY_EDITING_EP,
         }
     },
     COPY_EDITING: {
-        TEXT: SUBMITTED_COL_TEXT,
+        TEXT: COPY_EDITING_COL_TEXT,
         OPTIONS: {
             'Complete Copy Editing': AUTHOR_REVIEW_EP,
         }
     },
     AUTHOR_REVIEW: {
-        TEXT: SUBMITTED_COL_TEXT,
+        TEXT: AUTHOR_REVIEW_COL_TEXT,
         OPTIONS: {
             'Complete Author Approval': FORMATTING_EP,
         }
     },
     FORMATTING: {
-        TEXT: SUBMITTED_COL_TEXT,
+        TEXT: FORMATTING_COL_TEXT,
         OPTIONS: {
             'Complete Formatting': PUBLISHED_EP,
         }
     },
     PUBLISHED: {
-        TEXT: SUBMITTED_COL_TEXT,
+        TEXT: PUBLISHED_COL_TEXT,
         OPTIONS: {
 
         }
