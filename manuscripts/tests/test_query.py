@@ -2,9 +2,9 @@ from copy import deepcopy
 
 import pytest
 
-import journal.manuscripts.query as qry
+import manuscripts.query as qry
 
-import journal.manuscripts.status as mstt
+import manuscripts.status as mstt
 
 def add_test_sub():
     try:  # in case some failed test left it hanging on...

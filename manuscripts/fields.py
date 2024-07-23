@@ -2,7 +2,7 @@ from backendcore.data.form_filler import (
     DESCR, DISP_NAME
 )
 import backendcore.data.fields as cflds
-from common.constants import OBJ_ID_NM
+from backendcore.common.constants import OBJ_ID_NM
 
 NAME = cflds.NAME
 CODE = cflds.CODE

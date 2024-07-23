@@ -12,7 +12,9 @@ local_core:
 	pip uninstall backendcore
 	pip install git+file://$(MIX_HOME)/BackEndCore/
 
-tests:
+all_tests:
 	cd manuscripts; make tests
 	cd people; make tests
 	cd text; make tests
+
+prod: all_tests github

@@ -5,15 +5,15 @@ so we make no provisions for that.
 """
 # import backendcore.data.db_connect as dbc
 
-from data.caching import needs_cache, get_cache
+from backendcore.data.caching import needs_cache, get_cache
 
-from templates.fields import (
+from backendcore.common.constants import (
     CODE,
 )
 
-from journal.common.common import get_collect_name
+from common.common import get_collect_name
 
-from journal.manuscripts.fields import (
+from manuscripts.fields import (
     TITLE,
     WCOUNT,
     AUTHORS,
@@ -24,7 +24,7 @@ from journal.manuscripts.fields import (
     STATUS,
 )
 
-import journal.manuscripts.status as mstt
+import manuscripts.status as mstt
 
 DB = 'journalDB'
 COLLECT = 'manuscripts'
