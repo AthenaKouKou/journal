@@ -6,10 +6,8 @@ from backendcore.data.form_filler import (
 )
 import backendcore.data.fields as cflds
 
-from common.constants import (
+from backendcore.common.constants import (
     EMAIL,
-)
-from common.fields import (
     MAP,
 )
 

@@ -6,8 +6,6 @@ import pytest
 
 import people.query as qry
 
-USER_MOD = 'user_data.users'
-
 
 def del_test_item(code):
     """
@@ -26,8 +24,7 @@ def get_nameless_person():
     return person
 
 
-@patch(f'{USER_MOD}.exists', return_value=True, autospec=True)
-def add_test_person(mock_exists):
+def add_test_person():
     return qry.add(get_person())
 
 
@@ -82,24 +79,16 @@ def test_fetch_by_key_not_there():
     assert qry.fetch_by_key('A Very Unlikely Term') is None
 
 
-@patch(f'{USER_MOD}.exists', return_value=True, autospec=True)
-def test_add(mock_exists):
+def test_add():
     qry.add(get_person())
     assert qry.fetch_by_key(qry.TEST_ID) is not None
     del_test_item(qry.TEST_ID)
 
 
-@patch(f'{USER_MOD}.exists', return_value=True, autospec=True)
-def test_add_no_name(mock_exists):
+def test_add_no_name():
     person = get_nameless_person()
     with pytest.raises(ValueError):
         qry.add(person)
-
-
-@patch(f'{USER_MOD}.exists', return_value=False, autospec=True)
-def test_add_bad_user_id(mock_exists):
-    with pytest.raises(ValueError):
-        qry.add(get_person())
 
 
 def test_delete(new_person):
@@ -130,12 +119,6 @@ def test_update_no_name(temp_person):
     person = get_nameless_person()
     with pytest.raises(ValueError):
         qry.update(qry.TEST_ID, person)
-
-
-@patch(f'{USER_MOD}.exists', return_value=False, autospec=True)
-def test_update_bad_user_id(mock_exists):
-    with pytest.raises(ValueError):
-        qry.update(qry.TEST_ID, get_person())
 
 
 def test_get_masthead(temp_person):

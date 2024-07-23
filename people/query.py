@@ -8,8 +8,6 @@ from backendcore.common.constants import OBJ_ID_NM
 
 from backendcore.data.caching import needs_cache, get_cache
 
-import user_data.users as usrs
-
 from common.common import get_collect_name
 
 import people.roles as rls
@@ -106,11 +104,6 @@ def select(people: dict, name=None, role=None):
 def validate_person(person):
     if not person.get(NAME):
         raise ValueError('Every person must have a name.')
-    user_id = person.get(USER_ID)
-    if user_id:
-        # the user_id must actually be in the user collection
-        if not usrs.exists(user_id):
-            raise ValueError(f'Invalid {user_id=}')
 
 
 def get_masthead():
