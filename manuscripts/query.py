@@ -6,10 +6,7 @@ so we make no provisions for that.
 # import backendcore.data.db_connect as dbc
 
 from backendcore.data.caching import needs_cache, get_cache
-
-from backendcore.common.constants import (
-    CODE,
-)
+from backendcore.common.constants import CODE
 
 from common.common import get_collect_name
 
@@ -18,7 +15,6 @@ from manuscripts.fields import (
     WCOUNT,
     AUTHORS,
     TEXT_ENTRY,
-    # TEXT_FILE,
     ABSTRACT,
     OBJ_ID_NM,
     STATUS,

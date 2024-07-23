@@ -1,11 +1,7 @@
 """
-This is our interface to some people data.
+This is our interface to journal people data.
 """
-# You might need this import:
-# import backendcore.data.db_connect as dbc
-
 from backendcore.common.constants import OBJ_ID_NM
-
 from backendcore.data.caching import needs_cache, get_cache
 
 from common.common import get_collect_name
