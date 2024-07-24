@@ -7,6 +7,7 @@ so we make no provisions for that.
 
 from backendcore.data.caching import needs_cache, get_cache
 from backendcore.common.constants import CODE
+from backendcore.common.time_fmts import now
 
 from journal_common.common import get_collect_name
 
@@ -18,6 +19,7 @@ from manuscripts.fields import (
     ABSTRACT,
     OBJ_ID_NM,
     STATUS,
+    LAST_UPDATED,
 )
 
 import manuscripts.status as mstt
@@ -105,6 +107,11 @@ def fetch_by_status(status_code):
         raise ValueError(f'Invalid status code {status_code}. \
         Valid codes are {mstt.get_valid_statuses}')
     return get_cache(COLLECT).fetch_by_fld_val(STATUS, status_code)
+
+
+@needs_manuscripts_cache
+def reset_last_updated(manu_id):
+    get_cache(COLLECT).update_fld(manu_id, LAST_UPDATED, now())
 
 
 @needs_manuscripts_cache
