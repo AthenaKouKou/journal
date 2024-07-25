@@ -13,20 +13,26 @@ ABSTRACT = 'abstract'
 ABSTRACT_DISP_NAME = 'Abstract'
 AUTHORS = 'authors'
 AUTHORS_DISP_NAME = 'Authors'
+HISTORY = 'history'
+HISTORY_DISP_NAME = 'Manuscript history'
+LAST_UPDATED = 'last_updated'
+LAST_UPDATED_DISP_NAME = 'Time last updated'
+REFEREES = 'referees'
+REFEREES_DISP_NAME = 'Referees'
+STATUS = 'status'
+STATUS_DISP_NAME = 'Status'
 SUBMISSION = 'submission'
 SUBMISSION_DISP_NAME = 'Manuscript submission'
-TEST_FLD_NM = OBJ_ID_NM
 TEST_FLD_DISP_NM = 'Sample Code'
-TEXT_FILE = 'textfile'
-TEXT_FILE_DISP_NAME = 'Submission text file upload'
+TEST_FLD_NM = OBJ_ID_NM
 TEXT_ENTRY = 'textentry'
 TEXT_ENTRY_DISP_NAME = 'Submission text direct entry'
+TEXT_FILE = 'textfile'
+TEXT_FILE_DISP_NAME = 'Submission text file upload'
 TITLE = 'title'
 TITLE_DISP_NAME = 'Title'
 WCOUNT = 'wcount'
 WCOUNT_DISP_NAME = 'Word Count'
-STATUS = 'status'
-STATUS_DISP_NAME = 'Status'
 
 FIELDS = {
     OBJ_ID_NM: {
@@ -61,6 +67,19 @@ FIELDS = {
     },
     STATUS: {
         DISP_NAME: STATUS_DISP_NAME,
+    },
+    HISTORY: {
+        DISP_NAME: HISTORY_DISP_NAME,
+        cflds.HIDDEN: True,
+    },
+    REFEREES: {
+        DISP_NAME: REFEREES_DISP_NAME,
+        DESCR: 'The manuscript\'s currently assigned referees.',
+        FLD_TYPE: cflds.LIST,
+    },
+    LAST_UPDATED: {
+        DISP_NAME: LAST_UPDATED_DISP_NAME,
+        DESCR: 'The time when the manuscript\'s status was last updated.',
     },
 }
 
