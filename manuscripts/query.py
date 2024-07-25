@@ -3,8 +3,6 @@ This is our interface to our us manuscript data.
 We never expect our users to add or delete manuscripts,
 so we make no provisions for that.
 """
-# import backendcore.data.db_connect as dbc
-
 from backendcore.data.caching import needs_cache, get_cache
 from backendcore.common.constants import CODE
 from backendcore.common.time_fmts import now
@@ -74,8 +72,10 @@ def fetch_codes():
 These should get tests, since the editor will use them.
 """
 TEST_CODE = 'BK'
+TEST_OBJ_ID = '123123'
 
 TEST_MANU = {
+    OBJ_ID_NM: TEST_OBJ_ID,
     CODE: TEST_CODE,
     TITLE: 'Forays into Kaufman Studies',
     WCOUNT: 500,
@@ -92,8 +92,8 @@ def add(manuscripts_dict):
 
 
 @needs_manuscripts_cache
-def delete(reg_code):
-    return get_cache(COLLECT).delete(reg_code)
+def delete(code):
+    return get_cache(COLLECT).delete(code)
 
 
 @needs_manuscripts_cache
@@ -111,7 +111,7 @@ def fetch_by_status(status_code):
 
 @needs_manuscripts_cache
 def reset_last_updated(manu_id):
-    get_cache(COLLECT).update_fld(manu_id, LAST_UPDATED, now())
+    return get_cache(COLLECT).update_fld(manu_id, LAST_UPDATED, now())
 
 
 @needs_manuscripts_cache
