@@ -69,7 +69,6 @@ FORM_FLDS = [
                 ff.OPT: True,
                 ff.DISP_ON: FILE,
                 ff.FULL_WIDTH: True,
-                ff.DISABLED: True,
                 ff.HELPER: NOT_IMPLEMENTED,
             },
         ]
