@@ -18,3 +18,6 @@ all_tests:
 	cd text; make tests
 
 prod: all_tests github
+
+dev_env:
+	pip3 install --upgrade pip
