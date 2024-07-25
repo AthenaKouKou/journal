@@ -65,8 +65,11 @@ def test_fetch_by_bad_status(temp_manuscript):
 
 def test_reset_last_updated(temp_manuscript):
     print(qry.fetch_list())
-    update = qry.reset_last_updated(qry.TEST_OBJ_ID)
-    assert update
+    ret = qry.reset_last_updated(qry.TEST_OBJ_ID)
+    assert ret
+    print(qry.fetch_list())
+    new_updated = qry.fetch_last_updated(qry.TEST_OBJ_ID)
+    assert new_updated > qry.TEST_LAST_UPDATED
 
 
 # def test_get_choices(temp_manuscript):

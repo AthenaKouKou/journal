@@ -5,19 +5,19 @@ so we make no provisions for that.
 """
 from backendcore.data.caching import needs_cache, get_cache
 from backendcore.common.constants import CODE
-from backendcore.common.time_fmts import now
+import backendcore.common.time_fmts as tfmt
 
 from journal_common.common import get_collect_name
 
 from manuscripts.fields import (
-    TITLE,
-    WCOUNT,
-    AUTHORS,
-    TEXT_ENTRY,
     ABSTRACT,
+    AUTHORS,
+    LAST_UPDATED,
     OBJ_ID_NM,
     STATUS,
-    LAST_UPDATED,
+    TEXT_ENTRY,
+    TITLE,
+    WCOUNT,
 )
 
 import manuscripts.status as mstt
@@ -68,21 +68,32 @@ def fetch_codes():
     return list(manuscripts.keys())
 
 
+@needs_manuscripts_cache
+def fetch_by_id(manu_id):
+    return get_cache(COLLECT).fetch_by_key(manu_id)
+
+
+def fetch_last_updated(manu_id):
+    return fetch_by_id(manu_id).get(LAST_UPDATED, None)
+
+
 """
 These should get tests, since the editor will use them.
 """
 TEST_CODE = 'BK'
 TEST_OBJ_ID = '123123'
+TEST_LAST_UPDATED = tfmt.datetime_to_iso(tfmt.TEST_OLD_DATETIME)
 
 TEST_MANU = {
-    OBJ_ID_NM: TEST_OBJ_ID,
+    ABSTRACT: 'TLDR',
+    AUTHORS: ['Boaz Kaufman'],
     CODE: TEST_CODE,
+    LAST_UPDATED: TEST_LAST_UPDATED,
+    OBJ_ID_NM: TEST_OBJ_ID,
+    STATUS: mstt.SUBMITTED,
+    TEXT_ENTRY: 'When in the course of Boaz events it becomes necessary...',
     TITLE: 'Forays into Kaufman Studies',
     WCOUNT: 500,
-    AUTHORS: ['Boaz Kaufman'],
-    TEXT_ENTRY: 'When in the course of Boaz events it becomes necessary...',
-    ABSTRACT: 'TLDR',
-    STATUS: mstt.SUBMITTED,
 }
 
 
@@ -111,7 +122,8 @@ def fetch_by_status(status_code):
 
 @needs_manuscripts_cache
 def reset_last_updated(manu_id):
-    return get_cache(COLLECT).update_fld(manu_id, LAST_UPDATED, now())
+    curr_datetime = tfmt.datetime_to_iso(tfmt.now())
+    return get_cache(COLLECT).update_fld(manu_id, LAST_UPDATED, curr_datetime)
 
 
 @needs_manuscripts_cache
