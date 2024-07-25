@@ -21,3 +21,4 @@ prod: all_tests github
 
 dev_env:
 	pip3 install --upgrade pip
+	pip3 install -r requirements.txt
