@@ -1,4 +1,4 @@
-import manuscripts.status as mstt
+import journal.manuscripts.status as mstt
 
 
 def test_get_valid_roles():
