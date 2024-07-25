@@ -1,4 +1,4 @@
-import journal.manuscripts.dashboard as mdsh
+import manuscripts.dashboard as mdsh
 
 
 def test_get_valid_roles():

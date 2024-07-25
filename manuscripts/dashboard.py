@@ -1,4 +1,4 @@
-from journal.manuscripts.status import (
+from manuscripts.status import (
     SUBMITTED,
     UNDER_REFEREE,
     AUTHOR_REVISION,

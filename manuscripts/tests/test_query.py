@@ -2,9 +2,9 @@ from copy import deepcopy
 
 import pytest
 
-import journal.manuscripts.query as qry
+import manuscripts.query as qry
 
-import journal.manuscripts.status as mstt
+import manuscripts.status as mstt
 
 def add_test_sub():
     print(f'{qry.fetch_list()=}')

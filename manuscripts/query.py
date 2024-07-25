@@ -7,9 +7,9 @@ from backendcore.data.caching import needs_cache, get_cache
 from backendcore.common.constants import CODE
 import backendcore.common.time_fmts as tfmt
 
-from journal.journal_common.common import get_collect_name
+from journal_common.common import get_collect_name
 
-from journal.manuscripts.fields import (
+from manuscripts.fields import (
     ABSTRACT,
     AUTHORS,
     LAST_UPDATED,
@@ -20,7 +20,7 @@ from journal.manuscripts.fields import (
     WCOUNT,
 )
 
-import journal.manuscripts.status as mstt
+import manuscripts.status as mstt
 
 DB = 'journalDB'
 COLLECT = 'manuscripts'
