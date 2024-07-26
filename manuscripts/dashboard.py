@@ -9,10 +9,6 @@ from manuscripts.status import (
     REFEREE_REJECTED,
 )
 
-stt_ep = '/Journal/manuscripts/status/edit'
-# ^ This shouldn't be hardcoded but I'd like the Options to have the link
-# to the status update endpoint. Getting the proper ep from endpoints.py
-# means a circular import. So here we are. - Boaz
 TEXT = 'text'
 OPTIONS = 'options'
 
@@ -24,52 +20,44 @@ AUTHOR_REVIEW_COL_TEXT = 'Awaiting Author Approval'
 FORMATTING_COL_TEXT = 'Formatting'
 PUBLISHED_COL_TEXT = 'Published'
 
-REFEREE_REJECT_EP = f'{stt_ep}/{REFEREE_REJECTED}/'
-UNDER_REFEREE_EP = f'{stt_ep}/{UNDER_REFEREE}/'
-AUTHOR_REVISION_EP = f'{stt_ep}/{AUTHOR_REVISION}/'
-COPY_EDITING_EP = f'{stt_ep}/{COPY_EDITING}/'
-AUTHOR_REVIEW_EP = f'{stt_ep}/{AUTHOR_REVIEW}/'
-FORMATTING_EP = f'{stt_ep}/{FORMATTING}/'
-PUBLISHED_EP = f'{stt_ep}/{PUBLISHED}/'
-
 COLUMN_OPTIONS_MAP = {
     SUBMITTED: {
         TEXT: SUBMITTED_COL_TEXT,
         OPTIONS: {
-            'Suitable': UNDER_REFEREE_EP,
-            'Desk Reject': REFEREE_REJECT_EP,
+            'Suitable': UNDER_REFEREE,
+            'Desk Reject': REFEREE_REJECTED,
         }
     },
     UNDER_REFEREE: {
         TEXT: UNDER_REFEREE_COL_TEXT,
         OPTIONS: {
-            'Accept With Revisions': AUTHOR_REVISION_EP,
-            'Accept Without Revisions': COPY_EDITING_EP,
-            'Reject': REFEREE_REJECT_EP,
+            'Accept With Revisions': AUTHOR_REVISION,
+            'Accept Without Revisions': COPY_EDITING,
+            'Reject': REFEREE_REJECTED,
         }
     },
     AUTHOR_REVISION: {
         TEXT: AUTHOR_REVISION_COL_TEXT,
         OPTIONS: {
-            'Accept Revisions': COPY_EDITING_EP,
+            'Accept Revisions': COPY_EDITING,
         }
     },
     COPY_EDITING: {
         TEXT: COPY_EDITING_COL_TEXT,
         OPTIONS: {
-            'Complete Copy Editing': AUTHOR_REVIEW_EP,
+            'Complete Copy Editing': AUTHOR_REVIEW,
         }
     },
     AUTHOR_REVIEW: {
         TEXT: AUTHOR_REVIEW_COL_TEXT,
         OPTIONS: {
-            'Complete Author Approval': FORMATTING_EP,
+            'Complete Author Approval': FORMATTING,
         }
     },
     FORMATTING: {
         TEXT: FORMATTING_COL_TEXT,
         OPTIONS: {
-            'Complete Formatting': PUBLISHED_EP,
+            'Complete Formatting': PUBLISHED,
         }
     },
     PUBLISHED: {
