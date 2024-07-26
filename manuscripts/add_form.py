@@ -70,7 +70,7 @@ FORM_FLDS = [
                 ff.DISP_ON: FILE,
                 ff.FULL_WIDTH: True,
                 ff.HELPER: NOT_IMPLEMENTED,
-                ff.FILE_TYPE: [ff.DOCX, ff.HTML, ff.TXT, ff.MD]
+                ff.FILE_TYPES: [ff.DOCX, ff.HTML, ff.TXT, ff.MD]
             },
         ]
     },
