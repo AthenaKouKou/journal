@@ -1,5 +1,5 @@
 """
-This is our interface to our us manuscript data.
+This is our interface to our manuscript data.
 We never expect our users to add or delete manuscripts,
 so we make no provisions for that.
 """
