@@ -3,13 +3,17 @@ from copy import deepcopy
 import pytest
 
 import manuscripts.query as qry
+from manuscripts.query import (
+    TEST_OBJ_ID,
+    REFEREES,
+)
 
 import manuscripts.status as mstt
 
 def add_test_sub():
     print(f'{qry.fetch_list()=}')
     try:  # in case some failed test left it hanging on...
-        qry.delete(qry.TEST_OBI_ID)
+        qry.delete(TEST_OBJ_ID)
     except Exception:
         print(f'{qry.TEST_CODE} was not present')
     sample_dict = deepcopy(qry.TEST_MANU)
@@ -27,13 +31,13 @@ def del_test_entry(mongo_id):
 def temp_manuscript():
     ret = add_test_sub()
     yield ret
-    qry.delete(qry.TEST_OBJ_ID)
+    qry.delete(TEST_OBJ_ID)
 
 
 def test_add():
     ret = add_test_sub()
     assert ret
-    del_test_entry(qry.TEST_OBJ_ID)
+    del_test_entry(TEST_OBJ_ID)
 
 
 def test_fetch_codes(temp_manuscript):
@@ -64,14 +68,28 @@ def test_fetch_by_bad_status(temp_manuscript):
         samples = qry.fetch_by_status('pineapple')
 
 def test_reset_last_updated(temp_manuscript):
-    print(qry.fetch_list())
-    ret = qry.reset_last_updated(qry.TEST_OBJ_ID)
+    ret = qry.reset_last_updated(TEST_OBJ_ID)
     assert ret
-    print(qry.fetch_list())
-    new_updated = qry.fetch_last_updated(qry.TEST_OBJ_ID)
+    new_updated = qry.fetch_last_updated(TEST_OBJ_ID)
     assert new_updated > qry.TEST_LAST_UPDATED
 
 
 # def test_get_choices(temp_manuscript):
 #     choices = qry.get_choices()
 #     assert qry.TEST_CODE in choices
+
+
+def test_assign_referee(temp_manuscript):
+    manu = qry.fetch_by_id(TEST_OBJ_ID)
+    assert len(manu.get(REFEREES)) == 1
+    qry.assign_referee(TEST_OBJ_ID, 'A new referee')
+    manu = qry.fetch_by_id(TEST_OBJ_ID)
+    assert len(manu.get(REFEREES)) > 1
+
+
+def test_assign_referee(temp_manuscript):
+    manu = qry.fetch_by_id(TEST_OBJ_ID)
+    assert len(manu.get(REFEREES)) == 1
+    qry.remove_referee(TEST_OBJ_ID, qry.TEST_REFEREE)
+    manu = qry.fetch_by_id(TEST_OBJ_ID)
+    assert len(manu.get(REFEREES)) == 0

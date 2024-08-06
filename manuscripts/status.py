@@ -14,10 +14,14 @@ FORMATTING = 'formatting'
 PUBLISHED = 'published'
 REFEREE_ACCEPTED = 'referee-accepted'
 REFEREE_ACCEPT_W_REV = 'referee-accept-with-revisions'
+REFEREE_ASSIGNED = 'referee-assigned'
 REFEREE_REJECTED = 'referee-rejected'
+REFEREE_REMOVED = 'referee-removed'
 SUBMITTED = 'submitted'
 UNDER_EDITOR = 'with-editor'
 UNDER_REFEREE = 'with-referee'
+
+REFEREE_STATUSES = {REFEREE_ASSIGNED, REFEREE_REMOVED}
 
 TEST_STATUS = SUBMITTED
 
@@ -31,7 +35,9 @@ STATUS_MAP = {
     PUBLISHED: 'Published',
     REFEREE_ACCEPTED: 'Accepted by referees',
     REFEREE_ACCEPT_W_REV: 'Needs revisions',
+    REFEREE_ASSIGNED: 'A new referee has been assigned',
     REFEREE_REJECTED: 'Rejected by referees',
+    REFEREE_REMOVED: 'A referee has been removed',
     SUBMITTED: 'Submitted',
     UNDER_EDITOR: 'Journal editor reviewing',
     UNDER_REFEREE: 'Referees reviewing',
