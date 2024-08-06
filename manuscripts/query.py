@@ -84,7 +84,6 @@ These should get tests, since the editor will use them.
 """
 TEST_CODE = 'BK'
 TEST_LAST_UPDATED = tfmt.datetime_to_iso(tfmt.TEST_OLD_DATETIME)
-TEST_OBJ_ID = '123123'
 TEST_REFEREE = 'Kris'
 
 TEST_MANU = {
@@ -92,7 +91,6 @@ TEST_MANU = {
     AUTHORS: ['Boaz Kaufman'],
     CODE: TEST_CODE,
     LAST_UPDATED: TEST_LAST_UPDATED,
-    OBJ_ID_NM: TEST_OBJ_ID,
     REFEREES: [TEST_REFEREE],
     STATUS: mstt.SUBMITTED,
     TEXT_ENTRY: 'When in the course of Boaz events it becomes necessary...',
@@ -108,12 +106,12 @@ def add(manuscripts_dict):
 
 @needs_manuscripts_cache
 def delete(code):
-    return get_cache(COLLECT).delete(code)
+    return get_cache(COLLECT).delete(code, by_id=True)
 
 
 @needs_manuscripts_cache
 def update(code, update_dict):
-    return get_cache(COLLECT).update(code, update_dict)
+    return get_cache(COLLECT).update(code, update_dict, by_id=True)
 
 
 @needs_manuscripts_cache
@@ -131,7 +129,8 @@ def get_curr_datetime():
 @needs_manuscripts_cache
 def reset_last_updated(manu_id):
     curr_datetime = get_curr_datetime()
-    return get_cache(COLLECT).update_fld(manu_id, LAST_UPDATED, curr_datetime)
+    return get_cache(COLLECT).update_fld(manu_id, LAST_UPDATED, curr_datetime,
+                                         by_id=True)
 
 
 @needs_manuscripts_cache
@@ -149,21 +148,21 @@ def assign_referee(manu_id, referee: str):
     refs = get_cache(COLLECT).fetch_by_key(manu_id).get(REFEREES)
     refs.append(referee)
     print(refs)
-    return get_cache(COLLECT).update_fld(manu_id, REFEREES, refs)
+    return get_cache(COLLECT).update_fld(manu_id, REFEREES, refs, by_id=True)
 
 
 @needs_manuscripts_cache
 def remove_referee(manu_id, referee: str):
     refs = get_cache(COLLECT).fetch_by_key(manu_id).get(REFEREES)
     refs.remove(referee)
-    return get_cache(COLLECT).update_fld(manu_id, REFEREES, refs)
+    return get_cache(COLLECT).update_fld(manu_id, REFEREES, refs, by_id=True)
 
 
 @needs_manuscripts_cache
 def update_history(manu_id, status_code):
     history = get_cache(COLLECT).fetch_by_key(manu_id).get(HISTORY)
     history[get_curr_datetime()] = status_code
-    return get_cache(COLLECT).update_fld(manu_id, HISTORY, history)
+    return get_cache(COLLECT).update_fld(manu_id, HISTORY, history, by_id=True)
 
 
 @needs_manuscripts_cache
