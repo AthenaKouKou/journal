@@ -30,12 +30,7 @@ def add_test_person():
 
 @pytest.fixture(scope='function')
 def temp_person():
-    # try:  # in case some failed test left it hanging on...
-    #     del_test_item(qry.TEST_ID)
-    # except Exception:
-    #     print(f'{qry.TEST_ID} was not present')
-    add_test_person()
-    ret = qry.fetch_list()[0].get(qry.OBJ_ID_NM)
+    ret = add_test_person()
     yield ret
     del_test_item(ret)
 

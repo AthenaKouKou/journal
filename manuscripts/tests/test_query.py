@@ -11,11 +11,6 @@ from manuscripts.query import (
 import manuscripts.status as mstt
 
 def add_test_sub():
-    print(f'{qry.fetch_list()=}')
-    # try:  # in case some failed test left it hanging on...
-    #    qry.delete(temp_manuscript)
-    # except Exception:
-    #   print(f'{qry.TEST_CODE} was not present')
     sample_dict = deepcopy(qry.TEST_MANU)
     return qry.add(sample_dict)
 
@@ -29,8 +24,7 @@ def del_test_entry(mongo_id):
 
 @pytest.fixture(scope='function')
 def temp_manuscript():
-    add_test_sub()
-    ret = qry.fetch_list()[0].get(OBJ_ID_NM)
+    ret = add_test_sub()
     yield ret
     qry.delete(ret)
 
