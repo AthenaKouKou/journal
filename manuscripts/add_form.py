@@ -9,13 +9,8 @@ from manuscripts.fields import (
     ABSTRACT_DISP_NAME,
     AUTHORS,
     AUTHORS_DISP_NAME,
-<<<<<<< HEAD
     SUBMISSION,
     SUBMISSION_DISP_NAME,
-=======
-    TEXT,
-    TEXT_DISP_NAME,
->>>>>>> f666a5d4473b14bfbd041f5012f5d603e408c7f7
     TITLE,
     TITLE_DISP_NAME,
     WCOUNT,
@@ -49,7 +44,6 @@ FORM_FLDS = [
         ff.INPUT_TYPE: ff.LIST,
     },
     {
-<<<<<<< HEAD
         ff.FLD_NM: SUBMISSION,
         ff.QSTN: SUBMISSION_DISP_NAME,
         ff.CHOICES: {
@@ -79,14 +73,6 @@ FORM_FLDS = [
                 ff.FILE_TYPES: [ff.DOCX, ff.HTML, ff.TXT, ff.MD]
             },
         ]
-=======
-        ff.FLD_NM: TEXT,
-        ff.QSTN: TEXT_DISP_NAME,
-        ff.INPUT_TYPE: ff.MARKDOWN,
-        ff.OPT: True,
-        ff.DISP_ON: ENTRY,
-        ff.FLD_LEN: 255,
->>>>>>> f666a5d4473b14bfbd041f5012f5d603e408c7f7
     },
     {
         ff.FLD_NM: ABSTRACT,

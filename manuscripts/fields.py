@@ -21,15 +21,10 @@ REFEREES = 'referees'
 REFEREES_DISP_NAME = 'Referees'
 STATUS = 'status'
 STATUS_DISP_NAME = 'Status'
+SUBMISSION = 'submission'
 SUBMISSION_DISP_NAME = 'Manuscript submission'
 TEST_FLD_DISP_NM = 'Sample Code'
 TEST_FLD_NM = OBJ_ID_NM
-<<<<<<< HEAD
-=======
-TEXT = 'text'
-TEXT_DISP_NAME = 'Text'
-FILE = 'file'
->>>>>>> f666a5d4473b14bfbd041f5012f5d603e408c7f7
 TITLE = 'title'
 TITLE_DISP_NAME = 'Title'
 WCOUNT = 'wcount'
@@ -51,9 +46,9 @@ FIELDS = {
         DISP_NAME: AUTHORS_DISP_NAME,
         DESCR: 'List of authors',
     },
-    TEXT: {
-        DISP_NAME: TEXT_DISP_NAME,
-        MARKDOWN: 1,
+    SUBMISSION: {
+        DISP_NAME: SUBMISSION_DISP_NAME,
+        DESCR: 'Text submission; file upload or text entry',
     },
     ABSTRACT: {
         DISP_NAME: ABSTRACT_DISP_NAME,
