@@ -79,9 +79,6 @@ def fetch_last_updated(manu_id):
     return fetch_by_id(manu_id).get(LAST_UPDATED, None)
 
 
-"""
-These should get tests, since the editor will use them.
-"""
 TEST_CODE = 'BK'
 TEST_LAST_UPDATED = tfmt.datetime_to_iso(tfmt.TEST_OLD_DATETIME)
 TEST_REFEREE = 'Kris'
@@ -100,8 +97,9 @@ TEST_MANU = {
 
 
 @needs_manuscripts_cache
-def add(manuscripts_dict):
-    return get_cache(COLLECT).add(manuscripts_dict)
+def add(manu_dict):
+    manu_dict[STATUS] = mstt.SUBMITTED
+    return get_cache(COLLECT).add(manu_dict)
 
 
 @needs_manuscripts_cache
@@ -166,8 +164,6 @@ def update_history(manu_id, status_code, referee: str = None):
     history = get_cache(COLLECT).fetch_by_key(manu_id).get(HISTORY, {})
     history_dict = {}
     history_dict[NEW_STATUS] = status_code
-    if status_code in mstt.REFEREE_ASSIGNED:
-        history_dict[REFEREE_MODIFIED] = referee
     history[get_curr_datetime()] = history_dict
     return get_cache(COLLECT).update_fld(manu_id, HISTORY, history, by_id=True)
 
@@ -182,16 +178,6 @@ def update_status(manu_id, status_code, referee: str = None):
     if status_code not in mstt.get_valid_statuses():
         raise ValueError(f'Invalid status code {status_code}. \
         Valid codes are {mstt.get_valid_statuses}')
-    if status_code in mstt.REFEREE_STATUSES:
-        # Changing the referees
-        if not referee:
-            raise ValueError('If modifying referees must provide a referee'
-                             'value')
-        if status_code == mstt.REFEREE_ASSIGNED:
-            assign_referee(manu_id, referee)
-        elif status_code == mstt.REFEREE_REMOVED:
-            remove_referee(manu_id, referee)
-
     ret = set_status(manu_id, status_code)
     update_history(manu_id, status_code, referee)
     reset_last_updated(manu_id)
