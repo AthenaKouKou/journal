@@ -17,7 +17,7 @@ from manuscripts.fields import (
     OBJ_ID_NM,
     REFEREES,
     STATUS,
-    TEXT_ENTRY,
+    TEXT,
     TITLE,
     WCOUNT,
 )
@@ -90,7 +90,7 @@ TEST_MANU = {
     LAST_UPDATED: TEST_LAST_UPDATED,
     REFEREES: [TEST_REFEREE],
     STATUS: mstt.SUBMITTED,
-    TEXT_ENTRY: 'When in the course of Boaz events it becomes necessary...',
+    TEXT: 'When in the course of Boaz events it becomes necessary...',
     TITLE: 'Forays into Kaufman Studies',
     WCOUNT: 500,
 }
