@@ -63,7 +63,7 @@ COLUMN_OPTIONS_MAP = {
     PUBLISHED: {
         TEXT: PUBLISHED_COL_TEXT,
         OPTIONS: {
-
+            'Unpublish': FORMATTING,
         }
     },
 }
