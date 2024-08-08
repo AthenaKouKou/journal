@@ -10,6 +10,7 @@ from manuscripts.query import (
 
 import manuscripts.status as mstt
 
+
 def add_test_sub():
     sample_dict = deepcopy(qry.TEST_MANU)
     return qry.add(sample_dict)
@@ -62,6 +63,7 @@ def test_fetch_by_status_success(temp_manuscript):
 def test_fetch_by_bad_status(temp_manuscript):
     with pytest.raises(Exception) as e_info:
         samples = qry.fetch_by_status('pineapple')
+
 
 def test_reset_last_updated(temp_manuscript):
     ret = qry.reset_last_updated(temp_manuscript)
