@@ -30,13 +30,9 @@ def add_test_person():
 
 @pytest.fixture(scope='function')
 def temp_person():
-    try:  # in case some failed test left it hanging on...
-        del_test_item(qry.TEST_ID)
-    except Exception:
-        print(f'{qry.TEST_ID} was not present')
     ret = add_test_person()
     yield ret
-    del_test_item(qry.TEST_ID)
+    del_test_item(ret)
 
 
 @pytest.fixture(scope='function')
@@ -50,7 +46,7 @@ def new_person():
 def test_fetch_codes(temp_person):
     codes = qry.fetch_codes()
     assert isinstance(codes, list)
-    assert qry.TEST_ID in codes
+    assert temp_person in codes
 
 
 def test_fetch_list(temp_person):
@@ -67,12 +63,12 @@ def test_fetch_dict(temp_person):
 
 def test_get_choices(temp_person):
     choices = qry.get_choices()
-    assert qry.TEST_ID in choices
+    assert temp_person in choices
 
 
 def test_fetch_by_key(temp_person):
-    entry = qry.fetch_by_key(qry.TEST_ID)
-    assert entry[qry.OBJ_ID_NM] == qry.TEST_ID
+    entry = qry.fetch_by_key(temp_person)
+    assert entry[qry.OBJ_ID_NM] == temp_person
 
 
 def test_fetch_by_key_not_there():
@@ -81,8 +77,9 @@ def test_fetch_by_key_not_there():
 
 def test_add():
     qry.add(get_person())
-    assert qry.fetch_by_key(qry.TEST_ID) is not None
-    del_test_item(qry.TEST_ID)
+    obj_id = qry.fetch_list()[0].get(qry.OBJ_ID_NM)
+    assert qry.fetch_by_key(obj_id) is not None
+    del_test_item(obj_id)
 
 
 def test_add_no_name():
@@ -92,8 +89,8 @@ def test_add_no_name():
 
 
 def test_delete(new_person):
-    qry.delete(qry.TEST_ID)
-    assert qry.fetch_by_key(qry.TEST_ID) is None
+    qry.delete(new_person)
+    assert qry.fetch_by_key(new_person) is None
 
 
 def test_delete_not_there():
@@ -104,9 +101,9 @@ def test_delete_not_there():
 def test_update(temp_person):
     NEW_NAME = 'A new name'
     update_dict = {qry.NAME: NEW_NAME}
-    assert qry.fetch_by_key(qry.TEST_ID)[qry.NAME] != NEW_NAME
-    qry.update(qry.TEST_ID, update_dict)
-    assert qry.fetch_by_key(qry.TEST_ID)[qry.NAME] == NEW_NAME
+    assert qry.fetch_by_key(temp_person)[qry.NAME] != NEW_NAME
+    qry.update(temp_person, update_dict)
+    assert qry.fetch_by_key(temp_person)[qry.NAME] == NEW_NAME
 
 
 def test_update_not_there():
@@ -118,7 +115,7 @@ def test_update_not_there():
 def test_update_no_name(temp_person):
     person = get_nameless_person()
     with pytest.raises(ValueError):
-        qry.update(qry.TEST_ID, person)
+        qry.update(temp_person, person)
 
 
 def test_get_masthead(temp_person):

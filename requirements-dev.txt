@@ -1,3 +1,4 @@
 -r requirements.txt
+icecream
 pytest
 pytest-cov

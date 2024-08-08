@@ -114,10 +114,7 @@ def get_masthead():
     return masthead
 
 
-TEST_ID = 'GC'
-
 TEST_PERSON = {
-    OBJ_ID_NM: TEST_ID,
     NAME: 'Callahan le Magnifique',
     USER_ID: 'madeup@utopia.com',
     ROLES: [rls.TEST_ROLE],
@@ -132,13 +129,13 @@ def add(person: dict):
 
 @needs_people_cache
 def delete(_id):
-    return get_cache(COLLECT).delete(_id)
+    return get_cache(COLLECT).delete(_id, by_id=True)
 
 
 @needs_people_cache
 def update(_id, person: dict):
     validate_person(person)
-    return get_cache(COLLECT).update(_id, person)
+    return get_cache(COLLECT).update(_id, person, by_id=True)
 
 
 def main():

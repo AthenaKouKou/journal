@@ -31,7 +31,6 @@ STATUS_MAP = {
     PUBLISHED: 'Published',
     REFEREE_ACCEPTED: 'Accepted by referees',
     REFEREE_ACCEPT_W_REV: 'Needs revisions',
-    REFEREE_REJECTED: 'Rejected by referees',
     SUBMITTED: 'Submitted',
     UNDER_EDITOR: 'Journal editor reviewing',
     UNDER_REFEREE: 'Referees reviewing',
