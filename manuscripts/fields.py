@@ -25,10 +25,6 @@ SUBMISSION = 'submission'
 SUBMISSION_DISP_NAME = 'Manuscript submission'
 TEST_FLD_DISP_NM = 'Sample Code'
 TEST_FLD_NM = OBJ_ID_NM
-TEXT_ENTRY = 'textentry'
-TEXT_ENTRY_DISP_NAME = 'Submission text direct entry'
-TEXT_FILE = 'textfile'
-TEXT_FILE_DISP_NAME = 'Submission text file upload'
 TITLE = 'title'
 TITLE_DISP_NAME = 'Title'
 WCOUNT = 'wcount'
@@ -54,13 +50,6 @@ FIELDS = {
         DISP_NAME: SUBMISSION_DISP_NAME,
         DESCR: 'Text submission; file upload or text entry',
     },
-    # TEXT_FILE: {
-    #     DISP_NAME: TEXT_FILE_DISP_NAME,
-    # },
-    # TEXT_ENTRY: {
-    #     DISP_NAME: TEXT_ENTRY_DISP_NAME,
-    #     MARKDOWN: 1,
-    # },
     ABSTRACT: {
         DISP_NAME: ABSTRACT_DISP_NAME,
         MARKDOWN: 1,

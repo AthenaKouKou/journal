@@ -11,10 +11,6 @@ from manuscripts.fields import (
     AUTHORS_DISP_NAME,
     SUBMISSION,
     SUBMISSION_DISP_NAME,
-    TEXT_FILE,
-    TEXT_FILE_DISP_NAME,
-    TEXT_ENTRY,
-    TEXT_ENTRY_DISP_NAME,
     TITLE,
     TITLE_DISP_NAME,
     WCOUNT,
@@ -25,6 +21,10 @@ NOT_IMPLEMENTED = 'This option has not been implemented, check back later.'
 
 FILE = 'FILE'
 ENTRY = 'ENTRY'
+TEXT_ENTRY = 'textentry'
+TEXT_ENTRY_DISP_NAME = 'Submission text direct entry'
+TEXT_FILE = 'textfile'
+TEXT_FILE_DISP_NAME = 'Submission text file upload'
 
 FORM_FLDS = [
     {
@@ -47,7 +47,7 @@ FORM_FLDS = [
         ff.FLD_NM: SUBMISSION,
         ff.QSTN: SUBMISSION_DISP_NAME,
         ff.CHOICES: {
-            FILE: 'File upload (pdf/docx)',
+            FILE: 'File upload (docx)',
             ENTRY: 'Direct text entry',
         },
         ff.OPT: False,
@@ -55,7 +55,7 @@ FORM_FLDS = [
         ff.MULTI: False,
         ff.SUBFIELDS: [
             {
-                ff.FLD_NM: TEXT_ENTRY,
+                ff.FLD_NM: SUBMISSION,
                 ff.QSTN: TEXT_ENTRY_DISP_NAME,
                 ff.INPUT_TYPE: ff.MARKDOWN,
                 ff.OPT: True,
@@ -63,7 +63,7 @@ FORM_FLDS = [
                 ff.FLD_LEN: 255,
             },
             {
-                ff.FLD_NM: TEXT_FILE,
+                ff.FLD_NM: SUBMISSION,
                 ff.QSTN: TEXT_FILE_DISP_NAME,
                 ff.INPUT_TYPE: ff.FILE_LOADER,
                 ff.OPT: True,
