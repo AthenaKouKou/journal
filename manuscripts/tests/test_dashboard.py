@@ -10,7 +10,7 @@ def test_is_valid():
 
 
 def test_is_not_valid():
-    assert not mdsh.is_valid('Invalid status')
+    assert not mdsh.is_valid('Invalid state')
 
 
 def test_options():

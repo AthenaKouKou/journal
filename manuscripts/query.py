@@ -16,13 +16,13 @@ from manuscripts.fields import (
     LAST_UPDATED,
     OBJ_ID_NM,
     REFEREES,
-    STATUS,
+    STATE,
     SUBMISSION,
     TITLE,
     WCOUNT,
 )
 
-import manuscripts.status as mstt
+import manuscripts.states as mstt
 
 DB = 'journalDB'
 COLLECT = 'manuscripts'
@@ -89,7 +89,7 @@ TEST_MANU = {
     CODE: TEST_CODE,
     LAST_UPDATED: TEST_LAST_UPDATED,
     REFEREES: [TEST_REFEREE],
-    STATUS: mstt.SUBMITTED,
+    STATE: mstt.SUBMITTED,
     SUBMISSION: 'When in the course of Boaz events it becomes necessary...',
     TITLE: 'Forays into Kaufman Studies',
     WCOUNT: 500,
@@ -98,7 +98,7 @@ TEST_MANU = {
 
 @needs_manuscripts_cache
 def add(manu_dict):
-    manu_dict[STATUS] = mstt.SUBMITTED
+    manu_dict[STATE] = mstt.SUBMITTED
     return get_cache(COLLECT).add(manu_dict)
 
 
@@ -113,11 +113,16 @@ def update(code, update_dict):
 
 
 @needs_manuscripts_cache
+def fetch_by_state(state_code: str) -> list:
+    if state_code not in mstt.get_valid_states():
+        raise ValueError(f'Invalid state code {state_code}. \
+        Valid codes are {mstt.get_valid_states}')
+    return get_cache(COLLECT).fetch_by_fld_val(STATE, state_code)
+
+
 def fetch_by_status(status_code):
-    if status_code not in mstt.get_valid_statuses():
-        raise ValueError(f'Invalid status code {status_code}. \
-        Valid codes are {mstt.get_valid_statuses}')
-    return get_cache(COLLECT).fetch_by_fld_val(STATUS, status_code)
+    # Temporary function until SFA is cut over
+    return fetch_by_state(status_code)
 
 
 def get_curr_datetime():
@@ -132,13 +137,18 @@ def reset_last_updated(manu_id):
 
 
 @needs_manuscripts_cache
-def set_status(manu_id, status_code):
-    if status_code not in mstt.get_valid_statuses():
-        raise ValueError(f'Invalid status code {status_code}. \
-        Valid codes are {mstt.get_valid_statuses}')
+def set_state(manu_id, state_code):
+    if state_code not in mstt.get_valid_states():
+        raise ValueError(f'Invalid state code {state_code}. \
+        Valid codes are {mstt.get_valid_states}')
     return get_cache(COLLECT).update(manu_id,
-                                     {STATUS: status_code},
+                                     {STATE: state_code},
                                      by_id=True)
+
+
+def set_status(manu_id, status_code):
+    # Temporary function until SFA is cut over
+    return set_state(manu_id, status_code)
 
 
 @needs_manuscripts_cache
@@ -156,32 +166,37 @@ def remove_referee(manu_id, referee: str):
 
 
 REFEREE_MODIFIED = 'referee_modified'
-NEW_STATUS = 'new_status'
+NEW_STATE = 'new_state'
 
 
 @needs_manuscripts_cache
-def update_history(manu_id, status_code, referee: str = None):
+def update_history(manu_id, state_code, referee: str = None):
     history = get_cache(COLLECT).fetch_by_key(manu_id).get(HISTORY, {})
     history_dict = {}
-    history_dict[NEW_STATUS] = status_code
+    history_dict[NEW_STATE] = state_code
     history[get_curr_datetime()] = history_dict
     return get_cache(COLLECT).update_fld(manu_id, HISTORY, history, by_id=True)
 
 
 @needs_manuscripts_cache
-def update_status(manu_id, status_code, referee: str = None):
+def update_state(manu_id, state_code, referee: str = None):
     """
     Updates the history and sets all the new parameters of the manusccript.
-    If status is changed to assign_referee or remove_referee the referee
+    If state is changed to assign_referee or remove_referee the referee
     must also be provided
     """
-    if status_code not in mstt.get_valid_statuses():
-        raise ValueError(f'Invalid status code {status_code}. \
-        Valid codes are {mstt.get_valid_statuses}')
-    ret = set_status(manu_id, status_code)
-    update_history(manu_id, status_code, referee)
+    if state_code not in mstt.get_valid_states():
+        raise ValueError(f'Invalid state code {state_code}. \
+        Valid codes are {mstt.get_valid_states}')
+    ret = set_state(manu_id, state_code)
+    update_history(manu_id, state_code, referee)
     reset_last_updated(manu_id)
     return ret
+
+
+def update_status(manu_id, status_code, referee: str = None):
+    # Temporary function until SFA is cut over
+    return update_state(manu_id, status_code, referee)
 
 
 def main():
