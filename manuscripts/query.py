@@ -199,6 +199,11 @@ def update_status(manu_id, status_code, referee: str = None):
     return update_state(manu_id, status_code, referee)
 
 
+def receive_action(manu_id, action_code, referee):
+    # Placeholder for now
+    return True
+
+
 def main():
     """
     Run this as a program to see the output formats!
