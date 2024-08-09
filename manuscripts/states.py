@@ -33,8 +33,31 @@ STATE_MAP = {
 
 VALID_STATES = list(STATE_MAP.keys())
 
+ACCEPT = 'accept'
+ACCEPT_W_REV = 'accept-w-rev'
+ASSIGN_REFEREE = 'assign-referee'
+DONE = 'done'
+EDITOR_MOVE = 'editor-move'
+REJECT = 'reject'
+REMOVE_REFEREE = 'remove-referee'
+FINISH_EDITOR_REVIEW = 'finish-editor-rev'
+WITHDRAW = 'withdraw'
 
-VALID_ACTIONS = []
+TEST_ACTION = ACCEPT
+
+ACTION_MAP = {
+    ACCEPT: 'Accept',
+    ACCEPT_W_REV: 'Accept with revisions',
+    ASSIGN_REFEREE: 'Assign a new referee',
+    DONE: 'Done',
+    EDITOR_MOVE: 'Editor forces a state change',
+    REJECT: 'Reject',
+    REMOVE_REFEREE: 'Remove a referee',
+    FINISH_EDITOR_REVIEW: 'Finish editor review',
+    WITHDRAW: 'Author withdraws',
+}
+
+VALID_ACTIONS = list(ACTION_MAP.keys())
 
 
 def get_valid_states() -> list:
@@ -51,6 +74,10 @@ def is_valid_state(candidate: str) -> bool:
     return candidate in get_valid_states()
 
 
+def get_state_choices():
+    return STATE_MAP
+
+
 def get_valid_actions() -> list:
     """
     For discovering the names of actions.
@@ -65,5 +92,5 @@ def is_valid_action(candidate: str) -> bool:
     return candidate in get_valid_actions()
 
 
-def get_state_choices():
-    return STATE_MAP
+def get_action_choices():
+    return ACTION_MAP
