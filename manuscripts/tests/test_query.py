@@ -8,7 +8,7 @@ from manuscripts.query import (
     REFEREES,
 )
 
-import manuscripts.status as mstt
+import manuscripts.states as mstt
 
 
 def add_test_sub():
@@ -54,15 +54,15 @@ def test_fetch_dict(temp_manuscript):
     assert len(samples) > 0
 
 
-def test_fetch_by_status_success(temp_manuscript):
-    samples = qry.fetch_by_status(mstt.SUBMITTED)
+def test_fetch_by_state_success(temp_manuscript):
+    samples = qry.fetch_by_state(mstt.SUBMITTED)
     assert isinstance(samples, dict)
     assert len(samples) > 0
 
 
-def test_fetch_by_bad_status(temp_manuscript):
+def test_fetch_by_bad_state(temp_manuscript):
     with pytest.raises(Exception) as e_info:
-        samples = qry.fetch_by_status('pineapple')
+        samples = qry.fetch_by_state('pineapple')
 
 
 def test_reset_last_updated(temp_manuscript):

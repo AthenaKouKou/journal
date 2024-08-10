@@ -1,22 +1,20 @@
-from manuscripts.status import (
+from manuscripts.states import (
     SUBMITTED,
-    UNDER_REFEREE,
-    AUTHOR_REVISION,
-    COPY_EDITING,
+    REFEREE_REVIEW,
     AUTHOR_REVIEW,
+    COPY_EDITING,
     FORMATTING,
     PUBLISHED,
-    REFEREE_REJECTED,
+    REJECTED,
 )
 
 TEXT = 'text'
 OPTIONS = 'options'
 
 SUBMITTED_COL_TEXT = 'Submitted'
-UNDER_REFEREE_COL_TEXT = 'With Referees'
-AUTHOR_REVISION_COL_TEXT = 'Needs Author Revision'
+REFEREE_REVIEW_COL_TEXT = 'With Referees'
 COPY_EDITING_COL_TEXT = 'Copy Editing'
-AUTHOR_REVIEW_COL_TEXT = 'Awaiting Author Approval'
+AUTHOR_REVIEW_COL_TEXT = 'Awaiting Author Review'
 FORMATTING_COL_TEXT = 'Formatting'
 PUBLISHED_COL_TEXT = 'Published'
 
@@ -24,20 +22,20 @@ COLUMN_OPTIONS_MAP = {
     SUBMITTED: {
         TEXT: SUBMITTED_COL_TEXT,
         OPTIONS: {
-            'Suitable': UNDER_REFEREE,
-            'Desk Reject': REFEREE_REJECTED,
+            'Suitable': REFEREE_REVIEW,
+            'Desk Reject': REJECTED,
         }
     },
-    UNDER_REFEREE: {
-        TEXT: UNDER_REFEREE_COL_TEXT,
+    REFEREE_REVIEW: {
+        TEXT: REFEREE_REVIEW_COL_TEXT,
         OPTIONS: {
-            'Accept With Revisions': AUTHOR_REVISION,
+            'Accept With Revisions': AUTHOR_REVIEW,
             'Accept Without Revisions': COPY_EDITING,
-            'Reject': REFEREE_REJECTED,
+            'Reject': REJECTED,
         }
     },
-    AUTHOR_REVISION: {
-        TEXT: AUTHOR_REVISION_COL_TEXT,
+    AUTHOR_REVIEW: {
+        TEXT: AUTHOR_REVIEW_COL_TEXT,
         OPTIONS: {
             'Accept Revisions': COPY_EDITING,
         }
@@ -46,12 +44,6 @@ COLUMN_OPTIONS_MAP = {
         TEXT: COPY_EDITING_COL_TEXT,
         OPTIONS: {
             'Complete Copy Editing': AUTHOR_REVIEW,
-        }
-    },
-    AUTHOR_REVIEW: {
-        TEXT: AUTHOR_REVIEW_COL_TEXT,
-        OPTIONS: {
-            'Complete Author Approval': FORMATTING,
         }
     },
     FORMATTING: {
@@ -75,14 +67,14 @@ TEST_COLUMN = SUBMITTED
 
 def get_valid_columns() -> list:
     """
-    For discovering the names of statuses.
+    For discovering the names of states.
     """
     return VALID_COLUMNS
 
 
 def is_valid(candidate: str) -> bool:
     """
-    For checking if a status is acceptable.
+    For checking if a state is acceptable.
     """
     return candidate in VALID_COLUMNS
 

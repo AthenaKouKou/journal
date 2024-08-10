@@ -19,8 +19,8 @@ LAST_UPDATED = 'timeUpdated'
 LAST_UPDATED_DISP_NAME = 'Time last updated'
 REFEREES = 'referees'
 REFEREES_DISP_NAME = 'Referees'
-STATUS = 'status'
-STATUS_DISP_NAME = 'Status'
+STATE = 'state'
+STATE_DISP_NAME = 'State'
 SUBMISSION = 'submission'
 SUBMISSION_DISP_NAME = 'Manuscript submission'
 TEST_FLD_DISP_NM = 'Sample Code'
@@ -54,8 +54,8 @@ FIELDS = {
         DISP_NAME: ABSTRACT_DISP_NAME,
         MARKDOWN: 1,
     },
-    STATUS: {
-        DISP_NAME: STATUS_DISP_NAME,
+    STATE: {
+        DISP_NAME: STATE_DISP_NAME,
     },
     HISTORY: {
         DISP_NAME: HISTORY_DISP_NAME,
@@ -68,7 +68,7 @@ FIELDS = {
     },
     LAST_UPDATED: {
         DISP_NAME: LAST_UPDATED_DISP_NAME,
-        DESCR: 'The time when the manuscript\'s status was last updated.',
+        DESCR: 'The time when the manuscript\'s state was last updated.',
     },
 }
 
