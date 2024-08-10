@@ -7,7 +7,7 @@ STATUS_MAP_EP = 'status_map'
 
 # Status (in alphabetical order)
 AUTHOR_REVIEW = 'author-review'
-AUTHOR_REVISION = 'author-revision'
+AUTHOR_REVISIONS = 'author-revisions'
 COPY_EDITING = 'copy-editing'
 DESK_REJECTED = 'desk-rejected'
 FORMATTING = 'formatting'
@@ -24,7 +24,7 @@ TEST_STATUS = SUBMITTED
 # Status map
 STATUS_MAP = {
     AUTHOR_REVIEW: 'Awaiting author approval',
-    AUTHOR_REVISION: 'Author revising',
+    AUTHOR_REVISIONS: 'Author revising',
     COPY_EDITING: 'The copy editing',
     DESK_REJECTED: 'Desk rejected',
     FORMATTING: 'Undergoing formatting',
