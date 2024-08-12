@@ -141,11 +141,6 @@ def fetch_by_state(state: str) -> list:
     return get_cache(COLLECT).fetch_by_fld_val(STATE, state)
 
 
-def fetch_by_status(status_code):
-    # Temporary function until SFA is cut over
-    return fetch_by_state(status_code)
-
-
 def get_curr_datetime():
     return tfmt.datetime_to_iso(tfmt.now())
 
@@ -160,11 +155,6 @@ def set_state(manu_id, state):
         raise ValueError(f'Invalid state code {state}. \
         Valid codes are {mst.get_valid_states}')
     return update(manu_id, {STATE: state}, by_id=True)
-
-
-def set_status(manu_id, status_code):
-    # Temporary function until SFA is cut over
-    return set_state(manu_id, status_code)
 
 
 def assign_referee(manu_id, referee: str):
@@ -204,11 +194,6 @@ def update_state(manu_id, state, referee: str = None):
     update_history(manu_id, state, referee)
     set_last_updated(manu_id)
     return ret
-
-
-def update_status(manu_id, status_code, referee: str = None):
-    # Temporary function until SFA is cut over
-    return update_state(manu_id, status_code, referee)
 
 
 def receive_action(manu_id, action, **kwargs):
