@@ -14,7 +14,7 @@ def test_is_not_valid():
 
 
 def test_options():
-    assert isinstance(mdsh.get_choices()[mdsh.TEST_COLUMN][mdsh.OPTIONS], dict)
+    assert isinstance(mdsh.get_choices()[mdsh.TEST_COLUMN], dict)
 
 
 def test_get_choices():

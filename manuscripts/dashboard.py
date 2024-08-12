@@ -1,64 +1,6 @@
-from manuscripts.states import (
-    SUBMITTED,
-    REFEREE_REVIEW,
-    AUTHOR_REVIEW,
-    COPY_EDITING,
-    FORMATTING,
-    PUBLISHED,
-    REJECTED,
-)
+from manuscripts.query import (STATE_TABLE, SUBMITTED)
 
-TEXT = 'text'
-OPTIONS = 'options'
-
-SUBMITTED_COL_TEXT = 'Submitted'
-REFEREE_REVIEW_COL_TEXT = 'With Referees'
-COPY_EDITING_COL_TEXT = 'Copy Editing'
-AUTHOR_REVIEW_COL_TEXT = 'Awaiting Author Review'
-FORMATTING_COL_TEXT = 'Formatting'
-PUBLISHED_COL_TEXT = 'Published'
-
-COLUMN_OPTIONS_MAP = {
-    SUBMITTED: {
-        TEXT: SUBMITTED_COL_TEXT,
-        OPTIONS: {
-            'Suitable': REFEREE_REVIEW,
-            'Desk Reject': REJECTED,
-        }
-    },
-    REFEREE_REVIEW: {
-        TEXT: REFEREE_REVIEW_COL_TEXT,
-        OPTIONS: {
-            'Accept With Revisions': AUTHOR_REVIEW,
-            'Accept Without Revisions': COPY_EDITING,
-            'Reject': REJECTED,
-        }
-    },
-    AUTHOR_REVIEW: {
-        TEXT: AUTHOR_REVIEW_COL_TEXT,
-        OPTIONS: {
-            'Accept Revisions': COPY_EDITING,
-        }
-    },
-    COPY_EDITING: {
-        TEXT: COPY_EDITING_COL_TEXT,
-        OPTIONS: {
-            'Complete Copy Editing': AUTHOR_REVIEW,
-        }
-    },
-    FORMATTING: {
-        TEXT: FORMATTING_COL_TEXT,
-        OPTIONS: {
-            'Complete Formatting': PUBLISHED,
-        }
-    },
-    PUBLISHED: {
-        TEXT: PUBLISHED_COL_TEXT,
-        OPTIONS: {
-            'Unpublish': FORMATTING,
-        }
-    },
-}
+COLUMN_OPTIONS_MAP = STATE_TABLE
 
 VALID_COLUMNS = list(COLUMN_OPTIONS_MAP.keys())
 
