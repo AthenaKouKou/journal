@@ -153,14 +153,14 @@ def set_status(manu_id, status_code):
 
 @needs_manuscripts_cache
 def assign_referee(manu_id, referee: str):
-    refs = get_cache(COLLECT).fetch_by_key(manu_id).get(REFEREES, [])
+    refs = fetch_by_key(manu_id).get(REFEREES, [])
     refs.append(referee)
     return get_cache(COLLECT).update_fld(manu_id, REFEREES, refs, by_id=True)
 
 
 @needs_manuscripts_cache
 def remove_referee(manu_id, referee: str):
-    refs = get_cache(COLLECT).fetch_by_key(manu_id).get(REFEREES)
+    refs = fetch_by_key(manu_id).get(REFEREES)
     refs.remove(referee)
     return get_cache(COLLECT).update_fld(manu_id, REFEREES, refs, by_id=True)
 
@@ -171,7 +171,7 @@ NEW_STATE = 'new_state'
 
 @needs_manuscripts_cache
 def update_history(manu_id, state, referee: str = None):
-    history = get_cache(COLLECT).fetch_by_key(manu_id).get(HISTORY, {})
+    history = fetch_by_key(manu_id).get(HISTORY, {})
     history_dict = {}
     history_dict[NEW_STATE] = state
     history[get_curr_datetime()] = history_dict
