@@ -36,11 +36,6 @@ def test_add():
     del_test_entry(ret)
 
 
-def test_fetch_codes(temp_manu):
-    codes = qry.fetch_codes()
-    assert isinstance(codes, list)
-
-
 def test_fetch_list(temp_manu):
     samples = qry.fetch_list()
     assert isinstance(samples, list)
@@ -94,6 +89,11 @@ def test_assign_referee(temp_manu):
     assert len(manu.get(REFEREES)) == 0
 
 
-def test_receive_action(temp_manu):
+def test_receive_action_bad_manu_id():
+    with pytest.raises(ValueError):
+        qry.receive_action('bad id', qry.TEST_ACTION, **{})
+
+
+def test_receive_action_bad_action(temp_manu):
     with pytest.raises(ValueError):
         qry.receive_action(temp_manu, 'bad action', **{})

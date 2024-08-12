@@ -24,6 +24,10 @@ from manuscripts.fields import (
 
 import manuscripts.states as mst
 
+from manuscripts.states import (  # noqa F401 -- tests use these
+    TEST_ACTION,
+)
+
 DB = 'journalDB'
 COLLECT = 'manuscripts'
 CACHE_NM = COLLECT
@@ -39,11 +43,6 @@ def needs_manuscripts_cache(fn):
                        no_id=False)
 
 
-def is_valid(code):
-    mans = fetch_dict()
-    return code in mans
-
-
 @needs_manuscripts_cache
 def fetch_list():
     """
@@ -57,19 +56,6 @@ def fetch_dict():
     return get_cache(COLLECT).fetch_dict()
 
 
-# @needs_manuscripts_cache
-# def get_choices():
-#     return get_cache(COLLECT).get_choices()
-
-
-def fetch_codes():
-    """
-    Fetch all manuscript codes
-    """
-    manuscripts = fetch_dict()
-    return list(manuscripts.keys())
-
-
 @needs_manuscripts_cache
 def fetch_by_id(manu_id):
     return get_cache(COLLECT).fetch_by_key(manu_id)
@@ -77,6 +63,11 @@ def fetch_by_id(manu_id):
 
 def fetch_last_updated(manu_id):
     return fetch_by_id(manu_id).get(LAST_UPDATED, None)
+
+
+def exists(code):
+    mans = fetch_dict()
+    return code in mans
 
 
 TEST_CODE = 'BK'
@@ -200,6 +191,8 @@ def update_status(manu_id, status_code, referee: str = None):
 
 
 def receive_action(manu_id, action, **kwargs):
+    if not exists(manu_id):
+        raise ValueError(f'Invalid manuscript id: {manu_id}')
     if not mst.is_valid_action(action):
         raise ValueError(f'Invalid action: {action}')
     return action
