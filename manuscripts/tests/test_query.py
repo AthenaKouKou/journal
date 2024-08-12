@@ -57,6 +57,10 @@ def test_fetch_by_bad_state(temp_manu):
         samples = qry.fetch_by_state('pineapple')
 
 
+def test_get_last_updated(temp_manu):
+    assert isinstance(qry.get_last_updated(temp_manu), str)
+
+
 def test_get_last_updated_bad_id():
     with pytest.raises(ValueError):
         qry.get_last_updated('a bad id')
