@@ -100,6 +100,7 @@ def test_assign_referee(temp_manu):
 
 def test_receive_action(temp_manu):
     new_state = qry.receive_action(temp_manu, qry.TEST_ACTION, **{})
+    assert qry.is_valid_state(new_state)
 
 
 def test_receive_action_bad_manu_id():

@@ -203,7 +203,7 @@ def receive_action(manu_id, action, **kwargs):
         raise ValueError(f'Invalid manuscript id: {manu_id}')
     if not mst.is_valid_action(action):
         raise ValueError(f'Invalid action: {action}')
-    return action
+    return get_state(manu_id)
 
 
 def main():
