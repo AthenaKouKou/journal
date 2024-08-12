@@ -59,8 +59,12 @@ def fetch_dict():
 
 
 @needs_manuscripts_cache
-def fetch_by_id(manu_id):
+def fetch_by_key(manu_id):
     return get_cache(COLLECT).fetch_by_key(manu_id)
+
+
+def fetch_by_id(manu_id):
+    return fetch_by_key(manu_id)
 
 
 def get_last_updated(manu_id):
@@ -72,12 +76,11 @@ def get_last_updated(manu_id):
 def get_state(manu_id):
     if not exists(manu_id):
         raise ValueError(f'No such manuscript id: {manu_id}')
-    return fetch_by_id(manu_id).get(LAST_UPDATED, None)
+    return fetch_by_id(manu_id).get(STATE, None)
 
 
 def exists(code):
-    mans = fetch_dict()
-    return code in mans
+    return code in fetch_dict()
 
 
 TEST_CODE = 'BK'

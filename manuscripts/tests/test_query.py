@@ -62,6 +62,11 @@ def test_get_last_updated_bad_id():
         qry.get_last_updated('a bad id')
 
 
+def test_get_state_bad_id():
+    with pytest.raises(ValueError):
+        qry.get_last_updated('a bad id')
+
+
 def test_reset_last_updated(temp_manu):
     ret = qry.reset_last_updated(temp_manu)
     assert ret
