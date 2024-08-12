@@ -63,6 +63,11 @@ def fetch_by_key(manu_id):
     return get_cache(COLLECT).fetch_by_key(manu_id)
 
 
+@needs_manuscripts_cache
+def update_fld(manu_id, fld, val):
+    return get_cache(COLLECT).update_fld(manu_id, fld, val, by_id=True)
+
+
 def fetch_by_id(manu_id):
     return fetch_by_key(manu_id)
 
@@ -132,11 +137,9 @@ def get_curr_datetime():
     return tfmt.datetime_to_iso(tfmt.now())
 
 
-@needs_manuscripts_cache
-def reset_last_updated(manu_id):
+def set_last_updated(manu_id):
     curr_datetime = get_curr_datetime()
-    return get_cache(COLLECT).update_fld(manu_id, LAST_UPDATED, curr_datetime,
-                                         by_id=True)
+    return update_fld(manu_id, LAST_UPDATED, curr_datetime)
 
 
 def set_state(manu_id, state):
@@ -151,31 +154,28 @@ def set_status(manu_id, status_code):
     return set_state(manu_id, status_code)
 
 
-@needs_manuscripts_cache
 def assign_referee(manu_id, referee: str):
     refs = fetch_by_key(manu_id).get(REFEREES, [])
     refs.append(referee)
-    return get_cache(COLLECT).update_fld(manu_id, REFEREES, refs, by_id=True)
+    return update_fld(manu_id, REFEREES, refs)
 
 
-@needs_manuscripts_cache
 def remove_referee(manu_id, referee: str):
     refs = fetch_by_key(manu_id).get(REFEREES)
     refs.remove(referee)
-    return get_cache(COLLECT).update_fld(manu_id, REFEREES, refs, by_id=True)
+    return update_fld(manu_id, REFEREES, refs)
 
 
 REFEREE_MODIFIED = 'referee_modified'
 NEW_STATE = 'new_state'
 
 
-@needs_manuscripts_cache
 def update_history(manu_id, state, referee: str = None):
     history = fetch_by_key(manu_id).get(HISTORY, {})
     history_dict = {}
     history_dict[NEW_STATE] = state
     history[get_curr_datetime()] = history_dict
-    return get_cache(COLLECT).update_fld(manu_id, HISTORY, history, by_id=True)
+    return update_fld(manu_id, HISTORY, history)
 
 
 @needs_manuscripts_cache
@@ -189,7 +189,7 @@ def update_state(manu_id, state, referee: str = None):
         raise ValueError(f'Invalid state code {state}.')
     ret = set_state(manu_id, state)
     update_history(manu_id, state, referee)
-    reset_last_updated(manu_id)
+    set_last_updated(manu_id)
     return ret
 
 

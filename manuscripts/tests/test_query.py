@@ -75,8 +75,8 @@ def test_get_state_bad_id():
         qry.get_last_updated('a bad id')
 
 
-def test_reset_last_updated(temp_manu):
-    ret = qry.reset_last_updated(temp_manu)
+def test_set_last_updated(temp_manu):
+    ret = qry.set_last_updated(temp_manu)
     assert ret
     new_updated = qry.get_last_updated(temp_manu)
     assert new_updated > qry.TEST_LAST_UPDATED
