@@ -1,6 +1,14 @@
+from copy import deepcopy
+
 from manuscripts.query import (STATE_TABLE, SUBMITTED)
 
-COLUMN_OPTIONS_MAP = STATE_TABLE
+
+COLUMN_OPTIONS_MAP = deepcopy(STATE_TABLE)
+
+for state in COLUMN_OPTIONS_MAP:
+    for action in COLUMN_OPTIONS_MAP[state]:
+        COLUMN_OPTIONS_MAP[state][action] = {}
+
 
 VALID_COLUMNS = list(COLUMN_OPTIONS_MAP.keys())
 
