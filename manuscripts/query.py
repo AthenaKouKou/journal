@@ -22,7 +22,7 @@ from manuscripts.fields import (
     WCOUNT,
 )
 
-import manuscripts.states as mstt
+import manuscripts.states as mst
 
 DB = 'journalDB'
 COLLECT = 'manuscripts'
@@ -89,7 +89,7 @@ TEST_MANU = {
     CODE: TEST_CODE,
     LAST_UPDATED: TEST_LAST_UPDATED,
     REFEREES: [TEST_REFEREE],
-    STATE: mstt.SUBMITTED,
+    STATE: mst.SUBMITTED,
     SUBMISSION: 'When in the course of Boaz events it becomes necessary...',
     TITLE: 'Forays into Kaufman Studies',
     WCOUNT: 500,
@@ -98,7 +98,7 @@ TEST_MANU = {
 
 @needs_manuscripts_cache
 def add(manu_dict):
-    manu_dict[STATE] = mstt.SUBMITTED
+    manu_dict[STATE] = mst.SUBMITTED
     return get_cache(COLLECT).add(manu_dict)
 
 
@@ -113,11 +113,11 @@ def update(code, update_dict):
 
 
 @needs_manuscripts_cache
-def fetch_by_state(state_code: str) -> list:
-    if state_code not in mstt.get_valid_states():
-        raise ValueError(f'Invalid state code {state_code}. \
-        Valid codes are {mstt.get_valid_states}')
-    return get_cache(COLLECT).fetch_by_fld_val(STATE, state_code)
+def fetch_by_state(state: str) -> list:
+    if state not in mst.get_valid_states():
+        raise ValueError(f'Invalid state code {state}. \
+        Valid codes are {mst.get_valid_states}')
+    return get_cache(COLLECT).fetch_by_fld_val(STATE, state)
 
 
 def fetch_by_status(status_code):
@@ -137,12 +137,12 @@ def reset_last_updated(manu_id):
 
 
 @needs_manuscripts_cache
-def set_state(manu_id, state_code):
-    if state_code not in mstt.get_valid_states():
-        raise ValueError(f'Invalid state code {state_code}. \
-        Valid codes are {mstt.get_valid_states}')
+def set_state(manu_id, state):
+    if state not in mst.get_valid_states():
+        raise ValueError(f'Invalid state code {state}. \
+        Valid codes are {mst.get_valid_states}')
     return get_cache(COLLECT).update(manu_id,
-                                     {STATE: state_code},
+                                     {STATE: state},
                                      by_id=True)
 
 
@@ -170,26 +170,26 @@ NEW_STATE = 'new_state'
 
 
 @needs_manuscripts_cache
-def update_history(manu_id, state_code, referee: str = None):
+def update_history(manu_id, state, referee: str = None):
     history = get_cache(COLLECT).fetch_by_key(manu_id).get(HISTORY, {})
     history_dict = {}
-    history_dict[NEW_STATE] = state_code
+    history_dict[NEW_STATE] = state
     history[get_curr_datetime()] = history_dict
     return get_cache(COLLECT).update_fld(manu_id, HISTORY, history, by_id=True)
 
 
 @needs_manuscripts_cache
-def update_state(manu_id, state_code, referee: str = None):
+def update_state(manu_id, state, referee: str = None):
     """
     Updates the history and sets all the new parameters of the manusccript.
     If state is changed to assign_referee or remove_referee the referee
     must also be provided
     """
-    if state_code not in mstt.get_valid_states():
-        raise ValueError(f'Invalid state code {state_code}. \
-        Valid codes are {mstt.get_valid_states}')
-    ret = set_state(manu_id, state_code)
-    update_history(manu_id, state_code, referee)
+    if state not in mst.get_valid_states():
+        raise ValueError(f'Invalid state code {state}. \
+        Valid codes are {mst.get_valid_states}')
+    ret = set_state(manu_id, state)
+    update_history(manu_id, state, referee)
     reset_last_updated(manu_id)
     return ret
 
@@ -199,9 +199,10 @@ def update_status(manu_id, status_code, referee: str = None):
     return update_state(manu_id, status_code, referee)
 
 
-def receive_action(manu_id, action_code, referee):
-    # Placeholder for now
-    return True
+def receive_action(manu_id, action, **kwargs):
+    if not mst.is_valid_action(action):
+        raise ValueError(f'Invalid action: {action}')
+    return action
 
 
 def main():
