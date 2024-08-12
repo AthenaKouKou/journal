@@ -25,7 +25,9 @@ from manuscripts.fields import (
 import manuscripts.states as mst
 
 from manuscripts.states import (  # noqa F401 -- tests use these
+    is_valid_state,
     TEST_ACTION,
+    TEST_STATE,
 )
 
 DB = 'journalDB'
@@ -61,7 +63,15 @@ def fetch_by_id(manu_id):
     return get_cache(COLLECT).fetch_by_key(manu_id)
 
 
-def fetch_last_updated(manu_id):
+def get_last_updated(manu_id):
+    if not exists(manu_id):
+        raise ValueError(f'No such manuscript id: {manu_id}')
+    return fetch_by_id(manu_id).get(LAST_UPDATED, None)
+
+
+def get_state(manu_id):
+    if not exists(manu_id):
+        raise ValueError(f'No such manuscript id: {manu_id}')
     return fetch_by_id(manu_id).get(LAST_UPDATED, None)
 
 
@@ -106,8 +116,7 @@ def update(code, update_dict):
 @needs_manuscripts_cache
 def fetch_by_state(state: str) -> list:
     if state not in mst.get_valid_states():
-        raise ValueError(f'Invalid state code {state}. \
-        Valid codes are {mst.get_valid_states}')
+        raise ValueError(f'Invalid state: {state}.')
     return get_cache(COLLECT).fetch_by_fld_val(STATE, state)
 
 
@@ -127,14 +136,11 @@ def reset_last_updated(manu_id):
                                          by_id=True)
 
 
-@needs_manuscripts_cache
 def set_state(manu_id, state):
     if state not in mst.get_valid_states():
         raise ValueError(f'Invalid state code {state}. \
         Valid codes are {mst.get_valid_states}')
-    return get_cache(COLLECT).update(manu_id,
-                                     {STATE: state},
-                                     by_id=True)
+    return update(manu_id, {STATE: state}, by_id=True)
 
 
 def set_status(manu_id, status_code):
@@ -177,8 +183,7 @@ def update_state(manu_id, state, referee: str = None):
     must also be provided
     """
     if state not in mst.get_valid_states():
-        raise ValueError(f'Invalid state code {state}. \
-        Valid codes are {mst.get_valid_states}')
+        raise ValueError(f'Invalid state code {state}.')
     ret = set_state(manu_id, state)
     update_history(manu_id, state, referee)
     reset_last_updated(manu_id)

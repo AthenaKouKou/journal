@@ -8,8 +8,6 @@ from manuscripts.query import (
     REFEREES,
 )
 
-import manuscripts.states as mstt
-
 
 def add_test_manuscript():
     sample_dict = deepcopy(qry.TEST_MANU)
@@ -48,8 +46,8 @@ def test_fetch_dict(temp_manu):
     assert len(samples) > 0
 
 
-def test_fetch_by_state_success(temp_manu):
-    samples = qry.fetch_by_state(mstt.SUBMITTED)
+def test_fetch_by_state(temp_manu):
+    samples = qry.fetch_by_state(qry.TEST_STATE)
     assert isinstance(samples, dict)
     assert len(samples) > 0
 
@@ -59,18 +57,16 @@ def test_fetch_by_bad_state(temp_manu):
         samples = qry.fetch_by_state('pineapple')
 
 
+def test_get_last_updated_bad_id():
+    with pytest.raises(ValueError):
+        qry.get_last_updated('a bad id')
+
+
 def test_reset_last_updated(temp_manu):
     ret = qry.reset_last_updated(temp_manu)
     assert ret
-    new_updated = qry.fetch_last_updated(temp_manu)
+    new_updated = qry.get_last_updated(temp_manu)
     assert new_updated > qry.TEST_LAST_UPDATED
-
-
-# Why is this commented out with no explanation, rather than deleted
-# or skipped with an explanation?
-# def test_get_choices(temp_manu):
-#     choices = qry.get_choices()
-#     assert qry.TEST_CODE in choices
 
 
 def test_assign_referee(temp_manu):
@@ -87,6 +83,10 @@ def test_assign_referee(temp_manu):
     qry.remove_referee(temp_manu, qry.TEST_REFEREE)
     manu = qry.fetch_by_id(temp_manu)
     assert len(manu.get(REFEREES)) == 0
+
+
+def test_receive_action(temp_manu):
+    new_state = qry.receive_action(temp_manu, qry.TEST_ACTION, **{})
 
 
 def test_receive_action_bad_manu_id():
