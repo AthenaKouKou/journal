@@ -22,7 +22,26 @@ from manuscripts.fields import (
     WCOUNT,
 )
 
-import manuscripts.states as mstt
+import manuscripts.states as mst
+from manuscripts.states import (
+    ACCEPT,
+    ACCEPT_W_REV,
+    AUTHOR_REVISION,
+    ASSIGN_REFEREE,
+    AUTHOR_REVIEW,
+    COPY_EDITING,
+    DONE,
+    EDITOR_MOVE,
+    EDITOR_REVIEW,
+    FORMATTING,
+    PUBLISHED,
+    REFEREE_REVIEW,
+    REJECT,
+    REJECTED,
+    REMOVE_REFEREE,
+    SUBMITTED,
+    WITHDRAW, WITHDRAWN,
+)
 
 DB = 'journalDB'
 COLLECT = 'manuscripts'
@@ -39,11 +58,6 @@ def needs_manuscripts_cache(fn):
                        no_id=False)
 
 
-def is_valid(code):
-    mans = fetch_dict()
-    return code in mans
-
-
 @needs_manuscripts_cache
 def fetch_list():
     """
@@ -57,26 +71,34 @@ def fetch_dict():
     return get_cache(COLLECT).fetch_dict()
 
 
-# @needs_manuscripts_cache
-# def get_choices():
-#     return get_cache(COLLECT).get_choices()
-
-
-def fetch_codes():
-    """
-    Fetch all manuscript codes
-    """
-    manuscripts = fetch_dict()
-    return list(manuscripts.keys())
-
-
 @needs_manuscripts_cache
-def fetch_by_id(manu_id):
+def fetch_by_key(manu_id):
     return get_cache(COLLECT).fetch_by_key(manu_id)
 
 
-def fetch_last_updated(manu_id):
+@needs_manuscripts_cache
+def update_fld(manu_id, fld, val):
+    return get_cache(COLLECT).update_fld(manu_id, fld, val, by_id=True)
+
+
+def fetch_by_id(manu_id):
+    return fetch_by_key(manu_id)
+
+
+def get_last_updated(manu_id):
+    if not exists(manu_id):
+        raise ValueError(f'No such manuscript id: {manu_id}')
     return fetch_by_id(manu_id).get(LAST_UPDATED, None)
+
+
+def get_state(manu_id):
+    if not exists(manu_id):
+        raise ValueError(f'No such manuscript id: {manu_id}')
+    return fetch_by_id(manu_id).get(STATE, None)
+
+
+def exists(code):
+    return code in fetch_dict()
 
 
 TEST_CODE = 'BK'
@@ -89,7 +111,7 @@ TEST_MANU = {
     CODE: TEST_CODE,
     LAST_UPDATED: TEST_LAST_UPDATED,
     REFEREES: [TEST_REFEREE],
-    STATE: mstt.SUBMITTED,
+    STATE: mst.SUBMITTED,
     SUBMISSION: 'When in the course of Boaz events it becomes necessary...',
     TITLE: 'Forays into Kaufman Studies',
     WCOUNT: 500,
@@ -98,7 +120,7 @@ TEST_MANU = {
 
 @needs_manuscripts_cache
 def add(manu_dict):
-    manu_dict[STATE] = mstt.SUBMITTED
+    manu_dict[STATE] = mst.SUBMITTED
     return get_cache(COLLECT).add(manu_dict)
 
 
@@ -113,95 +135,158 @@ def update(code, update_dict):
 
 
 @needs_manuscripts_cache
-def fetch_by_state(state_code: str) -> list:
-    if state_code not in mstt.get_valid_states():
-        raise ValueError(f'Invalid state code {state_code}. \
-        Valid codes are {mstt.get_valid_states}')
-    return get_cache(COLLECT).fetch_by_fld_val(STATE, state_code)
-
-
-# def fetch_by_state(state_code): # noqa F811
-#     # Temporary function until SFA is cut over
-#     return fetch_by_state(state_code)
+def fetch_by_state(state: str) -> list:
+    if state not in mst.get_valid_states():
+        raise ValueError(f'Invalid state: {state}.')
+    return get_cache(COLLECT).fetch_by_fld_val(STATE, state)
 
 
 def get_curr_datetime():
     return tfmt.datetime_to_iso(tfmt.now())
 
 
-@needs_manuscripts_cache
-def reset_last_updated(manu_id):
+def set_last_updated(manu_id):
     curr_datetime = get_curr_datetime()
-    return get_cache(COLLECT).update_fld(manu_id, LAST_UPDATED, curr_datetime,
-                                         by_id=True)
+    return update_fld(manu_id, LAST_UPDATED, curr_datetime)
 
 
-@needs_manuscripts_cache
-def set_state(manu_id, state_code):
-    if state_code not in mstt.get_valid_states():
-        raise ValueError(f'Invalid state code {state_code}. \
-        Valid codes are {mstt.get_valid_states}')
-    return get_cache(COLLECT).update(manu_id,
-                                     {STATE: state_code},
-                                     by_id=True)
+def set_state(manu_id, state):
+    if state not in mst.get_valid_states():
+        raise ValueError(f'Invalid state code {state}. \
+        Valid codes are {mst.get_valid_states}')
+    return update(manu_id, {STATE: state}, by_id=True)
 
 
-# def set_state(manu_id, state_code): # noqa F811
-#     # Temporary function until SFA is cut over
-#     return set_state(manu_id, state_code)
-
-
-@needs_manuscripts_cache
 def assign_referee(manu_id, referee: str):
-    refs = get_cache(COLLECT).fetch_by_key(manu_id).get(REFEREES, [])
+    refs = fetch_by_key(manu_id).get(REFEREES, [])
     refs.append(referee)
-    return get_cache(COLLECT).update_fld(manu_id, REFEREES, refs, by_id=True)
+    return update_fld(manu_id, REFEREES, refs)
 
 
-@needs_manuscripts_cache
 def remove_referee(manu_id, referee: str):
-    refs = get_cache(COLLECT).fetch_by_key(manu_id).get(REFEREES)
+    refs = fetch_by_key(manu_id).get(REFEREES)
     refs.remove(referee)
-    return get_cache(COLLECT).update_fld(manu_id, REFEREES, refs, by_id=True)
+    return update_fld(manu_id, REFEREES, refs)
 
 
 REFEREE_MODIFIED = 'referee_modified'
 NEW_STATE = 'new_state'
 
 
-@needs_manuscripts_cache
-def update_history(manu_id, state_code, referee: str = None):
-    history = get_cache(COLLECT).fetch_by_key(manu_id).get(HISTORY, {})
+def update_history(manu_id, state, referee: str = None):
+    history = fetch_by_key(manu_id).get(HISTORY, {})
     history_dict = {}
-    history_dict[NEW_STATE] = state_code
+    history_dict[NEW_STATE] = state
     history[get_curr_datetime()] = history_dict
-    return get_cache(COLLECT).update_fld(manu_id, HISTORY, history, by_id=True)
+    return update_fld(manu_id, HISTORY, history)
 
 
 @needs_manuscripts_cache
-def update_state(manu_id, state_code, referee: str = None):
+def update_state(manu_id, state, referee: str = None):
     """
     Updates the history and sets all the new parameters of the manusccript.
     If state is changed to assign_referee or remove_referee the referee
     must also be provided
     """
-    if state_code not in mstt.get_valid_states():
-        raise ValueError(f'Invalid state code {state_code}. \
-        Valid codes are {mstt.get_valid_states}')
-    ret = set_state(manu_id, state_code)
-    update_history(manu_id, state_code, referee)
-    reset_last_updated(manu_id)
+    if state not in mst.get_valid_states():
+        raise ValueError(f'Invalid state code {state}.')
+    ret = set_state(manu_id, state)
+    update_history(manu_id, state, referee)
+    set_last_updated(manu_id)
     return ret
 
 
-# def update_state(manu_id, state_code, referee: str = None):
-#     # Temporary function until SFA is cut over
-#     return update_state(manu_id, state_code, referee)
+def receive_action(manu_id, action, **kwargs):
+    if not exists(manu_id):
+        raise ValueError(f'Invalid manuscript id: {manu_id}')
+    if not mst.is_valid_action(action):
+        raise ValueError(f'Invalid action: {action}')
+    return get_state(manu_id)
 
 
-def receive_action(manu_id, action_code, referee):
-    # Placeholder for now
-    return True
+def editor_move(manu_id, state, **kwargs):
+    """
+    Forcefully moves the current state to any other state.
+    Currently just returns the state passed in, but we may do other things with
+    it
+    """
+    return state
+
+
+FUNC = 'function'
+STATE_MAP = 'state_map'
+DESTINATION = 'destination'
+
+COMMON_ACTIONS = {EDITOR_MOVE: {
+               FUNC: editor_move,
+               },
+               WITHDRAW: {
+               FUNC: lambda x: WITHDRAWN,
+               }}
+
+
+STATE_TABLE = {
+    AUTHOR_REVIEW: {
+        DONE: {
+            FUNC: lambda x: FORMATTING,
+        },
+        **COMMON_ACTIONS,
+    },
+    AUTHOR_REVISION: {
+        DONE: {
+            FUNC: lambda x: COPY_EDITING,
+        },
+        **COMMON_ACTIONS,
+    },
+    COPY_EDITING: {
+        DONE: {
+            FUNC: lambda x: AUTHOR_REVIEW,
+        },
+        **COMMON_ACTIONS,
+    },
+    EDITOR_REVIEW: {
+        ACCEPT: {
+            FUNC: lambda x: COPY_EDITING,
+        },
+        ACCEPT_W_REV: {
+            FUNC: lambda x: AUTHOR_REVISION,
+        },
+        **COMMON_ACTIONS,
+    },
+    FORMATTING: {
+        DONE: {
+            FUNC: lambda x: PUBLISHED,
+        },
+        **COMMON_ACTIONS,
+    },
+    REFEREE_REVIEW: {
+        ACCEPT: {
+            FUNC: lambda x: COPY_EDITING,
+        },
+        ACCEPT_W_REV: {
+            FUNC: lambda x: EDITOR_REVIEW,
+        },
+        ASSIGN_REFEREE: {
+            FUNC: assign_referee,
+        },
+        REMOVE_REFEREE: {
+            FUNC: remove_referee,
+        },
+        REJECT: {
+            FUNC: lambda x: REJECTED,
+        },
+        **COMMON_ACTIONS,
+    },
+    SUBMITTED: {
+        REJECT: {
+            FUNC: lambda x: REJECTED,
+        },
+        ASSIGN_REFEREE: {
+            FUNC: assign_referee,
+        },
+        **COMMON_ACTIONS,
+    },
+}
 
 
 def main():

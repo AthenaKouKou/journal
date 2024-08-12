@@ -42,7 +42,6 @@ DONE = 'done'
 EDITOR_MOVE = 'editor-move'
 REJECT = 'reject'
 REMOVE_REFEREE = 'remove-referee'
-FINISH_EDITOR_REVIEW = 'finish-editor-rev'
 WITHDRAW = 'withdraw'
 
 TEST_ACTION = ACCEPT
@@ -55,7 +54,6 @@ ACTION_MAP = {
     EDITOR_MOVE: 'Editor forces a state change',
     REJECT: 'Reject',
     REMOVE_REFEREE: 'Remove a referee',
-    FINISH_EDITOR_REVIEW: 'Finish editor review',
     WITHDRAW: 'Author withdraws',
 }
 
