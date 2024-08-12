@@ -120,9 +120,9 @@ def fetch_by_state(state_code: str) -> list:
     return get_cache(COLLECT).fetch_by_fld_val(STATE, state_code)
 
 
-def fetch_by_state(state_code):
-    # Temporary function until SFA is cut over
-    return fetch_by_state(state_code)
+# def fetch_by_state(state_code): # noqa F811
+#     # Temporary function until SFA is cut over
+#     return fetch_by_state(state_code)
 
 
 def get_curr_datetime():
@@ -146,9 +146,9 @@ def set_state(manu_id, state_code):
                                      by_id=True)
 
 
-def set_state(manu_id, state_code):
-    # Temporary function until SFA is cut over
-    return set_state(manu_id, state_code)
+# def set_state(manu_id, state_code): # noqa F811
+#     # Temporary function until SFA is cut over
+#     return set_state(manu_id, state_code)
 
 
 @needs_manuscripts_cache
@@ -194,9 +194,9 @@ def update_state(manu_id, state_code, referee: str = None):
     return ret
 
 
-def update_state(manu_id, state_code, referee: str = None):
-    # Temporary function until SFA is cut over
-    return update_state(manu_id, state_code, referee)
+# def update_state(manu_id, state_code, referee: str = None):
+#     # Temporary function until SFA is cut over
+#     return update_state(manu_id, state_code, referee)
 
 
 def receive_action(manu_id, action_code, referee):
