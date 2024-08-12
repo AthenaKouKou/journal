@@ -7,6 +7,7 @@ from manuscripts.query import (
     OBJ_ID_NM,
     REFEREES,
 )
+import manuscripts.states as mst
 
 
 def add_test_manuscript():
@@ -47,7 +48,7 @@ def test_fetch_dict(temp_manu):
 
 
 def test_fetch_by_state(temp_manu):
-    samples = qry.fetch_by_state(qry.TEST_STATE)
+    samples = qry.fetch_by_state(mst.TEST_STATE)
     assert isinstance(samples, dict)
     assert len(samples) > 0
 
@@ -67,7 +68,7 @@ def test_get_last_updated_bad_id():
 
 
 def test_get_state(temp_manu):
-    assert qry.get_state(temp_manu) == qry.TEST_STATE
+    assert qry.get_state(temp_manu) == mst.TEST_STATE
 
 
 def test_get_state_bad_id():
@@ -99,13 +100,13 @@ def test_assign_referee(temp_manu):
 
 
 def test_receive_action(temp_manu):
-    new_state = qry.receive_action(temp_manu, qry.TEST_ACTION, **{})
-    assert qry.is_valid_state(new_state)
+    new_state = qry.receive_action(temp_manu, mst.TEST_ACTION, **{})
+    assert mst.is_valid_state(new_state)
 
 
 def test_receive_action_bad_manu_id():
     with pytest.raises(ValueError):
-        qry.receive_action('bad id', qry.TEST_ACTION, **{})
+        qry.receive_action('bad id', mst.TEST_ACTION, **{})
 
 
 def test_receive_action_bad_action(temp_manu):

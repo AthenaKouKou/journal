@@ -7,6 +7,7 @@ STATE_MAP_EP = 'state_map'
 
 # State (in alphabetical order)
 AUTHOR_REVIEW = 'author-review'
+AUTHOR_REVISION = 'author-revision'
 COPY_EDITING = 'copy-editing'
 EDITOR_REVIEW = 'editor-review'
 FORMATTING = 'formatting'
@@ -21,6 +22,7 @@ TEST_STATE = SUBMITTED
 # State map
 STATE_MAP = {
     AUTHOR_REVIEW: 'Awaiting author review',
+    AUTHOR_REVISION: 'Awaiting author revisions',
     COPY_EDITING: 'The copy editing',
     EDITOR_REVIEW: 'Awaiting editor review',
     FORMATTING: 'Undergoing formatting',
@@ -40,7 +42,6 @@ DONE = 'done'
 EDITOR_MOVE = 'editor-move'
 REJECT = 'reject'
 REMOVE_REFEREE = 'remove-referee'
-FINISH_EDITOR_REVIEW = 'finish-editor-rev'
 WITHDRAW = 'withdraw'
 
 TEST_ACTION = ACCEPT
@@ -53,7 +54,6 @@ ACTION_MAP = {
     EDITOR_MOVE: 'Editor forces a state change',
     REJECT: 'Reject',
     REMOVE_REFEREE: 'Remove a referee',
-    FINISH_EDITOR_REVIEW: 'Finish editor review',
     WITHDRAW: 'Author withdraws',
 }
 

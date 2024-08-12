@@ -23,11 +23,24 @@ from manuscripts.fields import (
 )
 
 import manuscripts.states as mst
-
-from manuscripts.states import (  # noqa F401 -- tests use these
-    is_valid_state,
-    TEST_ACTION,
-    TEST_STATE,
+from manuscripts.states import (
+    ACCEPT,
+    ACCEPT_W_REV,
+    AUTHOR_REVISION,
+    ASSIGN_REFEREE,
+    AUTHOR_REVIEW,
+    COPY_EDITING,
+    DONE,
+    EDITOR_MOVE,
+    EDITOR_REVIEW,
+    FORMATTING,
+    PUBLISHED,
+    REFEREE_REVIEW,
+    REJECT,
+    REJECTED,
+    REMOVE_REFEREE,
+    SUBMITTED,
+    WITHDRAW, WITHDRAWN,
 )
 
 DB = 'journalDB'
@@ -204,6 +217,91 @@ def receive_action(manu_id, action, **kwargs):
     if not mst.is_valid_action(action):
         raise ValueError(f'Invalid action: {action}')
     return get_state(manu_id)
+
+
+def editor_move(manu_id, state, **kwargs):
+    """
+    Forcefully moves the current state to any other state.
+    Currently just returns the state passed in, but we may do other things with
+    it
+    """
+    return state
+
+
+FUNC = 'function'
+STATE_MAP = 'state_map'
+DESTINATION = 'destination'
+
+COMMON_ACTIONS = {EDITOR_MOVE: {
+               FUNC: editor_move,
+               },
+               WITHDRAW: {
+               FUNC: lambda x: WITHDRAWN,
+               }}
+
+
+STATE_TABLE = {
+    AUTHOR_REVIEW: {
+        DONE: {
+            FUNC: lambda x: FORMATTING,
+        },
+        **COMMON_ACTIONS,
+    },
+    AUTHOR_REVISION: {
+        DONE: {
+            FUNC: lambda x: COPY_EDITING,
+        },
+        **COMMON_ACTIONS,
+    },
+    COPY_EDITING: {
+        DONE: {
+            FUNC: lambda x: AUTHOR_REVIEW,
+        },
+        **COMMON_ACTIONS,
+    },
+    EDITOR_REVIEW: {
+        ACCEPT: {
+            FUNC: lambda x: COPY_EDITING,
+        },
+        ACCEPT_W_REV: {
+            FUNC: lambda x: AUTHOR_REVISION,
+        },
+        **COMMON_ACTIONS,
+    },
+    FORMATTING: {
+        DONE: {
+            FUNC: lambda x: PUBLISHED,
+        },
+        **COMMON_ACTIONS,
+    },
+    REFEREE_REVIEW: {
+        ACCEPT: {
+            FUNC: lambda x: COPY_EDITING,
+        },
+        ACCEPT_W_REV: {
+            FUNC: lambda x: EDITOR_REVIEW,
+        },
+        ASSIGN_REFEREE: {
+            FUNC: assign_referee,
+        },
+        REMOVE_REFEREE: {
+            FUNC: remove_referee,
+        },
+        REJECT: {
+            FUNC: lambda x: REJECTED,
+        },
+        **COMMON_ACTIONS,
+    },
+    SUBMITTED: {
+        REJECT: {
+            FUNC: lambda x: REJECTED,
+        },
+        ASSIGN_REFEREE: {
+            FUNC: assign_referee,
+        },
+        **COMMON_ACTIONS,
+    },
+}
 
 
 def main():
