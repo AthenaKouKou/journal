@@ -5,6 +5,10 @@ def test_get_form():
     assert isinstance(form.get_form(), list)
 
 
+def test_get_add_form():
+    assert isinstance(form.get_add_form(), list)
+
+
 def test_get_form_descr():
     assert isinstance(form.get_form_descr(), dict)
 
