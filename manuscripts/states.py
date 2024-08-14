@@ -44,7 +44,7 @@ REJECT = 'reject'
 REMOVE_REFEREE = 'remove-referee'
 WITHDRAW = 'withdraw'
 
-TEST_ACTION = ACCEPT
+TEST_ACTION = REJECT
 
 ACTION_MAP = {
     ACCEPT: 'Accept',

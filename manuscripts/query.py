@@ -43,6 +43,7 @@ from manuscripts.states import (
     WITHDRAW, WITHDRAWN,
 )
 
+
 DB = 'journalDB'
 COLLECT = 'manuscripts'
 CACHE_NM = COLLECT
@@ -154,19 +155,35 @@ def set_state(manu_id, state):
     if state not in mst.get_valid_states():
         raise ValueError(f'Invalid state code {state}. \
         Valid codes are {mst.get_valid_states}')
-    return update(manu_id, {STATE: state}, by_id=True)
+    return update(manu_id, {STATE: state})
 
 
-def assign_referee(manu_id, referee: str):
+REFEREE_ARG = 'referee'
+
+
+def assign_referee(manu_id, **kwargs):
+    referee = kwargs.get(REFEREE_ARG)
+    if not referee:
+        raise ValueError(f'Must provide \'{REFEREE_ARG}\' value to assign a '
+                         'referee')
     refs = fetch_by_key(manu_id).get(REFEREES, [])
     refs.append(referee)
-    return update_fld(manu_id, REFEREES, refs)
+    update_fld(manu_id, REFEREES, refs)
+    return REFEREE_REVIEW
 
 
-def remove_referee(manu_id, referee: str):
+def remove_referee(manu_id, **kwargs):
+    referee = kwargs.get(REFEREE_ARG)
+    if not referee:
+        raise ValueError(f'Must provide \'{REFEREE_ARG}\' value to remove a '
+                         'referee')
     refs = fetch_by_key(manu_id).get(REFEREES)
     refs.remove(referee)
-    return update_fld(manu_id, REFEREES, refs)
+    update_fld(manu_id, REFEREES, refs)
+    if len(referee) == 0:
+        return SUBMITTED
+    else:
+        return REFEREE_REVIEW
 
 
 REFEREE_MODIFIED = 'referee_modified'
@@ -196,15 +213,7 @@ def update_state(manu_id, state, referee: str = None):
     return ret
 
 
-def receive_action(manu_id, action, **kwargs):
-    if not exists(manu_id):
-        raise ValueError(f'Invalid manuscript id: {manu_id}')
-    if not mst.is_valid_action(action):
-        raise ValueError(f'Invalid action: {action}')
-    return get_state(manu_id)
-
-
-def editor_move(manu_id, state, **kwargs):
+def editor_move(state, **kwargs):
     """
     Forcefully moves the current state to any other state.
     Currently just returns the state passed in, but we may do other things with
@@ -228,43 +237,43 @@ COMMON_ACTIONS = {EDITOR_MOVE: {
 STATE_TABLE = {
     AUTHOR_REVIEW: {
         DONE: {
-            FUNC: lambda x: FORMATTING,
+            FUNC: lambda x, **kwargs: FORMATTING,
         },
         **COMMON_ACTIONS,
     },
     AUTHOR_REVISIONS: {
         DONE: {
-            FUNC: lambda x: COPY_EDITING,
+            FUNC: lambda x, **kwargs: COPY_EDITING,
         },
         **COMMON_ACTIONS,
     },
     COPY_EDITING: {
         DONE: {
-            FUNC: lambda x: AUTHOR_REVIEW,
+            FUNC: lambda x, **kwargs: AUTHOR_REVIEW,
         },
         **COMMON_ACTIONS,
     },
     EDITOR_REVIEW: {
         ACCEPT: {
-            FUNC: lambda x: COPY_EDITING,
+            FUNC: lambda x, **kwargs: COPY_EDITING,
         },
         ACCEPT_W_REV: {
-            FUNC: lambda x: AUTHOR_REVISIONS,
+            FUNC: lambda x, **kwargs: AUTHOR_REVISIONS,
         },
         **COMMON_ACTIONS,
     },
     FORMATTING: {
         DONE: {
-            FUNC: lambda x: PUBLISHED,
+            FUNC: lambda x, **kwargs: PUBLISHED,
         },
         **COMMON_ACTIONS,
     },
     REFEREE_REVIEW: {
         ACCEPT: {
-            FUNC: lambda x: COPY_EDITING,
+            FUNC: lambda x, **kwargs: COPY_EDITING,
         },
         ACCEPT_W_REV: {
-            FUNC: lambda x: EDITOR_REVIEW,
+            FUNC: lambda x, **kwargs: EDITOR_REVIEW,
         },
         ASSIGN_REFEREE: {
             FUNC: assign_referee,
@@ -273,13 +282,13 @@ STATE_TABLE = {
             FUNC: remove_referee,
         },
         REJECT: {
-            FUNC: lambda x: REJECTED,
+            FUNC: lambda x, **kwargs: REJECTED,
         },
         **COMMON_ACTIONS,
     },
     SUBMITTED: {
         REJECT: {
-            FUNC: lambda x: REJECTED,
+            FUNC: lambda x, **kwargs: REJECTED,
         },
         ASSIGN_REFEREE: {
             FUNC: assign_referee,
@@ -287,6 +296,27 @@ STATE_TABLE = {
         **COMMON_ACTIONS,
     },
 }
+
+
+def receive_action(manu_id, action, **kwargs):
+    """
+    Currently we have 'referee', 'state' kwargs.
+    """
+    if not exists(manu_id):
+        raise ValueError(f'Invalid manuscript id: {manu_id}')
+    if not mst.is_valid_action(action):
+        raise ValueError(f'Invalid action: {action}')
+    curr_state = get_state(manu_id)
+    action_opts = STATE_TABLE[curr_state].get(action, None)
+    func = action_opts.get(FUNC, None)
+    if func:
+        new_state = func(manu_id, **kwargs)
+        set_state(manu_id, new_state)
+        set_last_updated(manu_id)
+        return new_state
+    else:
+        raise ValueError(f'Action {action} is invalid in the current state: '
+                         f'{curr_state}')
 
 
 def main():

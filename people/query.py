@@ -69,14 +69,17 @@ def fetch_by_key(_id):
 
 def fetch_all_or_some(name=None, role=None):
     people = fetch_dict()
+    print(f'{role=}')
     if not name or role:
         return people
     else:
+        print('Calling select')
         return select(people, name=name, role=role)
 
 
 def has_role(person, role):
     roles = person.get(ROLES)
+    print(f'{roles=}')
     if not roles:
         return False
     return role in roles
@@ -84,7 +87,7 @@ def has_role(person, role):
 
 def select(people: dict, name=None, role=None):
     """
-    Select by name and/or role.
+    Select by name or role.
     """
     matches = {}
     for code, person in people.items():
@@ -92,6 +95,7 @@ def select(people: dict, name=None, role=None):
             if person.get(NAME) == name:
                 matches[person[OBJ_ID_NM]] = people[code]
         elif role:
+            print(f'{role=}')
             if has_role(person, role):
                 matches[person[OBJ_ID_NM]] = people[code]
     return matches

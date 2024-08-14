@@ -4,7 +4,12 @@ This module provides the journal query form.
 
 import backendcore.data.form_filler as ff
 
-from people.fields import NAME
+from people.fields import (
+    AFFILIATION,
+    EMAIL,
+    NAME,
+)
+
 import people.roles as rls
 
 FORM_FLDS = [
@@ -15,8 +20,8 @@ FORM_FLDS = [
         ff.OPT: True,
     },
     {
-        ff.FLD_NM: rls.ROLES,
-        ff.QSTN: 'Roles:',
+        ff.FLD_NM: rls.ROLE,
+        ff.QSTN: 'Role:',
         ff.PARAM_TYPE: ff.QUERY_STR,
         ff.CHOICES: rls.get_choices(),
         ff.MULTI: False,
@@ -25,8 +30,28 @@ FORM_FLDS = [
 ]
 
 
+ADD_FORM_ADDITIONAL_FLDS = [
+    {
+        ff.FLD_NM: EMAIL,
+        ff.QSTN: 'Email:',
+        ff.OPT: True,
+    },
+    {
+        ff.FLD_NM: AFFILIATION,
+        ff.QSTN: 'Affiliation:',
+        ff.OPT: True,
+    },
+]
+
+ADD_FORM = FORM_FLDS + ADD_FORM_ADDITIONAL_FLDS
+
+
 def get_form() -> list:
     return FORM_FLDS
+
+
+def get_add_form() -> list:
+    return ADD_FORM
 
 
 def get_form_descr():
