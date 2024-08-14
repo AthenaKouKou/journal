@@ -178,9 +178,11 @@ def remove_referee(manu_id, **kwargs):
         raise ValueError(f'Must provide \'{REFEREE_ARG}\' value to remove a '
                          'referee')
     refs = fetch_by_key(manu_id).get(REFEREES)
+    if referee not in refs:
+        raise ValueError(f'Referee {referee} not found')
     refs.remove(referee)
     update_fld(manu_id, REFEREES, refs)
-    if len(referee) == 0:
+    if len(refs) == 0:
         return SUBMITTED
     else:
         return REFEREE_REVIEW
@@ -188,12 +190,16 @@ def remove_referee(manu_id, **kwargs):
 
 REFEREE_MODIFIED = 'referee_modified'
 NEW_STATE = 'new_state'
+ACTION = 'action'
 
 
-def update_history(manu_id, state, referee: str = None):
+def update_history(manu_id: str, action: str, state: str, **kwargs):
     history = fetch_by_key(manu_id).get(HISTORY, {})
     history_dict = {}
     history_dict[NEW_STATE] = state
+    history_dict[ACTION] = action
+    for key, value in kwargs.items():
+        history_dict[key] = value
     history[get_curr_datetime()] = history_dict
     return update_fld(manu_id, HISTORY, history)
 
@@ -307,12 +313,13 @@ def receive_action(manu_id, action, **kwargs):
     if not mst.is_valid_action(action):
         raise ValueError(f'Invalid action: {action}')
     curr_state = get_state(manu_id)
-    action_opts = STATE_TABLE[curr_state].get(action, None)
+    action_opts = STATE_TABLE[curr_state].get(action, {})
     func = action_opts.get(FUNC, None)
     if func:
         new_state = func(manu_id, **kwargs)
         set_state(manu_id, new_state)
         set_last_updated(manu_id)
+        update_history(manu_id, action, new_state, **kwargs)
         return new_state
     else:
         raise ValueError(f'Action {action} is invalid in the current state: '

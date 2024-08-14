@@ -5,6 +5,7 @@ import pytest
 import manuscripts.query as qry
 from manuscripts.query import (
     REFEREES,
+    HISTORY,
 )
 import manuscripts.states as mst
 
@@ -124,3 +125,10 @@ def test_receive_action_bad_manu_id():
 def test_receive_action_bad_action(temp_manu):
     with pytest.raises(ValueError):
         qry.receive_action(temp_manu, 'bad action', **{})
+
+
+def test_update_history(temp_manu):
+    assert qry.fetch_by_id(temp_manu).get(HISTORY, {}) == {}
+    qry.update_history(temp_manu, mst.TEST_ACTION, mst.TEST_STATE)
+    history = qry.fetch_by_id(temp_manu).get(HISTORY)
+    assert len(history) == 1
