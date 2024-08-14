@@ -69,6 +69,7 @@ def fetch_by_key(_id):
 
 def fetch_all_or_some(name=None, role=None):
     people = fetch_dict()
+    print(f'{role=}')
     if not name or role:
         return people
     else:
