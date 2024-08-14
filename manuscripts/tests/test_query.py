@@ -4,7 +4,6 @@ import pytest
 
 import manuscripts.query as qry
 from manuscripts.query import (
-    OBJ_ID_NM,
     REFEREES,
 )
 import manuscripts.states as mst
@@ -54,8 +53,8 @@ def test_fetch_by_state(temp_manu):
 
 
 def test_fetch_by_bad_state(temp_manu):
-    with pytest.raises(Exception) as e_info:
-        samples = qry.fetch_by_state('pineapple')
+    with pytest.raises(Exception):
+        qry.fetch_by_state('pineapple')
 
 
 def test_get_last_updated(temp_manu):
@@ -84,17 +83,30 @@ def test_set_last_updated(temp_manu):
 
 
 def test_assign_referee(temp_manu):
+    NEW_REF = 'A new referee'
     manu = qry.fetch_by_id(temp_manu)
     assert len(manu.get(REFEREES)) == 1
-    qry.assign_referee(temp_manu, 'A new referee')
+    qry.assign_referee(temp_manu, referee=NEW_REF)
     manu = qry.fetch_by_id(temp_manu)
-    assert len(manu.get(REFEREES)) > 1
+    refs = manu.get(REFEREES)
+    assert len(refs) > 1
+    assert NEW_REF in refs
 
 
-def test_assign_referee(temp_manu):
+def test_assign_referee_no_referee(temp_manu):
+    with pytest.raises(ValueError):
+        qry.assign_referee(temp_manu)
+
+
+def test_remove_referee_no_referee(temp_manu):
+    with pytest.raises(ValueError):
+        qry.remove_referee(temp_manu)
+
+
+def test_remove_referee(temp_manu):
     manu = qry.fetch_by_id(temp_manu)
     assert len(manu.get(REFEREES)) == 1
-    qry.remove_referee(temp_manu, qry.TEST_REFEREE)
+    qry.remove_referee(temp_manu, referee=qry.TEST_REFEREE)
     manu = qry.fetch_by_id(temp_manu)
     assert len(manu.get(REFEREES)) == 0
 
