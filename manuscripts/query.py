@@ -26,7 +26,7 @@ import manuscripts.states as mst
 from manuscripts.states import (
     ACCEPT,
     ACCEPT_W_REV,
-    AUTHOR_REVISION,
+    AUTHOR_REVISIONS,
     ASSIGN_REFEREE,
     AUTHOR_REVIEW,
     COPY_EDITING,
@@ -232,7 +232,7 @@ STATE_TABLE = {
         },
         **COMMON_ACTIONS,
     },
-    AUTHOR_REVISION: {
+    AUTHOR_REVISIONS: {
         DONE: {
             FUNC: lambda x: COPY_EDITING,
         },
@@ -249,7 +249,7 @@ STATE_TABLE = {
             FUNC: lambda x: COPY_EDITING,
         },
         ACCEPT_W_REV: {
-            FUNC: lambda x: AUTHOR_REVISION,
+            FUNC: lambda x: AUTHOR_REVISIONS,
         },
         **COMMON_ACTIONS,
     },
