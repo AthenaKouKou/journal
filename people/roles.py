@@ -17,6 +17,7 @@ MAN_ED = 'Managing Editor'
 RE = 'RE'
 REFEREE = 'Referee'
 
+ROLE = 'role'
 ROLES = 'roles'
 
 TEST_ROLE = ED

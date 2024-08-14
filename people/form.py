@@ -20,8 +20,8 @@ FORM_FLDS = [
         ff.OPT: True,
     },
     {
-        ff.FLD_NM: rls.ROLES,
-        ff.QSTN: 'Roles:',
+        ff.FLD_NM: rls.ROLE,
+        ff.QSTN: 'Role:',
         ff.PARAM_TYPE: ff.QUERY_STR,
         ff.CHOICES: rls.get_choices(),
         ff.MULTI: False,
