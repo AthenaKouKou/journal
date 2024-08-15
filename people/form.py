@@ -6,6 +6,7 @@ import backendcore.data.form_filler as ff
 
 from people.fields import (
     AFFILIATION,
+    BIO,
     EMAIL,
     NAME,
 )
@@ -41,9 +42,16 @@ ADD_FORM_ADDITIONAL_FLDS = [
         ff.QSTN: 'Affiliation:',
         ff.OPT: True,
     },
+    {
+        ff.FLD_NM: BIO,
+        ff.QSTN: 'Bio:',
+        ff.OPT: True,
+        ff.FLD_LEN: 255,
+    },
 ]
 
 ADD_FORM = FORM_FLDS + ADD_FORM_ADDITIONAL_FLDS
+UPDATE_FORM = ADD_FORM
 
 
 def get_form() -> list:
@@ -52,6 +60,10 @@ def get_form() -> list:
 
 def get_add_form() -> list:
     return ADD_FORM
+
+
+def get_update_form() -> list:
+    return UPDATE_FORM
 
 
 def get_form_descr():
