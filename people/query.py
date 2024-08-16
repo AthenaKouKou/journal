@@ -69,10 +69,7 @@ def fetch_by_key(_id):
 
 def fetch_all_or_some(name=None, role=None):
     people = fetch_dict()
-    print(f'{name=}')
-    print(f'{role=}')
     if name or role:
-        print('Calling select')
         return select(people, name=name, role=role)
     else:
         return people

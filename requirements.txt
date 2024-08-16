@@ -1,1 +1,14 @@
+alembic
+certifi
+flask==3.0.3
+flask-cors
+flask-restx==1.3.0
+markupsafe==2.1.1
+pyarrow
+pypandoc
+python-dateutil
+pymongo==4.8.0
+requests
+sendgrid
+validators
 git+ssh://git@github.com/AthenaKouKou/BackEndCore.git
