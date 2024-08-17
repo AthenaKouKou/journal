@@ -4,8 +4,9 @@ from backendcore.data.form_filler import (
 )
 import backendcore.data.fields as cflds
 
-EDITOR = 'editor'
-EDITOR_DISP_NAME = 'Editor'
+from people.roles import EDITOR
+
+EDITOR_DISP_NAME = EDITOR
 LAST_EDIT = 'last_edit'
 LAST_EDIT_DISP_NAME = 'Last Edit Date'
 TITLE = 'title'
