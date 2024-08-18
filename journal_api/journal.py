@@ -94,6 +94,7 @@ STATE = 'state'
 ACTION = 'action'
 DASHCOLUMNS = 'dashcolumns'
 
+PROTOCOL_NM = sm.fetch_journal_protocol_name()
 
 def _get_user_info(request):
     user_id = None
@@ -175,7 +176,7 @@ class TextUpdate(Resource):
         if not text:
             raise wz.NotAcceptable('You must pass text to update.')
         editor, auth_key = _get_user_info(request)
-        if not sm.is_permitted(sm.COSMOS_JOURNAL, sm.UPDATE, user_id=editor,
+        if not sm.is_permitted(PROTOCOL_NM, sm.UPDATE, user_id=editor,
                                auth_key=auth_key):
             raise wz.Forbidden('Action not permitted.')
         try:
@@ -309,7 +310,7 @@ class ManuCreate(Resource):
     def put(self):
         jdata = request.json
         user_id, auth_key = _get_user_info(request)
-        if not sm.is_permitted(sm.COSMOS_JOURNAL, sm.CREATE, user_id=user_id,
+        if not sm.is_permitted(PROTOCOL_NM, sm.CREATE, user_id=user_id,
                                auth_key=auth_key):
             raise wz.Forbidden('Action not permitted.')
         try:
@@ -354,7 +355,7 @@ class ManuReceiveAction(Resource):
         editor = request.json.get(EDITOR)
         if not editor:
             raise wz.NotAcceptable('You must pass an editor.')
-        if not sm.is_permitted(sm.COSMOS_JOURNAL, sm.UPDATE, user_id=editor):
+        if not sm.is_permitted(PROTOCOL_NM, sm.UPDATE, user_id=editor):
             raise wz.Forbidden('Action not permitted.')
         try:
             new_state = mqry.receive_action(manu_id, action,
@@ -523,7 +524,7 @@ class PeopleCreate(Resource):
         Add a person.
         """
         user_id, auth_key = _get_user_info(request)
-        if not sm.is_permitted(sm.COSMOS_JOURNAL, sm.CREATE, user_id=user_id,
+        if not sm.is_permitted(PROTOCOL_NM, sm.CREATE, user_id=user_id,
                                auth_key=auth_key):
             raise wz.Forbidden('Action not permitted.')
         try:
@@ -547,7 +548,7 @@ class PeopleDelete(Resource):
     def delete(self, person_id):
         user_id, auth_key = _get_user_info(request)
         print(f'{user_id=}')
-        if not sm.is_permitted(sm.COSMOS_JOURNAL, sm.DELETE, user_id=user_id,
+        if not sm.is_permitted(PROTOCOL_NM, sm.DELETE, user_id=user_id,
                                auth_key=auth_key):
             raise wz.Forbidden('Action not permitted.')
         try:
@@ -585,7 +586,7 @@ class PeopleUpdate(Resource):
     @api.expect(PEOPLE_CREATE_FLDS)
     def put(self, person_id):
         user_id, auth_key = _get_user_info(request)
-        if not sm.is_permitted(sm.COSMOS_JOURNAL, sm.UPDATE, user_id=user_id,
+        if not sm.is_permitted(PROTOCOL_NM, sm.UPDATE, user_id=user_id,
                                auth_key=auth_key):
             raise wz.Forbidden('Action not permitted.')
         try:
