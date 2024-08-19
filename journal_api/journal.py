@@ -12,10 +12,6 @@ from flask import request
 from flask_restx import Namespace, Resource, fields
 
 import werkzeug.exceptions as wz
-from werkzeug.utils import secure_filename
-from werkzeug.datastructures import FileStorage
-
-import pypandoc as pdc
 
 from backendcore.common.constants import (
     AUTH,
@@ -75,10 +71,6 @@ from manuscripts.fields import ( # noqa E402
     AUTHORS,
     TITLE,
     WCOUNT,
-)
-
-from manuscripts.add_form import ( # noqa E402
-    FILE,
 )
 
 from manuscripts.states import ( # noqa E402
@@ -248,56 +240,6 @@ MANU_CREATE_FLDS = api.model('JournalManuAdd', {
 })
 
 
-MANUSCRIPTS_DIR = f'{proj_dir}/journal/manuscripts'
-UPLOAD_DIR = f'{MANUSCRIPTS_DIR}/original_submissions'
-ALLOWED_EXTENSIONS = ['txt', 'docx', 'md', 'html']
-
-
-def get_valid_exts():
-    return ALLOWED_EXTENSIONS
-
-
-def get_file_ext(filename):
-    if '.' not in filename:
-        return None
-    return filename.rsplit('.', 1)[1].lower()
-
-
-def valid_file(filename):
-    return get_file_ext(filename) in get_valid_exts()
-
-
-def is_valid_sub(form, filename=None) -> str:
-    try:
-        print(f'{form.get(TEXT)=}')
-        text_entry = form.get(TEXT)
-        if text_entry:
-            return text_entry
-        elif filename:
-            if not valid_file(filename):
-                raise ValueError('Error: valid file types are: '
-                                 + f'{get_valid_exts()}')
-        else:
-            raise ValueError('Error: no submission')
-        return None
-    except Exception as err:
-        print(err)
-        raise ValueError(f'Manuscript creation error: {err}')
-
-
-TEST_FILE_OBJ = FileStorage(filename=f'good_name.{get_valid_exts()[0]}')
-
-
-def process_file(file):
-    output = ''
-    if file:
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(UPLOAD_DIR, filename))
-        filepath = f'{UPLOAD_DIR}/{filename}'
-        output = pdc.convert_file(filepath, 'rst')
-    return output
-
-
 @api.route(f'/{MANU}/{CREATE}')
 @api.expect(parser)
 class ManuCreate(Resource):
@@ -308,23 +250,12 @@ class ManuCreate(Resource):
     @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
     @api.expect(MANU_CREATE_FLDS)
     def put(self):
-        jdata = request.json
         user_id, auth_key = _get_user_info(request)
-        if not sm.is_permitted(PROTOCOL_NM, sm.CREATE, user_id=user_id,
-                               auth_key=auth_key):
-            raise wz.Forbidden('Action not permitted.')
+        # if not sm.is_permitted(PROTOCOL_NM, sm.CREATE, user_id=user_id,
+        #                        auth_key=auth_key):
+        #     raise wz.Forbidden('Action not permitted.')
         try:
-            filename = None
-            file = request.files.get(FILE, None)
-            if file:
-                filename = file.filename
-            # I don't like valid returning the entry, but for now...
-            jdata[TEXT] = is_valid_sub(jdata, filename)
-            if not jdata[TEXT]:
-                if not file:
-                    wz.NotAcceptable('No file or text submitted')
-                jdata[TEXT] = process_file(file)
-            mqry.add(jdata)
+            mqry.add(request)
         except Exception as err:
             print(err)
             raise wz.NotAcceptable(f'Manuscript creation error: {err}')

@@ -22,9 +22,9 @@ NOT_IMPLEMENTED = 'This option has not been implemented, check back later.'
 FILE = 'FILE'
 ENTRY = 'ENTRY'
 TEXT_ENTRY = 'textentry'
-TEXT_ENTRY_DISP_NAME = 'Submission text direct entry'
-TEXT_FILE = 'textfile'
-TEXT_FILE_DISP_NAME = 'Submission text file upload'
+TEXT_ENTRY_DISP_NAME = 'Submission direct text entry'
+TEXT_FILE = 'fileentry'
+TEXT_FILE_DISP_NAME = 'Submission file upload'
 
 FORM_FLDS = [
     {
@@ -55,7 +55,7 @@ FORM_FLDS = [
         ff.MULTI: False,
         ff.SUBFIELDS: [
             {
-                ff.FLD_NM: TEXT,
+                ff.FLD_NM: TEXT_ENTRY,
                 ff.QSTN: TEXT_ENTRY_DISP_NAME,
                 ff.INPUT_TYPE: ff.MARKDOWN,
                 ff.OPT: True,
@@ -63,7 +63,7 @@ FORM_FLDS = [
                 ff.FLD_LEN: 255,
             },
             {
-                ff.FLD_NM: TEXT,
+                ff.FLD_NM: TEXT_FILE,
                 ff.QSTN: TEXT_FILE_DISP_NAME,
                 ff.INPUT_TYPE: ff.FILE_LOADER,
                 ff.OPT: True,

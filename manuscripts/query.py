@@ -3,6 +3,12 @@ This is our interface to our manuscript data.
 We never expect our users to add or delete manuscripts,
 so we make no provisions for that.
 """
+import os
+from werkzeug.utils import secure_filename
+from werkzeug.datastructures import FileStorage
+
+import pypandoc as pdc
+
 from backendcore.data.caching import needs_cache, get_cache
 from backendcore.common.constants import CODE
 import backendcore.common.time_fmts as tfmt
@@ -20,6 +26,12 @@ from manuscripts.fields import (
     TEXT,
     TITLE,
     WCOUNT,
+)
+
+from manuscripts.add_form import ( # noqa E402
+    FILE,
+    TEXT_ENTRY,
+    TEXT_FILE,
 )
 
 import manuscripts.states as mst
@@ -118,11 +130,62 @@ TEST_MANU = {
     WCOUNT: 500,
 }
 
+proj_dir = os.getenv('PROJ_DIR', "")
+MANUSCRIPTS_DIR = f'{proj_dir}/journal/manuscripts'
+UPLOAD_DIR = f'{MANUSCRIPTS_DIR}/original_submissions'
+ALLOWED_EXTENSIONS = ['txt', 'docx', 'md', 'html']
+
+
+def get_valid_exts():
+    return ALLOWED_EXTENSIONS
+
+
+def get_file_ext(filename):
+    if '.' not in filename:
+        return None
+    return filename.rsplit('.', 1)[1].lower()
+
+
+def is_valid_file(filename):
+    return get_file_ext(filename) in get_valid_exts()
+
+
+TEST_FILE_OBJ = FileStorage(filename=f'good_name.{get_valid_exts()[0]}')
+
+
+def process_file(file):
+    output = ''
+    if file:
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(UPLOAD_DIR, filename))
+        filepath = f'{UPLOAD_DIR}/{filename}'
+        output = pdc.convert_file(filepath, 'rst')
+    return output
+
 
 @needs_manuscripts_cache
 def add(manu_dict):
-    manu_dict[STATE] = mst.SUBMITTED
-    return get_cache(COLLECT).add(manu_dict)
+    jdata = manu_dict.json
+    filename = None
+    file = manu_dict.files.get(FILE, None)
+    if file:
+        filename = file.filename
+
+    if jdata.get(TEXT_ENTRY):
+        jdata[TEXT] = jdata.get(TEXT_ENTRY)
+        del jdata[TEXT_ENTRY]
+    elif jdata.get(TEXT_FILE) and filename:
+        if not is_valid_file(filename):
+            raise ValueError('Error: valid file types are: '
+                             + f'{get_valid_exts()}')
+        jdata[TEXT] = process_file(file)
+        del jdata[TEXT_FILE]
+    else:
+        raise ValueError('No text or file submitted')
+
+    jdata[STATE] = mst.SUBMITTED
+    jdata[LAST_UPDATED] = get_curr_datetime()
+    return get_cache(COLLECT).add(jdata)
 
 
 @needs_manuscripts_cache
