@@ -122,10 +122,8 @@ TEST_MANU = {
     ABSTRACT: 'TLDR',
     AUTHORS: ['Boaz Kaufman'],
     CODE: TEST_CODE,
-    LAST_UPDATED: TEST_LAST_UPDATED,
     REFEREES: [TEST_REFEREE],
-    STATE: mst.SUBMITTED,
-    TEXT: 'When in the course of Boaz events it becomes necessary...',
+    TEXT_ENTRY: 'When in the course of Boaz events ...',
     TITLE: 'Forays into Kaufman Studies',
     WCOUNT: 500,
 }
@@ -164,10 +162,13 @@ def process_file(file):
 
 
 @needs_manuscripts_cache
-def add(manu_dict):
-    jdata = manu_dict.json
+def add(jdata, files=None):
+    print(f'{jdata}=')
+    print(f'{files}=')
     filename = None
-    file = manu_dict.files.get(FILE, None)
+    file = None
+    if files:
+        file = files.get(FILE, None)
     if file:
         filename = file.filename
 

@@ -255,7 +255,9 @@ class ManuCreate(Resource):
         #                        auth_key=auth_key):
         #     raise wz.Forbidden('Action not permitted.')
         try:
-            mqry.add(request)
+            jdata = request.json
+            files = request.files
+            mqry.add(jdata, files)
         except Exception as err:
             print(err)
             raise wz.NotAcceptable(f'Manuscript creation error: {err}')
