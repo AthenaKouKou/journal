@@ -555,6 +555,7 @@ class PeopleDelete(Resource):
             pqry.delete(person_id)
             return {MESSAGE: 'Person deleted!'}
         except ValueError:
+            print(f'Person not found: {person_id}.')
             raise wz.NotFound(f'Person not found: {person_id}')
 
 
