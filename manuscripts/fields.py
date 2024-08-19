@@ -21,8 +21,8 @@ REFEREES = 'referees'
 REFEREES_DISP_NAME = 'Referees'
 STATE = 'state'
 STATE_DISP_NAME = 'State'
-SUBMISSION = 'submission'
-SUBMISSION_DISP_NAME = 'Manuscript submission'
+TEXT = 'text'
+TEXT_DISP_NAME = 'Manuscript text'
 TEST_FLD_DISP_NM = 'Sample Code'
 TEST_FLD_NM = OBJ_ID_NM
 TITLE = 'title'
@@ -46,8 +46,8 @@ FIELDS = {
         DISP_NAME: AUTHORS_DISP_NAME,
         DESCR: 'List of authors',
     },
-    SUBMISSION: {
-        DISP_NAME: SUBMISSION_DISP_NAME,
+    TEXT: {
+        DISP_NAME: TEXT_DISP_NAME,
         DESCR: 'Text submission; file upload or text entry',
     },
     ABSTRACT: {

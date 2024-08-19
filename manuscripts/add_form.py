@@ -9,8 +9,8 @@ from manuscripts.fields import (
     ABSTRACT_DISP_NAME,
     AUTHORS,
     AUTHORS_DISP_NAME,
-    SUBMISSION,
-    SUBMISSION_DISP_NAME,
+    TEXT,
+    TEXT_DISP_NAME,
     TITLE,
     TITLE_DISP_NAME,
     WCOUNT,
@@ -44,8 +44,8 @@ FORM_FLDS = [
         ff.INPUT_TYPE: ff.LIST,
     },
     {
-        ff.FLD_NM: SUBMISSION,
-        ff.QSTN: SUBMISSION_DISP_NAME,
+        ff.FLD_NM: TEXT,
+        ff.QSTN: TEXT_DISP_NAME,
         ff.CHOICES: {
             FILE: 'File upload (docx)',
             ENTRY: 'Direct text entry',
@@ -55,7 +55,7 @@ FORM_FLDS = [
         ff.MULTI: False,
         ff.SUBFIELDS: [
             {
-                ff.FLD_NM: SUBMISSION,
+                ff.FLD_NM: TEXT,
                 ff.QSTN: TEXT_ENTRY_DISP_NAME,
                 ff.INPUT_TYPE: ff.MARKDOWN,
                 ff.OPT: True,
@@ -63,7 +63,7 @@ FORM_FLDS = [
                 ff.FLD_LEN: 255,
             },
             {
-                ff.FLD_NM: SUBMISSION,
+                ff.FLD_NM: TEXT,
                 ff.QSTN: TEXT_FILE_DISP_NAME,
                 ff.INPUT_TYPE: ff.FILE_LOADER,
                 ff.OPT: True,
