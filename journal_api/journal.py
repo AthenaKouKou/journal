@@ -88,6 +88,7 @@ DASHCOLUMNS = 'dashcolumns'
 
 PROTOCOL_NM = sm.fetch_journal_protocol_name()
 
+
 def _get_user_info(request):
     user_id = None
     if hasattr(request, 'json'):
@@ -173,6 +174,25 @@ class TextUpdate(Resource):
             raise wz.Forbidden('Action not permitted.')
         try:
             tqry.update(title, text, editor)
+        except ValueError as e:
+            raise wz.NotFound(f'{str(e)}')
+        return {MESSAGE: 'Text updated.'}
+
+
+@api.route(f'/{TEXT}/{DELETE}/<title>')
+@api.expect(parser)
+class TextDelete(Resource):
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Person not found')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.expect(api.model('Placeholder', {}))
+    def put(self, title):
+        editor, auth_key = _get_user_info(request)
+        if not sm.is_permitted(PROTOCOL_NM, sm.DELETE, user_id=editor,
+                               auth_key=auth_key):
+            raise wz.Forbidden('Action not permitted.')
+        try:
+            tqry.delete(title)
         except ValueError as e:
             raise wz.NotFound(f'{str(e)}')
         return {MESSAGE: 'Text updated.'}
@@ -296,6 +316,26 @@ class ManuReceiveAction(Resource):
         except ValueError as e:
             raise wz.NotFound(f'{str(e)}')
         return {NEW_STATE: new_state}
+
+
+@api.route(f'/{MANU}/{DELETE}/<manu_id>')
+@api.expect(parser)
+class ManuDelete(Resource):
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Entry not found')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.expect(api.model('Placeholder', {}))
+    def put(self,  manu_id):
+        user_id, auth_key = _get_user_info(request)
+        if not sm.is_permitted(PROTOCOL_NM, sm.UPDATE, user_id=user_id,
+                               auth_key=auth_key):
+            raise wz.Forbidden('Action not permitted.')
+        try:
+            mqry.delete(manu_id)
+            return {MESSAGE: 'Manuscript deleted!'}
+        except ValueError:
+            print(f'Manuscript not found: {manu_id}.')
+            raise wz.NotFound(f'Person not found: {manu_id}')
 
 
 JOURNAL_MANU_STATES_READ = 'Journal manuscript states choices map'
@@ -480,7 +520,6 @@ class PeopleDelete(Resource):
     @api.expect(api.model('Placeholder', {}))
     def delete(self, person_id):
         user_id, auth_key = _get_user_info(request)
-        print(f'{user_id=}')
         if not sm.is_permitted(PROTOCOL_NM, sm.DELETE, user_id=user_id,
                                auth_key=auth_key):
             raise wz.Forbidden('Action not permitted.')
