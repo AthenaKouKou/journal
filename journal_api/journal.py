@@ -35,12 +35,9 @@ import backendcore.security.sec_manager2 as sm
 
 from backendcore.users.query import fetch_id_by_auth_key
 
-proj_dir = None
-
 
 def add_journal_to_path():
-    global proj_dir
-    proj_dir = os.environ.get('CAT_HOME', '')
+    proj_dir = os.environ.get('PROJ_DIR', '')
     sys.path.insert(1, f'{proj_dir}/journal')
 
 
