@@ -129,8 +129,7 @@ TEST_MANU = {
 }
 
 proj_dir = os.getenv('PROJ_DIR', "")
-MANUSCRIPTS_DIR = f'{proj_dir}/journal/manuscripts'
-UPLOAD_DIR = f'{MANUSCRIPTS_DIR}/original_submissions'
+UPLOAD_DIR = f'{proj_dir}/journal_submissions'
 ALLOWED_EXTENSIONS = ['txt', 'docx', 'md', 'html']
 
 
