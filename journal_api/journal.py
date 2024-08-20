@@ -390,12 +390,14 @@ class ManuStateFetch(Resource):
 
 
 JOURNAL_MANU_COLUMNS_READ = "Journal manuscript dashboard columns map"
+JOURNAL_MANU_COLUMNS_ORDER = "Journal manuscript dashboard columns order"
 
 
 @api.route(f'/{MANU}/{DASHCOLUMNS}/{READ}')
 class ManuColumnsRead(Resource):
     """
-    This endpoint serves journal manuscript dashboard columns as a dict
+    This endpoint serves journal manuscript dashboard columns as a dict, as
+    well as the order the columns should be displayed in as a list.
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Data not found')
@@ -404,7 +406,8 @@ class ManuColumnsRead(Resource):
         Returns journal manuscript dashboard columns data.
         """
         print(f'{mdsh.get_choices()=}')
-        return {JOURNAL_MANU_COLUMNS_READ: mdsh.get_choices()}
+        return {JOURNAL_MANU_COLUMNS_READ: mdsh.get_choices(),
+                JOURNAL_MANU_COLUMNS_ORDER: mdsh.get_choices_order()}
 
 
 #############
