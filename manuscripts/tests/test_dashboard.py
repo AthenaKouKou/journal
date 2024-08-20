@@ -19,3 +19,7 @@ def test_options():
 
 def test_get_choices():
     assert isinstance(mdsh.get_choices(), dict)
+
+
+def test_get_choices_order():
+    assert isinstance(mdsh.get_choices_order(), list)
