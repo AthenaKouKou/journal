@@ -1,9 +1,6 @@
 """
 Endpoints for journal management.
 """
-import os
-import sys
-
 from http import HTTPStatus
 
 from urllib.parse import unquote
@@ -34,14 +31,6 @@ from backendcore.api.constants import (
 import backendcore.security.sec_manager2 as sm
 
 from backendcore.users.query import fetch_id_by_auth_key
-
-
-def add_journal_to_path():
-    proj_dir = os.environ.get('PROJ_DIR', '')
-    sys.path.insert(1, f'{proj_dir}/journal')
-
-
-add_journal_to_path()
 
 
 from journal_common.constants import ( # noqa E402
