@@ -91,7 +91,7 @@ PROTOCOL_NM = sm.fetch_journal_protocol_name()
 
 def _get_user_info(request):
     user_id = None
-    if hasattr(request, 'json'):
+    if request.json:
         user_id = request.json.get(EDITOR)
     auth_key = acmn.get_auth_key_from_request(request)
     if not user_id:
@@ -275,7 +275,7 @@ class ManuCreate(Resource):
         #                        auth_key=auth_key):
         #     raise wz.Forbidden('Action not permitted.')
         try:
-            jdata = request.json
+            jdata = request.form.to_dict()
             files = request.files
             mqry.add(jdata, files)
         except Exception as err:

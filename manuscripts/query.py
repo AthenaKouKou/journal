@@ -163,8 +163,9 @@ def process_file(file):
 
 @needs_manuscripts_cache
 def add(jdata, files=None):
-    print(f'{jdata}=')
-    print(f'{files}=')
+    if not jdata:
+        raise ValueError('Error: no data received')
+    
     filename = None
     file = None
     if files:
