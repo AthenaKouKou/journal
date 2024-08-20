@@ -17,7 +17,7 @@ TEST_COLUMN = SUBMITTED
 
 COLUMN_ORDER = [st.SUBMITTED, st.REFEREE_REVIEW, st.EDITOR_REVIEW,
                 st.AUTHOR_REVISIONS, st.COPY_EDITING, st.AUTHOR_REVIEW,
-                st.FORMATTING, st.PUBLISHED]
+                st.FORMATTING]
 
 
 def get_valid_columns() -> list:

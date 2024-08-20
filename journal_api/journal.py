@@ -389,8 +389,8 @@ class ManuStateFetch(Resource):
         return mqry.fetch_by_state(state_code)
 
 
-JOURNAL_MANU_COLUMNS_READ = "Journal manuscript dashboard columns map"
-JOURNAL_MANU_COLUMNS_ORDER = "Journal manuscript dashboard columns order"
+JOURNAL_MANU_COLUMNS_READ = "map"
+JOURNAL_MANU_COLUMNS_ORDER = "order"
 
 
 @api.route(f'/{MANU}/{DASHCOLUMNS}/{READ}')
@@ -405,7 +405,6 @@ class ManuColumnsRead(Resource):
         """
         Returns journal manuscript dashboard columns data.
         """
-        print(f'{mdsh.get_choices()=}')
         return {JOURNAL_MANU_COLUMNS_READ: mdsh.get_choices(),
                 JOURNAL_MANU_COLUMNS_ORDER: mdsh.get_choices_order()}
 
