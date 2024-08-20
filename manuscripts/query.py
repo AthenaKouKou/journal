@@ -165,7 +165,7 @@ def process_file(file):
 def add(jdata, files=None):
     if not jdata:
         raise ValueError('Error: no data received')
-    
+
     filename = None
     file = None
     if files:
