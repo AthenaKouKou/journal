@@ -257,9 +257,9 @@ class ManuCreate(Resource):
     @api.expect(MANU_CREATE_FLDS)
     def put(self):
         user_id, auth_key = _get_user_info(request)
-        # if not sm.is_permitted(PROTOCOL_NM, sm.CREATE, user_id=user_id,
-        #                        auth_key=auth_key):
-        #     raise wz.Forbidden('Action not permitted.')
+        if not sm.is_permitted(PROTOCOL_NM, sm.CREATE, user_id=user_id,
+                               auth_key=auth_key):
+            raise wz.Forbidden('Action not permitted.')
         try:
             jdata = request.form.to_dict()
             files = request.files
@@ -279,7 +279,6 @@ RECEIVE_ACTION_FLDS = api.model('ReceiveAction', {
     EDITOR: fields.String,
 })
 
-
 @api.route(f'/{MANU}/{RECEIVE_ACTION}/<manu_id>')
 @api.expect(parser)
 class ManuReceiveAction(Resource):
@@ -288,15 +287,18 @@ class ManuReceiveAction(Resource):
     @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
     @api.expect(RECEIVE_ACTION_FLDS)
     def put(self, manu_id):
-        print('\n\n', f'{request.content_type}', '\n\n')
         action = request.json.get(ACTION)
         if not action:
             raise wz.NotAcceptable('You must pass an action.')
         editor = request.json.get(EDITOR)
         if not editor:
             raise wz.NotAcceptable('You must pass an editor.')
-        if not sm.is_permitted(PROTOCOL_NM, sm.UPDATE, user_id=editor):
+        
+        user_id, auth_key = _get_user_info(request)
+        if not sm.is_permitted(PROTOCOL_NM, sm.UPDATE, user_id=editor,
+                               auth_key=auth_key):
             raise wz.Forbidden('Action not permitted.')
+        
         try:
             new_state = mqry.receive_action(manu_id, action,
                                             **{EDITOR: editor})
