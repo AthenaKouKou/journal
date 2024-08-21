@@ -298,10 +298,12 @@ class ManuReceiveAction(Resource):
         if not sm.is_permitted(PROTOCOL_NM, sm.UPDATE, user_id=editor,
                                auth_key=auth_key):
             raise wz.Forbidden('Action not permitted.')
-        
+
+        referee = request.json.get(mqry.REFEREE_ARG)
         try:
             new_state = mqry.receive_action(manu_id, action,
-                                            **{EDITOR: editor})
+                                            **{EDITOR: editor,
+                                               mqry.REFEREE_ARG: referee, })
         except ValueError as e:
             raise wz.NotFound(f'{str(e)}')
         return {NEW_STATE: new_state}
