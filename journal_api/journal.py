@@ -33,33 +33,33 @@ import backendcore.security.sec_manager2 as sm
 from backendcore.users.query import fetch_id_by_auth_key
 
 
-from journal_common.constants import ( # noqa E402
+from journal_common.constants import (
     MASTHEAD,
 )
-import manuscripts.fields as mflds  # noqa E402
-import manuscripts.add_form as mafrm  # noqa E402
-import manuscripts.query as mqry  # noqa E402
-import manuscripts.dashboard as mdsh  # noqa E402
-import people.fields as pflds  # noqa E402
-import people.form as pfrm  # noqa E402
-import people.query as pqry  # noqa E402
-import people.roles as rls  # noqa E402
-import text.fields as tflds  # noqa E402
-from text.fields import (  # noqa E402
+import manuscripts.fields as mflds 
+import manuscripts.add_form as mafrm 
+import manuscripts.query as mqry 
+import manuscripts.dashboard as mdsh 
+import people.fields as pflds 
+import people.form as pfrm 
+import people.query as pqry 
+import people.roles as rls 
+import text.fields as tflds 
+from text.fields import ( 
     EDITOR,
     TEXT,
 )
-import text.form as tform  # noqa E402
-import text.query as tqry  # noqa E402
+import text.form as tform 
+import text.query as tqry 
 
-from manuscripts.fields import ( # noqa E402
+from manuscripts.fields import (
     ABSTRACT,
     AUTHORS,
     TITLE,
     WCOUNT,
 )
 
-from manuscripts.states import ( # noqa E402
+from manuscripts.states import (
     get_state_choices,
     get_action_choices,
 )
@@ -300,10 +300,12 @@ class ManuReceiveAction(Resource):
             raise wz.Forbidden('Action not permitted.')
 
         referee = request.json.get(mqry.REFEREE_ARG)
+        state = request.json.get(mqry.STATE)
         try:
             new_state = mqry.receive_action(manu_id, action,
                                             **{EDITOR: editor,
-                                               mqry.REFEREE_ARG: referee, })
+                                               mqry.REFEREE_ARG: referee,
+                                               mqry.STATE: state,})
         except ValueError as e:
             raise wz.NotFound(f'{str(e)}')
         return {NEW_STATE: new_state}
