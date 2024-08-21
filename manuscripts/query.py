@@ -221,7 +221,7 @@ def set_last_updated(manu_id):
 def set_state(manu_id, state):
     if state not in mst.get_valid_states():
         raise ValueError(f'Invalid state code {state}. \
-        Valid codes are {mst.get_valid_states}')
+        Valid codes are {mst.get_valid_states()}')
     return update(manu_id, {STATE: state})
 
 
