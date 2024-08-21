@@ -299,6 +299,7 @@ class ManuReceiveAction(Resource):
     @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
     @api.expect(RECEIVE_ACTION_FLDS)
     def put(self, manu_id):
+        print('\n\n', f'{request.content_type}', '\n\n')
         action = request.json.get(ACTION)
         if not action:
             raise wz.NotAcceptable('You must pass an action.')
