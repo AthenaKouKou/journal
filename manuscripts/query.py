@@ -14,7 +14,6 @@ from backendcore.common.constants import CODE
 import backendcore.common.time_fmts as tfmt
 
 from journal_common.common import get_collect_name
-import people.query as pqry
 
 from manuscripts.fields import (
     ABSTRACT,
