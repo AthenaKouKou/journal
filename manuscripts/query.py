@@ -260,10 +260,10 @@ NEW_STATE = 'new_state'
 ACTION = 'action'
 
 
-def update_history(manu_id: str, action: str, state: str, **kwargs):
+def update_history(manu_id: str, action: str, new_state: str, **kwargs):
     history = fetch_by_key(manu_id).get(HISTORY, {})
     history_dict = {}
-    history_dict[NEW_STATE] = state
+    history_dict[NEW_STATE] = new_state
     history_dict[ACTION] = action
     for key, value in kwargs.items():
         history_dict[key] = value
@@ -274,7 +274,7 @@ def update_history(manu_id: str, action: str, state: str, **kwargs):
 @needs_manuscripts_cache
 def update_state(manu_id, state, referee: str = None):
     """
-    Updates the history and sets all the new parameters of the manusccript.
+    Updates the history and sets all the new parameters of the manuscript.
     If state is changed to assign_referee or remove_referee the referee
     must also be provided
     """
@@ -386,7 +386,7 @@ def receive_action(manu_id, action, **kwargs):
         new_state = func(manu_id, **kwargs)
         set_state(manu_id, new_state)
         set_last_updated(manu_id)
-        update_history(manu_id, action, new_state, **kwargs)
+        update_history(manu_id=manu_id, action=action, new_state=new_state, **kwargs)
         return new_state
     else:
         raise ValueError(f'Action {action} is invalid in the current state: '

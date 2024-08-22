@@ -36,7 +36,7 @@ STATE_MAP = {
 VALID_STATES = list(STATE_MAP.keys())
 
 ACCEPT = 'accept'
-ACCEPT_W_REV = 'accept-w-rev'
+ACCEPT_W_REV = 'accept-with-revisions'
 ASSIGN_REFEREE = 'assign-referee'
 DONE = 'done'
 EDITOR_MOVE = 'editor-move'
