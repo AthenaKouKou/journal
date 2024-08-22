@@ -386,7 +386,10 @@ def receive_action(manu_id, action, **kwargs):
         new_state = func(manu_id, **kwargs)
         set_state(manu_id, new_state)
         set_last_updated(manu_id)
-        update_history(manu_id=manu_id, action=action, new_state=new_state, **kwargs)
+        update_history(manu_id=manu_id,
+                       action=action,
+                       new_state=new_state,
+                       **kwargs)
         return new_state
     else:
         raise ValueError(f'Action {action} is invalid in the current state: '
