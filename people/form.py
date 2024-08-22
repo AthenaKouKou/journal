@@ -9,6 +9,7 @@ from people.fields import (
     BIO,
     EMAIL,
     NAME,
+    USER_ID,
 )
 
 import people.roles as rls
@@ -26,6 +27,12 @@ FORM_FLDS = [
         ff.PARAM_TYPE: ff.QUERY_STR,
         ff.CHOICES: rls.get_choices(),
         ff.MULTI: False,
+        ff.OPT: True,
+    },
+    {
+        ff.FLD_NM: USER_ID,
+        ff.QSTN: 'User_ID:',
+        ff.PARAM_TYPE: ff.QUERY_STR,
         ff.OPT: True,
     },
 ]

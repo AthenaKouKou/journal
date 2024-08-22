@@ -452,6 +452,11 @@ class PeopleRead(Resource):
         args = acmn.get_args_from_req(request)
         name = args.get(pflds.NAME)
         role = args.get(rls.ROLE)
+        user_id = args.get(pflds.USER_ID)
+        people = {}
+        if user_id:
+            people = pqry.fetch_by_id(user_id)
+            return {PEOPLE: people}
         if name:
             name = unquote(args.get(pflds.NAME))
         people = pqry.fetch_all_or_some(name=name, role=role)

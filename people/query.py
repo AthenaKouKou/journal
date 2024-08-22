@@ -99,6 +99,18 @@ def select(people: dict, name=None, role=None):
     return matches
 
 
+def fetch_by_id(id=None):
+    """
+    Fetch a person by user_id (currently different from document id).
+    """
+    people = fetch_dict()
+    for code, person in people.items():
+        if id:
+            if person.get(USER_ID):
+                return people[code]
+    return {}
+
+
 def validate_person(person):
     if not person.get(NAME):
         raise ValueError('Every person must have a name.')
