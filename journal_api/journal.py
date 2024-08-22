@@ -256,10 +256,10 @@ class ManuCreate(Resource):
     @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
     @api.expect(MANU_CREATE_FLDS)
     def put(self):
-        user_id, auth_key = _get_user_info(request)
-        if not sm.is_permitted(PROTOCOL_NM, sm.CREATE, user_id=user_id,
-                               auth_key=auth_key):
-            raise wz.Forbidden('Action not permitted.')
+        # user_id, auth_key = _get_user_info(request)
+        # if not sm.is_permitted(PROTOCOL_NM, sm.CREATE, user_id=user_id,
+        #                        auth_key=auth_key):
+        #     raise wz.Forbidden('Action not permitted.')
         try:
             jdata = request.form.to_dict()
             files = request.files

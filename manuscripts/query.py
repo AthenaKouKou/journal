@@ -186,7 +186,7 @@ def add(jdata, files=None):
 
     jdata[STATE] = mst.SUBMITTED
     jdata[LAST_UPDATED] = get_curr_datetime()
-    if not jdata[REFEREES]:
+    if not jdata.get(REFEREES, ''):
         jdata[REFEREES] = []
 
     return get_cache(COLLECT).add(jdata)
