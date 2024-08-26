@@ -20,4 +20,3 @@ def test_get_user_info(mock_auth_key):
     user_id, auth_key = jrnl._get_user_info(FAKE_REQUEST)
     assert user_id == TEST_USER
     assert auth_key == TEST_AUTH_KEY
-

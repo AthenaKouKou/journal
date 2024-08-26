@@ -3,6 +3,12 @@ This is our interface to our manuscript data.
 We never expect our users to add or delete manuscripts,
 so we make no provisions for that.
 """
+import os
+from werkzeug.utils import secure_filename
+from werkzeug.datastructures import FileStorage
+
+import pypandoc as pdc
+
 from backendcore.data.caching import needs_cache, get_cache
 from backendcore.common.constants import CODE
 import backendcore.common.time_fmts as tfmt
@@ -20,6 +26,12 @@ from manuscripts.fields import (
     TEXT,
     TITLE,
     WCOUNT,
+)
+
+from manuscripts.add_form import ( # noqa E402
+    FILE,
+    TEXT_ENTRY,
+    TEXT_FILE,
 )
 
 import manuscripts.states as mst
@@ -110,19 +122,74 @@ TEST_MANU = {
     ABSTRACT: 'TLDR',
     AUTHORS: ['Boaz Kaufman'],
     CODE: TEST_CODE,
-    LAST_UPDATED: TEST_LAST_UPDATED,
     REFEREES: [TEST_REFEREE],
-    STATE: mst.SUBMITTED,
-    TEXT: 'When in the course of Boaz events it becomes necessary...',
+    TEXT_ENTRY: 'When in the course of Boaz events ...',
     TITLE: 'Forays into Kaufman Studies',
     WCOUNT: 500,
 }
 
+proj_dir = os.getenv('PROJ_DIR', "")
+UPLOAD_DIR = f'{proj_dir}/journal_submissions'
+ALLOWED_EXTENSIONS = ['txt', 'docx', 'md', 'html']
+
+
+def get_valid_exts():
+    return ALLOWED_EXTENSIONS
+
+
+def get_file_ext(filename):
+    if '.' not in filename:
+        return None
+    return filename.rsplit('.', 1)[1].lower()
+
+
+def is_valid_file(filename):
+    return get_file_ext(filename) in get_valid_exts()
+
+
+TEST_FILE_OBJ = FileStorage(filename=f'good_name.{get_valid_exts()[0]}')
+
+
+def process_file(file):
+    output = ''
+    if file:
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(UPLOAD_DIR, filename))
+        filepath = f'{UPLOAD_DIR}/{filename}'
+        output = pdc.convert_file(filepath, 'rst')
+    return output
+
 
 @needs_manuscripts_cache
-def add(manu_dict):
-    manu_dict[STATE] = mst.SUBMITTED
-    return get_cache(COLLECT).add(manu_dict)
+def add(jdata, files=None):
+    if not jdata:
+        raise ValueError('Error: no data received')
+
+    filename = None
+    file = None
+    if files:
+        file = files.get(FILE, None)
+    if file:
+        filename = file.filename
+
+    if jdata.get(TEXT_ENTRY):
+        jdata[TEXT] = jdata.get(TEXT_ENTRY)
+        del jdata[TEXT_ENTRY]
+    elif jdata.get(TEXT_FILE) and filename:
+        if not is_valid_file(filename):
+            raise ValueError('Error: valid file types are: '
+                             + f'{get_valid_exts()}')
+        jdata[TEXT] = process_file(file)
+        del jdata[TEXT_FILE]
+    else:
+        raise ValueError('No text or file submitted')
+
+    jdata[STATE] = mst.SUBMITTED
+    jdata[LAST_UPDATED] = get_curr_datetime()
+    if not jdata.get(REFEREES, ''):
+        jdata[REFEREES] = []
+
+    return get_cache(COLLECT).add(jdata)
 
 
 @needs_manuscripts_cache
@@ -154,7 +221,7 @@ def set_last_updated(manu_id):
 def set_state(manu_id, state):
     if state not in mst.get_valid_states():
         raise ValueError(f'Invalid state code {state}. \
-        Valid codes are {mst.get_valid_states}')
+        Valid codes are {mst.get_valid_states()}')
     return update(manu_id, {STATE: state})
 
 
@@ -193,10 +260,10 @@ NEW_STATE = 'new_state'
 ACTION = 'action'
 
 
-def update_history(manu_id: str, action: str, state: str, **kwargs):
+def update_history(manu_id: str, action: str, new_state: str, **kwargs):
     history = fetch_by_key(manu_id).get(HISTORY, {})
     history_dict = {}
-    history_dict[NEW_STATE] = state
+    history_dict[NEW_STATE] = new_state
     history_dict[ACTION] = action
     for key, value in kwargs.items():
         history_dict[key] = value
@@ -207,7 +274,7 @@ def update_history(manu_id: str, action: str, state: str, **kwargs):
 @needs_manuscripts_cache
 def update_state(manu_id, state, referee: str = None):
     """
-    Updates the history and sets all the new parameters of the manusccript.
+    Updates the history and sets all the new parameters of the manuscript.
     If state is changed to assign_referee or remove_referee the referee
     must also be provided
     """
@@ -319,7 +386,10 @@ def receive_action(manu_id, action, **kwargs):
         new_state = func(manu_id, **kwargs)
         set_state(manu_id, new_state)
         set_last_updated(manu_id)
-        update_history(manu_id, action, new_state, **kwargs)
+        update_history(manu_id=manu_id,
+                       action=action,
+                       new_state=new_state,
+                       **kwargs)
         return new_state
     else:
         raise ValueError(f'Action {action} is invalid in the current state: '
