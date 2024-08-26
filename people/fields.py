@@ -50,6 +50,7 @@ FIELDS = {
     },
     BIO: {
         DISP_NAME: 'Bio',
+        cflds.MAX_LEN: 80,
     },
 }
 
