@@ -9,6 +9,8 @@ from manuscripts.fields import (
     ABSTRACT_DISP_NAME,
     AUTHORS,
     AUTHORS_DISP_NAME,
+    EMAIL,
+    EMAIL_DISP_NAME,
     TEXT,
     TEXT_DISP_NAME,
     TITLE,
@@ -42,6 +44,11 @@ FORM_FLDS = [
         ff.FLD_NM: AUTHORS,
         ff.QSTN: AUTHORS_DISP_NAME,
         ff.INPUT_TYPE: ff.LIST,
+    },
+    {
+        ff.FLD_NM: EMAIL,
+        ff.QSTN: EMAIL_DISP_NAME,
+        ff.INPUT_TYPE: ff.QUERY_STR,
     },
     {
         ff.FLD_NM: TEXT,
