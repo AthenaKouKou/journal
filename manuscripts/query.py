@@ -14,6 +14,7 @@ from backendcore.common.constants import CODE
 import backendcore.common.time_fmts as tfmt
 
 from journal_common.common import get_collect_name
+import journal.people.query as pqry
 
 from manuscripts.fields import (
     ABSTRACT,
@@ -236,6 +237,8 @@ def assign_referee(manu_id, **kwargs):
     refs = fetch_by_key(manu_id).get(REFEREES, [])
     refs.append(referee)
     update_fld(manu_id, REFEREES, refs)
+    ref = pqry.fetch_by_key(referee)
+    pqry.add_role(ref, 'RE')
     return REFEREE_REVIEW
 
 
