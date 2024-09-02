@@ -8,6 +8,7 @@ from journal_common.common import get_collect_name
 
 import people.roles as rls
 from people.fields import (  # noqa 401
+    BIO,
     NAME,
     ROLES,
     USER_ID,
@@ -26,6 +27,12 @@ def needs_people_cache(fn):
                        get_collect_name(COLLECT),
                        key_fld=OBJ_ID_NM,
                        no_id=False)
+
+
+def person_to_masthead(person: dict) -> dict:
+    mast_peep = {}
+    mast_peep[NAME] = person.get(NAME, '')
+    mast_peep[BIO] = person.get(BIO, '')
 
 
 def is_valid(code):
@@ -135,7 +142,8 @@ def get_masthead():
         masthead[descr] = []
         for person in people.values():
             if has_role(person, role):
-                masthead[descr].append(person.get(NAME))
+                mast_peep = person_to_masthead(person)
+                masthead[descr].append(mast_peep)
     return masthead
 
 
@@ -143,6 +151,7 @@ TEST_PERSON = {
     NAME: 'Callahan le Magnifique',
     USER_ID: 'madeup@utopia.com',
     ROLES: [rls.TEST_ROLE],
+    BIO: 'Un homme tres magnifique',
 }
 
 
