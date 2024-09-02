@@ -13,6 +13,7 @@ local_core:
 	pip install git+file://$(MIX_HOME)/BackEndCore/
 
 all_tests:
+	cd journal_api; make tests
 	cd manuscripts; make tests
 	cd people; make tests
 	cd text; make tests

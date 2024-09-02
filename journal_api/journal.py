@@ -36,21 +36,21 @@ from backendcore.users.query import fetch_id_by_auth_key
 from journal_common.constants import (
     MASTHEAD,
 )
-import manuscripts.fields as mflds 
-import manuscripts.add_form as mafrm 
-import manuscripts.query as mqry 
-import manuscripts.dashboard as mdsh 
-import people.fields as pflds 
-import people.form as pfrm 
-import people.query as pqry 
-import people.roles as rls 
-import text.fields as tflds 
-from text.fields import ( 
+import manuscripts.fields as mflds
+import manuscripts.add_form as mafrm
+import manuscripts.query as mqry
+import manuscripts.dashboard as mdsh
+import people.fields as pflds
+import people.form as pfrm
+import people.query as pqry
+import people.roles as rls
+import text.fields as tflds
+from text.fields import (
     EDITOR,
     TEXT,
 )
-import text.form as tform 
-import text.query as tqry 
+import text.form as tform
+import text.query as tqry
 
 from manuscripts.fields import (
     ABSTRACT,
@@ -279,6 +279,7 @@ RECEIVE_ACTION_FLDS = api.model('ReceiveAction', {
     EDITOR: fields.String,
 })
 
+
 @api.route(f'/{MANU}/{RECEIVE_ACTION}/<manu_id>')
 @api.expect(parser)
 class ManuReceiveAction(Resource):
@@ -293,7 +294,6 @@ class ManuReceiveAction(Resource):
         editor = request.json.get(EDITOR)
         if not editor:
             raise wz.NotAcceptable('You must pass an editor.')
-        
         user_id, auth_key = _get_user_info(request)
         if not sm.is_permitted(PROTOCOL_NM, sm.UPDATE, user_id=editor,
                                auth_key=auth_key):
@@ -305,7 +305,7 @@ class ManuReceiveAction(Resource):
             new_state = mqry.receive_action(manu_id, action,
                                             **{EDITOR: editor,
                                                mqry.REFEREE_ARG: referee,
-                                               mqry.STATE: state,})
+                                               mqry.STATE: state})
         except ValueError as e:
             raise wz.NotFound(f'{str(e)}')
         return {NEW_STATE: new_state}
@@ -579,7 +579,7 @@ class PeopleMasthead(Resource):
         """
         Get the people data for the journal masthead.
         """
-        mast = pqry.get_masthead()}
+        mast = pqry.get_masthead()
         print(f'{mast=}')
         return {MASTHEAD: mast}
 
