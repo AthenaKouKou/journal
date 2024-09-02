@@ -387,7 +387,7 @@ JOURNAL_MANU_COLUMNS_ORDER = "order"
 
 
 @api.route(f'/{MANU}/{DASHCOLUMNS}/{READ}')
-class ManuColumnsRead(Resource):
+class DashColumnsRead(Resource):
     """
     This endpoint serves journal manuscript dashboard columns as a dict, as
     well as the order the columns should be displayed in as a list.
