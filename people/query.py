@@ -83,12 +83,15 @@ def has_role(person, role):
 
 
 def add_role(person, role):
+    if not person or not role:
+        return
     if has_role(person, role):
-        return person
+        return
     person[ROLES].append(role)
     id = person['_id']
     del person['_id']
     update(id, person)
+    return person
 
 
 def select(people: dict, name=None, role=None):
