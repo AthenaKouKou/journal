@@ -579,7 +579,9 @@ class PeopleMasthead(Resource):
         """
         Get the people data for the journal masthead.
         """
-        return {MASTHEAD: pqry.get_masthead()}
+        mast = pqry.get_masthead()}
+        print(f'{mast=}')
+        return {MASTHEAD: mast}
 
 
 def main():

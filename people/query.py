@@ -33,6 +33,7 @@ def person_to_masthead(person: dict) -> dict:
     mast_peep = {}
     mast_peep[NAME] = person.get(NAME, '')
     mast_peep[BIO] = person.get(BIO, '')
+    return mast_peep
 
 
 def is_valid(code):
