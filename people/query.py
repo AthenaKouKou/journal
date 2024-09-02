@@ -77,10 +77,21 @@ def fetch_all_or_some(name=None, role=None):
 
 def has_role(person, role):
     roles = person.get(ROLES)
-    print(f'{roles=}')
     if not roles:
         return False
     return role in roles
+
+
+def add_role(person, role):
+    if not person or not role:
+        return
+    if has_role(person, role):
+        return
+    person[ROLES].append(role)
+    id = person['_id']
+    del person['_id']
+    update(id, person)
+    return person
 
 
 def select(people: dict, name=None, role=None):
