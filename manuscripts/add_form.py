@@ -43,7 +43,17 @@ FORM_FLDS = [
     {
         ff.FLD_NM: AUTHORS,
         ff.QSTN: AUTHORS_DISP_NAME,
-        ff.INPUT_TYPE: ff.LIST,
+        ff.INPUT_TYPE: ff.OBJ_LIST,
+        ff.SUBFIELDS: [
+            {
+                ff.FLD_NM: 'name',
+                ff.QSTN: 'Author name',
+            },
+            {
+                ff.FLD_NM: 'email',
+                ff.QSTN: 'Author email address',
+            },
+        ]
     },
     {
         ff.FLD_NM: EMAIL,
