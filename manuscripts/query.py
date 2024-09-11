@@ -188,7 +188,7 @@ def add(jdata, files=None):
 
     jdata[STATE] = mst.SUBMITTED
     jdata[LAST_UPDATED] = get_curr_datetime()
-    if type(jdata[AUTHORS] == type('')):
+    if isinstance(jdata[AUTHORS], str):
         jdata[AUTHORS] = json.loads(jdata[AUTHORS])
         print('Converted authors object:', jdata[AUTHORS])
     if not jdata.get(REFEREES, ''):
