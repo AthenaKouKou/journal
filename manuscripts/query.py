@@ -16,6 +16,13 @@ import backendcore.common.time_fmts as tfmt
 
 from journal_common.common import get_collect_name
 import people.query as pqry
+from people.fields import (
+    NAME,
+    ROLES,
+)
+from people.roles import (
+    AU,
+)
 
 from manuscripts.fields import (
     ABSTRACT,
@@ -190,7 +197,16 @@ def add(jdata, files=None):
     jdata[LAST_UPDATED] = get_curr_datetime()
     if isinstance(jdata[AUTHORS], str):
         jdata[AUTHORS] = json.loads(jdata[AUTHORS])
-        print('Converted authors object:', jdata[AUTHORS])
+    if isinstance(jdata[AUTHORS], list):
+        print('Adding authors as people', jdata[AUTHORS])
+        for author in jdata[AUTHORS]:
+            person = pqry.fetch_all_or_some(name=author['name'])
+            if not person:
+                pqry.add({
+                    NAME: author[NAME],
+                    ROLES: AU,
+                })
+
     if not jdata.get(REFEREES, ''):
         jdata[REFEREES] = []
 
