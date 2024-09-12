@@ -129,7 +129,7 @@ TEST_REFEREE = 'Kris'
 
 TEST_MANU = {
     ABSTRACT: 'TLDR',
-    AUTHORS: ['Boaz Kaufman'],
+    AUTHORS: [{'name': 'Boaz Kaufman'}],
     CODE: TEST_CODE,
     REFEREES: [TEST_REFEREE],
     TEXT_ENTRY: 'When in the course of Boaz events ...',
@@ -198,9 +198,9 @@ def add(jdata, files=None):
     if isinstance(jdata[AUTHORS], str):
         jdata[AUTHORS] = json.loads(jdata[AUTHORS])
     if isinstance(jdata[AUTHORS], list):
-        print('Adding authors as people', jdata[AUTHORS])
+        print('Adding authors to people db', jdata[AUTHORS])
         for author in jdata[AUTHORS]:
-            person = pqry.fetch_all_or_some(name=author['name'])
+            person = pqry.fetch_all_or_some(name=author[NAME])
             if not person:
                 pqry.add({
                     NAME: author[NAME],
