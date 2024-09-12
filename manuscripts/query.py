@@ -201,7 +201,9 @@ def add(jdata, files=None):
         print('Adding authors to people db', jdata[AUTHORS])
         for author in jdata[AUTHORS]:
             person = pqry.fetch_all_or_some(name=author[NAME])
-            if not person:
+            if person:
+                pqry.add_role(person[list(person)[0]], AU)
+            else:
                 pqry.add({
                     NAME: author[NAME],
                     ROLES: AU,
