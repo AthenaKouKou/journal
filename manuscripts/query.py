@@ -206,7 +206,7 @@ def add(jdata, files=None):
             else:
                 pqry.add({
                     NAME: author[NAME],
-                    ROLES: AU,
+                    ROLES: [AU],
                 })
 
     if not jdata.get(REFEREES, ''):
