@@ -24,9 +24,9 @@ NOT_IMPLEMENTED = 'This option has not been implemented, check back later.'
 FILE = 'FILE'
 ENTRY = 'ENTRY'
 TEXT_ENTRY = 'textentry'
-TEXT_ENTRY_DISP_NAME = 'Submission direct text entry'
+TEXT_ENTRY_DISP_NAME = 'Paste your text here:'
 TEXT_FILE = 'fileentry'
-TEXT_FILE_DISP_NAME = 'Submission file upload'
+TEXT_FILE_DISP_NAME = 'Upload your manuscript'
 
 FORM_FLDS = [
     {
