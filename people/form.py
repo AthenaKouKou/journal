@@ -9,6 +9,8 @@ from people.fields import (
     BIO,
     EMAIL,
     NAME,
+    POSITION,
+    ROLES,
     USER_ID,
 )
 
@@ -22,11 +24,11 @@ FORM_FLDS = [
         ff.OPT: True,
     },
     {
-        ff.FLD_NM: rls.ROLE,
-        ff.QSTN: 'Role:',
+        ff.FLD_NM: ROLES,
+        ff.QSTN: 'Roles:',
         ff.PARAM_TYPE: ff.QUERY_STR,
         ff.CHOICES: rls.get_choices(),
-        ff.MULTI: False,
+        ff.MULTI: True,
         ff.OPT: True,
     },
     {
@@ -47,6 +49,11 @@ ADD_FORM_ADDITIONAL_FLDS = [
     {
         ff.FLD_NM: AFFILIATION,
         ff.QSTN: 'Affiliation:',
+        ff.OPT: True,
+    },
+    {
+        ff.FLD_NM: POSITION,
+        ff.QSTN: 'Position',
         ff.OPT: True,
     },
     {
