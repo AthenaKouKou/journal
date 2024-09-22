@@ -210,8 +210,12 @@ def add(jdata, files=None):
 
     if not jdata.get(REFEREES, ''):
         jdata[REFEREES] = []
-
-    return get_cache(COLLECT).add(jdata)
+ 
+    ret = get_cache(COLLECT).add(jdata)
+    update_history(manu_id=ret,
+                   action=SUBMITTED,
+                   new_state=SUBMITTED)
+    return ret
 
 
 @needs_manuscripts_cache
