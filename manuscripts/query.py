@@ -327,7 +327,7 @@ COMMON_ACTIONS = {EDITOR_MOVE: {
                FUNC: editor_move,
                },
                WITHDRAW: {
-               FUNC: lambda x: WITHDRAWN,
+               FUNC: lambda x, **kwargs: WITHDRAWN,
                }}
 
 
