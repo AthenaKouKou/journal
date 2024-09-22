@@ -172,7 +172,7 @@ class TextDelete(Resource):
     @api.response(HTTPStatus.NOT_FOUND, 'Person not found')
     @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
     @api.expect(api.model('Placeholder', {}))
-    def put(self, title):
+    def delete(self, title):
         editor, auth_key = _get_user_info(request)
         if not sm.is_permitted(PROTOCOL_NM, sm.DELETE, user_id=editor,
                                auth_key=auth_key):
