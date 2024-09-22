@@ -95,7 +95,7 @@ def add_role(person, role):
         return
     if has_role(person, role):
         return
-    if not person[ROLES]:
+    if not person[ROLES] or isinstance(person[ROLES], str):
         person[ROLES] = []
     person[ROLES].append(role)
     id = person['_id']
