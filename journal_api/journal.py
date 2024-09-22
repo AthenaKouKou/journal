@@ -501,11 +501,14 @@ class PeopleCreate(Resource):
                                auth_key=auth_key):
             raise wz.Forbidden('Action not permitted.')
         try:
-            pqry.add(request.json)
+            ret = pqry.add(request.json)
         except Exception as err:
             raise wz.NotAcceptable(f'Could not add person: '
                                    f'{err=}')
-        return {MESSAGE: 'Person added!'}
+        return {
+            MESSAGE: 'Person added!',
+            'ret': ret,
+        }
 
 
 @api.route(f'/{PEOPLE}/{DELETE}/<person_id>')
