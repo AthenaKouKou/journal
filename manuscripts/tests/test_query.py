@@ -128,7 +128,7 @@ def test_receive_action_bad_action(temp_manu):
 
 
 def test_update_history(temp_manu):
-    assert qry.fetch_by_id(temp_manu).get(HISTORY, {}) == {}
+    assert len(qry.fetch_by_id(temp_manu).get(HISTORY, {})) == 1
     qry.update_history(temp_manu, mst.TEST_ACTION, mst.TEST_STATE)
     history = qry.fetch_by_id(temp_manu).get(HISTORY)
-    assert len(history) == 1
+    assert len(history) == 2
