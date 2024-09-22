@@ -177,19 +177,18 @@ def add(jdata, files=None):
     filename = None
     file = None
     if files:
-        file = files.get(FILE, None)
+        file = files.get(TEXT_FILE, None)
     if file:
         filename = file.filename
 
     if jdata.get(TEXT_ENTRY):
         jdata[TEXT] = jdata.get(TEXT_ENTRY)
         del jdata[TEXT_ENTRY]
-    elif jdata.get(TEXT_FILE) and filename:
+    elif filename:
         if not is_valid_file(filename):
             raise ValueError('Error: valid file types are: '
                              + f'{get_valid_exts()}')
         jdata[TEXT] = process_file(file)
-        del jdata[TEXT_FILE]
     else:
         raise ValueError('No text or file submitted')
 
