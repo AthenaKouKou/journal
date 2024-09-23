@@ -1,13 +1,13 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:129.0) Gecko/20100101 Firefox/129.0" version="24.7.6">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0" version="24.7.16">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
-    <mxGraphModel dx="1509" dy="1694" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1505" dy="1694" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
         <mxCell id="ha09b_qebTmNtz7dc31P-0" value="Referee Review" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="-550" y="-190" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="ha09b_qebTmNtz7dc31P-1" value="&lt;div&gt;Editor Review&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+        <mxCell id="ha09b_qebTmNtz7dc31P-1" value="&lt;div&gt;Author Revisions&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="-395" y="-50" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="ha09b_qebTmNtz7dc31P-2" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" target="ha09b_qebTmNtz7dc31P-20" edge="1">
@@ -28,7 +28,7 @@
         <mxCell id="ha09b_qebTmNtz7dc31P-5" value="&lt;div&gt;Accept&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="-585" y="-100" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="ha09b_qebTmNtz7dc31P-6" value="&lt;div&gt;Author Revisions&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+        <mxCell id="ha09b_qebTmNtz7dc31P-6" value="Editor Review" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="-220" y="70" width="140" height="60" as="geometry" />
         </mxCell>
         <mxCell id="ha09b_qebTmNtz7dc31P-7" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="ha09b_qebTmNtz7dc31P-1" target="ha09b_qebTmNtz7dc31P-6" edge="1">
@@ -103,15 +103,6 @@
         <mxCell id="ha09b_qebTmNtz7dc31P-23" value="Published" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="-562.5" y="510" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="ha09b_qebTmNtz7dc31P-24" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="ha09b_qebTmNtz7dc31P-1" target="ha09b_qebTmNtz7dc31P-20" edge="1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="-520" y="100" as="sourcePoint" />
-            <mxPoint x="-470" y="50" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="ha09b_qebTmNtz7dc31P-25" value="Accept" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-          <mxGeometry x="-460" y="40" width="60" height="30" as="geometry" />
-        </mxCell>
         <mxCell id="ha09b_qebTmNtz7dc31P-26" value="Done" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="-515" y="240" width="85" height="30" as="geometry" />
         </mxCell>
@@ -166,7 +157,7 @@
         <mxCell id="ha09b_qebTmNtz7dc31P-36" value="Withdraw" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="-130" y="-310" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="ha09b_qebTmNtz7dc31P-37" value="Accept with Revisions" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+        <mxCell id="ha09b_qebTmNtz7dc31P-37" value="Done" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="-235" y="-10" width="105" height="30" as="geometry" />
         </mxCell>
         <mxCell id="ha09b_qebTmNtz7dc31P-38" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="ha09b_qebTmNtz7dc31P-6" target="ha09b_qebTmNtz7dc31P-20" edge="1">
