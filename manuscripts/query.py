@@ -163,6 +163,7 @@ def process_file(file):
     output = ''
     if file:
         filename = secure_filename(file.filename)
+        print(os.path.join(UPLOAD_DIR, filename))
         file.save(os.path.join(UPLOAD_DIR, filename))
         filepath = f'{UPLOAD_DIR}/{filename}'
         if get_file_ext(filepath) != 'txt':
@@ -170,7 +171,7 @@ def process_file(file):
         else:
             with open(filepath, 'r') as f:
                 output = '\n'.join(f.readlines())
-    return output
+    return output, filename
 
 
 @needs_manuscripts_cache
@@ -192,7 +193,7 @@ def add(jdata, files=None):
         if not is_valid_file(filename):
             raise ValueError('Error: valid file types are: '
                              + f'{get_valid_exts()}')
-        jdata[TEXT] = process_file(file)
+        jdata[TEXT], filename = process_file(file)
     else:
         raise ValueError('No text or file submitted')
 
@@ -219,6 +220,9 @@ def add(jdata, files=None):
     update_history(manu_id=ret,
                    action=SUBMITTED,
                    new_state=SUBMITTED)
+    if filename:
+        os.rename(f'{UPLOAD_DIR}/{filename}',
+                  f'{UPLOAD_DIR}/{ret}.{get_file_ext(filename)}')
     return ret
 
 
