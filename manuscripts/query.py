@@ -165,7 +165,11 @@ def process_file(file):
         filename = secure_filename(file.filename)
         file.save(os.path.join(UPLOAD_DIR, filename))
         filepath = f'{UPLOAD_DIR}/{filename}'
-        output = pdc.convert_file(filepath, 'rst')
+        if get_file_ext(filepath) != 'txt':
+            output = pdc.convert_file(filepath, 'markdown')
+        else:
+            with open(filepath, 'r') as f:
+                output = '\n'.join(f.readlines())
     return output
 
 
