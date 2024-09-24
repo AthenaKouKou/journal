@@ -352,7 +352,7 @@ STATE_TABLE = {
     },
     AUTHOR_REVISIONS: {
         DONE: {
-            FUNC: lambda x, **kwargs: COPY_EDITING,
+            FUNC: lambda x, **kwargs: EDITOR_REVIEW,
         },
         **COMMON_ACTIONS,
     },
@@ -363,11 +363,8 @@ STATE_TABLE = {
         **COMMON_ACTIONS,
     },
     EDITOR_REVIEW: {
-        ACCEPT: {
+        DONE: {
             FUNC: lambda x, **kwargs: COPY_EDITING,
-        },
-        ACCEPT_W_REV: {
-            FUNC: lambda x, **kwargs: AUTHOR_REVISIONS,
         },
         **COMMON_ACTIONS,
     },
@@ -382,7 +379,7 @@ STATE_TABLE = {
             FUNC: lambda x, **kwargs: COPY_EDITING,
         },
         ACCEPT_W_REV: {
-            FUNC: lambda x, **kwargs: EDITOR_REVIEW,
+            FUNC: lambda x, **kwargs: AUTHOR_REVISIONS,
         },
         ASSIGN_REFEREE: {
             FUNC: assign_referee,
