@@ -363,7 +363,7 @@ STATE_TABLE = {
         **COMMON_ACTIONS,
     },
     EDITOR_REVIEW: {
-        DONE: {
+        ACCEPT: {
             FUNC: lambda x, **kwargs: COPY_EDITING,
         },
         **COMMON_ACTIONS,
