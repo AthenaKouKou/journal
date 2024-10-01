@@ -92,16 +92,20 @@ def has_role(person, role):
 
 def add_role(person, role):
     if not person or not role:
-        return
+        raise ValueError(f'Failed to pass valid {person=} or {role=}.')
+    if OBJ_ID_NM not in person:
+        raise ValueError(f'Cannot update {person=} without an ID.')
     if has_role(person, role):
         return
     if not person[ROLES] or not isinstance(person[ROLES], list):
         person[ROLES] = []
     person[ROLES].append(role)
-    id = person['_id']
-    del person['_id']
-    update(id, person)
+    update(person[OBJ_ID_NM], person)
     return person
+
+
+def possibly_new_person(person, role):
+    pass
 
 
 def select(people: dict, name=None, role=None):
@@ -120,20 +124,17 @@ def select(people: dict, name=None, role=None):
     return matches
 
 
-def fetch_by_id(id=None):
+def fetch_by_id(_id):
     """
     Fetch a person by user_id (currently different from document id).
     """
     people = fetch_dict()
-    for code, person in people.items():
-        if id:
-            if person.get(USER_ID):
-                return people[code]
-    return {}
+    return people.get(_id)
 
 
 def validate_person(person):
-    if not person.get(NAME):
+    name = person.get(NAME)
+    if not name or not isinstance(name, str):
         raise ValueError('Every person must have a name.')
 
 
@@ -172,6 +173,8 @@ def delete(_id):
 @needs_people_cache
 def update(_id, person: dict):
     validate_person(person)
+    if OBJ_ID_NM in person:
+        del person[OBJ_ID_NM]
     return get_cache(COLLECT).update(_id, person, by_id=True)
 
 

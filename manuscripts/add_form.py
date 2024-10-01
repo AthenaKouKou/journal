@@ -25,8 +25,8 @@ FILE = 'FILE'
 ENTRY = 'ENTRY'
 TEXT_ENTRY = 'textentry'
 TEXT_ENTRY_DISP_NAME = 'Paste your text here:'
-TEXT_FILE = 'fileentry'
-TEXT_FILE_DISP_NAME = 'Upload your manuscript'
+MANU_FILE = 'fileentry'
+MANU_FILE_DISP_NAME = 'Upload your manuscript'
 
 FORM_FLDS = [
     {
@@ -80,8 +80,8 @@ FORM_FLDS = [
                 ff.FLD_LEN: 255,
             },
             {
-                ff.FLD_NM: TEXT_FILE,
-                ff.QSTN: TEXT_FILE_DISP_NAME,
+                ff.FLD_NM: MANU_FILE,
+                ff.QSTN: MANU_FILE_DISP_NAME,
                 ff.INPUT_TYPE: ff.FILE_LOADER,
                 ff.OPT: True,
                 ff.DISP_ON: FILE,

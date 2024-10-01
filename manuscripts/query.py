@@ -27,6 +27,7 @@ from people.roles import (
 from manuscripts.fields import (
     ABSTRACT,
     AUTHORS,
+    FILENAME,
     HISTORY,
     LAST_UPDATED,
     OBJ_ID_NM,
@@ -39,8 +40,8 @@ from manuscripts.fields import (
 
 from manuscripts.add_form import ( # noqa E402
     FILE,
+    MANU_FILE,
     TEXT_ENTRY,
-    TEXT_FILE,
 )
 
 import manuscripts.states as mst
@@ -159,67 +160,91 @@ def is_valid_file(filename):
 TEST_FILE_OBJ = FileStorage(filename=f'good_name.{get_valid_exts()[0]}')
 
 
+def convert_file(filepath):
+    if get_file_ext(filepath) != 'txt':
+        output = pdc.convert_file(filepath, 'markdown')
+    else:
+        with open(filepath, 'r') as f:
+            output = '\n'.join(f.readlines())
+    return output
+
+
 def process_file(file):
     output = ''
     if file:
         filename = secure_filename(file.filename)
-        print(os.path.join(UPLOAD_DIR, filename))
-        file.save(os.path.join(UPLOAD_DIR, filename))
-        filepath = f'{UPLOAD_DIR}/{filename}'
-        if get_file_ext(filepath) != 'txt':
-            output = pdc.convert_file(filepath, 'markdown')
-        else:
-            with open(filepath, 'r') as f:
-                output = '\n'.join(f.readlines())
-    return output, filename
-
-
-@needs_manuscripts_cache
-def add(jdata, files=None):
-    if not jdata:
-        raise ValueError('Error: no data received')
-
-    filename = None
-    file = None
-    if files:
-        file = files.get(TEXT_FILE, None)
-    if file:
-        filename = file.filename
-
-    if jdata.get(TEXT_ENTRY):
-        jdata[TEXT] = jdata.get(TEXT_ENTRY)
-        del jdata[TEXT_ENTRY]
-    elif filename:
         if not is_valid_file(filename):
             raise ValueError('Error: valid file types are: '
                              + f'{get_valid_exts()}')
-        jdata[TEXT], filename = process_file(file)
+        print(os.path.join(UPLOAD_DIR, filename))
+        filepath = os.path.join(UPLOAD_DIR, filename)
+        file.save(filepath)
+        output = convert_file(filepath)
+    return output, filename
+
+
+def handle_text_entry(manu_data: dict) -> dict:
+    manu_data[TEXT] = manu_data[TEXT_ENTRY]
+    del manu_data[TEXT_ENTRY]
+    return manu_data
+
+
+def handle_file_entry(manu_data: dict, dict_of_files: dict) -> dict:
+    if not dict_of_files:
+        raise ValueError('Empty dict_of_files dictionary passed.')
+    file_obj = None
+    file_obj = dict_of_files.get(MANU_FILE, None)
+    if not file_obj:
+        raise ValueError('No file in dict_of_files.')
+    (manu_data[TEXT], manu_data[FILENAME]) = process_file(file_obj)
+    del manu_data[MANU_FILE]
+    return manu_data
+
+
+def is_text_entry(manu_data: dict) -> bool:
+    return manu_data.get(TEXT_ENTRY)
+
+
+def is_file_entry(manu_data: dict) -> bool:
+    return manu_data.get(MANU_FILE)
+
+
+@needs_manuscripts_cache
+def add(manu_data, files=None):
+    if not manu_data:
+        raise ValueError('Error: no data received')
+    if is_text_entry(manu_data):
+        manu_data = handle_text_entry(manu_data)
+    elif is_file_entry(files):
+        manu_data = handle_file_entry(manu_data, {})
     else:
         raise ValueError('No text or file submitted')
 
-    jdata[STATE] = mst.SUBMITTED
-    jdata[LAST_UPDATED] = get_curr_datetime()
-    if isinstance(jdata[AUTHORS], str):
-        jdata[AUTHORS] = json.loads(jdata[AUTHORS])
-    if isinstance(jdata[AUTHORS], list):
-        print('Adding authors to people db', jdata[AUTHORS])
-        for author in jdata[AUTHORS]:
-            person = pqry.fetch_all_or_some(name=author[NAME])
-            if person:
-                pqry.add_role(person[list(person)[0]], AU)
-            else:
-                pqry.add({
-                    NAME: author[NAME],
-                    ROLES: [AU],
-                })
+    manu_data[STATE] = mst.SUBMITTED
+    manu_data[LAST_UPDATED] = get_curr_datetime()
+    if isinstance(manu_data[AUTHORS], str):
+        manu_data[AUTHORS] = json.loads(manu_data[AUTHORS])
+    if not isinstance(manu_data[AUTHORS], list):
+        pass  # do what?
+    print('Adding authors to people db', manu_data[AUTHORS])
+    for author in manu_data[AUTHORS]:
+        # pqry.possibly_add_person(name=author[NAME], role=AU)
+        person = pqry.fetch_all_or_some(name=author[NAME])
+        if person:
+            pqry.add_role(person[list(person)[0]], AU)
+        else:
+            pqry.add({
+                NAME: author[NAME],
+                ROLES: [AU],
+            })
+    if not manu_data.get(REFEREES, ''):
+        manu_data[REFEREES] = []
 
-    if not jdata.get(REFEREES, ''):
-        jdata[REFEREES] = []
-
-    ret = get_cache(COLLECT).add(jdata)
+    ret = get_cache(COLLECT).add(manu_data)
     update_history(manu_id=ret,
                    action=SUBMITTED,
                    new_state=SUBMITTED)
+    filename = manu_data.get(FILENAME)
     if filename:
         os.rename(f'{UPLOAD_DIR}/{filename}',
                   f'{UPLOAD_DIR}/{ret}.{get_file_ext(filename)}')
@@ -271,7 +296,10 @@ def assign_referee(manu_id, **kwargs):
     refs.append(referee)
     update_fld(manu_id, REFEREES, refs)
     ref = pqry.fetch_by_key(referee)
-    pqry.add_role(ref, 'RE')
+    try:
+        pqry.add_role(ref, 'RE')
+    except ValueError as e:
+        print(f'Adding referee failed {e}; what should we do here?')
     return REFEREE_REVIEW
 
 

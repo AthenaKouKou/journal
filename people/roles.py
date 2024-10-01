@@ -19,7 +19,7 @@ REFEREE = 'Referee'
 SE = 'SE'
 SENIOR_ADVISOR = 'Senior Advisor'
 SP = 'SP'
-SPECIAL_ADVISOR = 'Special Advisor'
+SPECIAL_ADVISOR = 'Special Advisor Council'
 
 ROLE = 'role'
 ROLES = 'roles'
