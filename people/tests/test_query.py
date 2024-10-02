@@ -5,6 +5,7 @@ from unittest.mock import patch
 import pytest
 
 import people.query as qry
+import people.roles as rls
 
 
 def del_test_item(code):
@@ -116,6 +117,22 @@ def test_update_no_name(temp_person):
     person = get_nameless_person()
     with pytest.raises(ValueError):
         qry.update(temp_person, person)
+
+
+def test_has_role():
+    assert qry.has_role(qry.TEST_PERSON, rls.TEST_ROLE)
+
+
+def test_has_role_no_role():
+    BAD_ROLE = 'PU'
+    assert not qry.has_role(qry.TEST_PERSON, BAD_ROLE)
+
+
+def test_add_role(temp_person):
+    NEW_ROLE = rls.AU
+    assert not qry.has_role(qry.fetch_by_key(temp_person), NEW_ROLE)
+    qry.add_role(qry.fetch_by_key(temp_person), NEW_ROLE)
+    assert qry.has_role(qry.fetch_by_key(temp_person), NEW_ROLE)
 
 
 def test_get_masthead(temp_person):

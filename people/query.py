@@ -1,7 +1,10 @@
 """
 This is our interface to journal people data.
 """
-from backendcore.common.constants import OBJ_ID_NM
+from backendcore.common.constants import (
+  OBJ_ID_NM,
+  EMAIL,
+)
 from backendcore.data.caching import needs_cache, get_cache
 
 from journal_common.common import get_collect_name
@@ -96,7 +99,7 @@ def add_role(person, role):
     if OBJ_ID_NM not in person:
         raise ValueError(f'Cannot update {person=} without an ID.')
     if has_role(person, role):
-        return
+        return person
     if not person[ROLES] or not isinstance(person[ROLES], list):
         person[ROLES] = []
     person[ROLES].append(role)
@@ -104,11 +107,27 @@ def add_role(person, role):
     return person
 
 
-def possibly_new_person(email: str, role: str):
+def possibly_new_person_add_role(name: str, email: str, role: str):
     """
     We might need this: leave signature.
     """
-    pass
+    # pqry.possibly_add_person(name=author[NAME], role=AU)
+    people = fetch_list()
+    person = None
+    # This gets the first person with a matching email,
+    # but that's fine because two people shouldn't have the same email
+    for p in people:
+        if p[EMAIL] == email:
+            person = p
+            break
+    if person:
+        add_role(person, role)
+    else:
+        add({
+            NAME: name,
+            EMAIL: email,
+            ROLES: [role],
+        })
 
 
 def select(people: dict, name=None, role=None):
