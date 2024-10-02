@@ -35,6 +35,10 @@ FILE_DICT = {qry.MANU_FILE: FakeFileObj(good_file=True)}
 NO_FILE_DICT = {}
 BAD_FILE_DICT = {qry.MANU_FILE: FakeFileObj(good_file=False)}
 
+SOME_NAME = 'Cornelius W. Rapp'
+SOME_EMAIL = 'cwr@gmail.com'
+AUTHORS_DICT = {qry.AUTHORS: [{SOME_NAME: SOME_EMAIL}]}
+
 
 def add_test_manuscript():
     sample_dict = deepcopy(qry.TEST_MANU)
@@ -91,6 +95,10 @@ def test_handle_file_entry(mock_convert):
 def test_handle_file_entry_invalid_file():
     with pytest.raises(ValueError):
         qry.handle_file_entry(MANU_DICT, BAD_FILE_DICT)
+
+
+def test_add_new_authors():
+    pass
 
 
 def test_add():

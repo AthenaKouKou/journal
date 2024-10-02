@@ -202,6 +202,15 @@ def is_file_entry(manu_data: dict) -> bool:
     return manu_data.get(MANU_FILE)
 
 
+def set_manuscript_defaults(manu_data):
+    manu_data[STATE] = mst.SUBMITTED
+    manu_data[LAST_UPDATED] = get_curr_datetime()
+
+
+def add_new_authors(manu_data):
+    pass
+
+
 @needs_manuscripts_cache
 def add(manu_data, files=None):
     print(f'{manu_data=}')
@@ -214,8 +223,9 @@ def add(manu_data, files=None):
     else:
         raise ValueError('No text or file submitted')
 
-    manu_data[STATE] = mst.SUBMITTED
-    manu_data[LAST_UPDATED] = get_curr_datetime()
+    set_manuscript_defaults(manu_data)
+
+    add_new_authors(manu_data)
     # Why would we only sometimes get a string?
     if isinstance(manu_data[AUTHORS], str):
         manu_data[AUTHORS] = json.loads(manu_data[AUTHORS])
@@ -227,6 +237,7 @@ def add(manu_data, files=None):
     update_history(manu_id=ret,
                    action=SUBMITTED,
                    new_state=SUBMITTED)
+
     filename = manu_data.get(FILENAME)
     if filename:
         os.rename(f'{UPLOAD_DIR}/{filename}',
