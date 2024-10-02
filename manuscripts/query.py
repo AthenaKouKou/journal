@@ -16,13 +16,6 @@ import backendcore.common.time_fmts as tfmt
 
 from journal_common.common import get_collect_name
 import people.query as pqry
-from people.fields import (
-    NAME,
-    ROLES,
-)
-from people.roles import (
-    AU,
-)
 
 from manuscripts.fields import (
     ABSTRACT,
@@ -211,6 +204,7 @@ def is_file_entry(manu_data: dict) -> bool:
 
 @needs_manuscripts_cache
 def add(manu_data, files=None):
+    print(f'{manu_data=}')
     if not manu_data:
         raise ValueError('Error: no data received')
     if is_text_entry(manu_data):
@@ -222,24 +216,13 @@ def add(manu_data, files=None):
 
     manu_data[STATE] = mst.SUBMITTED
     manu_data[LAST_UPDATED] = get_curr_datetime()
+    # Why would we only sometimes get a string?
     if isinstance(manu_data[AUTHORS], str):
         manu_data[AUTHORS] = json.loads(manu_data[AUTHORS])
-    if not isinstance(manu_data[AUTHORS], list):
-        pass  # do what?
-    print('Adding authors to people db', manu_data[AUTHORS])
-    for author in manu_data[AUTHORS]:
-        # pqry.possibly_add_person(name=author[NAME], role=AU)
-        person = pqry.fetch_all_or_some(name=author[NAME])
-        if person:
-            pqry.add_role(person[list(person)[0]], AU)
-        else:
-            pqry.add({
-                NAME: author[NAME],
-                ROLES: [AU],
-            })
-    if not manu_data.get(REFEREES, ''):
+    # We need emails to add authors to db!
+    # For testing we may add a manuscript that already has refs!
+    if not manu_data.get(REFEREES):
         manu_data[REFEREES] = []
-
     ret = get_cache(COLLECT).add(manu_data)
     update_history(manu_id=ret,
                    action=SUBMITTED,

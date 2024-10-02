@@ -104,7 +104,10 @@ def add_role(person, role):
     return person
 
 
-def possibly_new_person(person, role):
+def possibly_new_person(email: str, role: str):
+    """
+    We might need this: leave signature.
+    """
     pass
 
 
@@ -122,14 +125,6 @@ def select(people: dict, name=None, role=None):
             if has_role(person, role):
                 matches[person[OBJ_ID_NM]] = people[code]
     return matches
-
-
-def fetch_by_id(_id):
-    """
-    Fetch a person by user_id (currently different from document id).
-    """
-    people = fetch_dict()
-    return people.get(_id)
 
 
 def validate_person(person):
