@@ -43,7 +43,7 @@ FIELDS = {
     WCOUNT: {
         DISP_NAME: WCOUNT_DISP_NAME,
         DESCR: 'Approximate number of words',
-        FLD_TYPE: 'INT',
+        FLD_TYPE: cflds.INT,
     },
     AUTHORS: {
         DISP_NAME: AUTHORS_DISP_NAME,
