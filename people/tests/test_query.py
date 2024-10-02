@@ -120,12 +120,12 @@ def test_update_no_name(temp_person):
 
 
 def test_has_role():
-    assert qry.has_role(qry.TEST_PERSON, rls.TEST_ROLE)
+    assert qry.has_role(get_person(), rls.TEST_ROLE)
 
 
 def test_has_role_no_role():
     BAD_ROLE = 'PU'
-    assert not qry.has_role(qry.TEST_PERSON, BAD_ROLE)
+    assert not qry.has_role(get_person(), BAD_ROLE)
 
 
 def test_add_role(temp_person):
@@ -133,6 +133,29 @@ def test_add_role(temp_person):
     assert not qry.has_role(qry.fetch_by_key(temp_person), NEW_ROLE)
     qry.add_role(qry.fetch_by_key(temp_person), NEW_ROLE)
     assert qry.has_role(qry.fetch_by_key(temp_person), NEW_ROLE)
+
+
+
+def test_possibly_new_person_add_role_person_exists(temp_person):
+    NEW_ROLE = rls.AU
+    temp_person_obj = qry.fetch_by_key(temp_person)
+    assert not qry.has_role(temp_person_obj, NEW_ROLE)
+    assert temp_person_obj.get(qry.EMAIL) is not None
+    new_person = qry.possibly_new_person_add_role(temp_person_obj.get(qry.EMAIL), NEW_ROLE)
+    print(f'{qry.fetch_dict()=} {new_person=}')
+    assert qry.has_role(qry.fetch_by_key(new_person), NEW_ROLE)
+
+
+def test_possibly_new_person_add_role_new_person():
+    NEW_ROLE = rls.AU
+    new_person = qry.possibly_new_person_add_role(
+        get_person().get(qry.EMAIL),
+        NEW_ROLE,
+        get_person().get(qry.NAME)
+    )
+    assert qry.fetch_by_key(new_person).get(qry.NAME) == get_person().get(qry.NAME)
+    assert qry.has_role(qry.fetch_by_key(new_person), NEW_ROLE)
+    del_test_item(new_person)
 
 
 def test_get_masthead(temp_person):

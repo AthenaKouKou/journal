@@ -107,23 +107,22 @@ def add_role(person, role):
     return person
 
 
-def possibly_new_person_add_role(name: str, email: str, role: str):
+def possibly_new_person_add_role(email: str, role: str, name: str = None):
     """
     We might need this: leave signature.
     """
-    # pqry.possibly_add_person(name=author[NAME], role=AU)
     people = fetch_list()
     person = None
-    # This gets the first person with a matching email,
-    # but that's fine because two people shouldn't have the same email
     for p in people:
-        if p[EMAIL] == email:
+        if p.get(EMAIL) == email:
             person = p
             break
     if person:
+        person_id = person.get(OBJ_ID_NM)
         add_role(person, role)
+        return person_id
     else:
-        add({
+        return add({
             NAME: name,
             EMAIL: email,
             ROLES: [role],
@@ -170,6 +169,7 @@ TEST_PERSON = {
     USER_ID: 'madeup@utopia.com',
     ROLES: [rls.TEST_ROLE],
     BIO: 'Un homme tres magnifique',
+    EMAIL: 'madeup@utopia.com',
 }
 
 
