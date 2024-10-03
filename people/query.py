@@ -1,6 +1,8 @@
 """
 This is our interface to journal people data.
 """
+from copy import deepcopy
+
 from backendcore.common.constants import (
   OBJ_ID_NM,
   EMAIL,
@@ -79,7 +81,16 @@ def fetch_by_key(_id):
 
 
 def fetch_by_email(email: str) -> dict:
-    return get_cache(COLLECT).fetch_by_fld_val(EMAIL, email)
+    """
+    Email must be unique.
+    So the dictionary will have at most one person.
+    """
+    person = None
+    people = get_cache(COLLECT).fetch_by_fld_val(EMAIL, email)
+    for p in people.values():
+        person = p
+        break
+    return person
 
 
 def fetch_all_or_some(name=None, role=None):
@@ -102,6 +113,8 @@ def add_role(person, role):
         raise ValueError(f'Failed to pass valid {person=} or {role=}.')
     if OBJ_ID_NM not in person:
         raise ValueError(f'Cannot update {person=} without an ID.')
+    if not rls.is_valid(role):
+        raise ValueError(f'Invalid {role=}.')
     if has_role(person, role):
         return person
     if not person[ROLES] or not isinstance(person[ROLES], list):
@@ -114,22 +127,18 @@ def add_role(person, role):
 def possibly_new_person_add_role(email: str, role: str, name: str = None):
     """
     """
-    people = fetch_list()
-    person = None
-    for p in people:
-        if p.get(EMAIL) == email:
-            person = p
-            break
+    _id = None
+    person = fetch_by_email(email)
     if person:
-        person_id = person.get(OBJ_ID_NM)
         add_role(person, role)
-        return person_id
+        _id = person.get(OBJ_ID_NM)
     else:
-        return add({
+        _id = add({
             NAME: name,
             EMAIL: email,
             ROLES: [role],
         })
+    return _id
 
 
 def select(people: dict, name=None, role=None):
@@ -170,7 +179,7 @@ def get_masthead():
 TEST_EMAIL = 'madeup@utopia.com'
 TEST_PERSON = {
     NAME: 'Callahan le Magnifique',
-    USER_ID: 'madeup@utopia.com',
+    USER_ID: TEST_EMAIL,
     ROLES: [rls.TEST_ROLE],
     BIO: 'Un homme tres magnifique',
     EMAIL: TEST_EMAIL,
@@ -190,10 +199,11 @@ def delete(_id):
 
 @needs_people_cache
 def update(_id, person: dict):
-    validate_person(person)
-    if OBJ_ID_NM in person:
-        del person[OBJ_ID_NM]
-    return get_cache(COLLECT).update(_id, person, by_id=True)
+    update_peep = deepcopy(person)
+    validate_person(update_peep)
+    if OBJ_ID_NM in update_peep:
+        del update_peep[OBJ_ID_NM]
+    return get_cache(COLLECT).update(_id, update_peep, by_id=True)
 
 
 def main():

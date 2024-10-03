@@ -124,8 +124,7 @@ def test_has_role():
 
 
 def test_has_role_no_role():
-    BAD_ROLE = 'PU'
-    assert not qry.has_role(get_person(), BAD_ROLE)
+    assert not qry.has_role(get_person(), 'Not a real role')
 
 
 def test_add_role(temp_person):
@@ -134,6 +133,10 @@ def test_add_role(temp_person):
     qry.add_role(qry.fetch_by_key(temp_person), NEW_ROLE)
     assert qry.has_role(qry.fetch_by_key(temp_person), NEW_ROLE)
 
+
+def test_add_bad_role(temp_person):
+    with pytest.raises(ValueError):
+        qry.add_role(qry.fetch_by_key(temp_person), 'Bad role!')
 
 
 def test_possibly_new_person_add_role_person_exists(temp_person):
@@ -162,7 +165,7 @@ def test_possibly_new_person_add_role_new_person():
 def test_fetch_by_email(temp_person):
     ret = qry.fetch_by_email(qry.TEST_EMAIL)
     assert isinstance(ret, dict)
-    assert len(ret) > 0
+    assert ret[qry.EMAIL] == qry.TEST_EMAIL
 
 
 def test_fetch_by_email_not_there(temp_person):
