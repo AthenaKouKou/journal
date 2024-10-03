@@ -78,6 +78,10 @@ def fetch_by_key(_id):
     return get_cache(COLLECT).fetch_by_key(_id)
 
 
+def fetch_by_email(email: str) -> dict:
+    return get_cache(COLLECT).fetch_by_fld_val(EMAIL, email)
+
+
 def fetch_all_or_some(name=None, role=None):
     people = fetch_dict()
     if name or role:
@@ -109,7 +113,6 @@ def add_role(person, role):
 
 def possibly_new_person_add_role(email: str, role: str, name: str = None):
     """
-    We might need this: leave signature.
     """
     people = fetch_list()
     person = None
@@ -164,12 +167,13 @@ def get_masthead():
     return masthead
 
 
+TEST_EMAIL = 'madeup@utopia.com'
 TEST_PERSON = {
     NAME: 'Callahan le Magnifique',
     USER_ID: 'madeup@utopia.com',
     ROLES: [rls.TEST_ROLE],
     BIO: 'Un homme tres magnifique',
-    EMAIL: 'madeup@utopia.com',
+    EMAIL: TEST_EMAIL,
 }
 
 

@@ -140,9 +140,10 @@ def test_possibly_new_person_add_role_person_exists(temp_person):
     NEW_ROLE = rls.AU
     temp_person_obj = qry.fetch_by_key(temp_person)
     assert not qry.has_role(temp_person_obj, NEW_ROLE)
-    assert temp_person_obj.get(qry.EMAIL) is not None
-    new_person = qry.possibly_new_person_add_role(temp_person_obj.get(qry.EMAIL), NEW_ROLE)
-    print(f'{qry.fetch_dict()=} {new_person=}')
+    new_person = qry.possibly_new_person_add_role(
+        temp_person_obj.get(qry.EMAIL),
+        NEW_ROLE
+    )
     assert qry.has_role(qry.fetch_by_key(new_person), NEW_ROLE)
 
 
@@ -156,6 +157,16 @@ def test_possibly_new_person_add_role_new_person():
     assert qry.fetch_by_key(new_person).get(qry.NAME) == get_person().get(qry.NAME)
     assert qry.has_role(qry.fetch_by_key(new_person), NEW_ROLE)
     del_test_item(new_person)
+
+
+def test_fetch_by_email(temp_person):
+    ret = qry.fetch_by_email(qry.TEST_EMAIL)
+    assert isinstance(ret, dict)
+    assert len(ret) > 0
+
+
+def test_fetch_by_email_not_there(temp_person):
+    assert not qry.fetch_by_email('This email not in db!')
 
 
 def test_get_masthead(temp_person):
