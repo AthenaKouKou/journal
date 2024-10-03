@@ -8,14 +8,19 @@ from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
 
 import pypandoc as pdc
-import json
 
 from backendcore.data.caching import needs_cache, get_cache
-from backendcore.common.constants import CODE
+from backendcore.common.constants import (
+    CODE,
+    EMAIL,
+    NAME,
+)
 import backendcore.common.time_fmts as tfmt
 
 from journal_common.common import get_collect_name
+
 import people.query as pqry
+import people.roles as rls
 
 from manuscripts.fields import (
     ABSTRACT,
@@ -123,7 +128,12 @@ TEST_REFEREE = 'Kris'
 
 TEST_MANU = {
     ABSTRACT: 'TLDR',
-    AUTHORS: [{'name': 'Boaz Kaufman'}],
+    AUTHORS: [
+        {
+            NAME: 'Boaz Kaufman',
+            EMAIL: 'boaz@donthardcorestrings.com',
+        }
+    ],
     CODE: TEST_CODE,
     REFEREES: [TEST_REFEREE],
     TEXT_ENTRY: 'When in the course of Boaz events ...',
@@ -207,8 +217,14 @@ def set_manuscript_defaults(manu_data):
     manu_data[LAST_UPDATED] = get_curr_datetime()
 
 
-def add_new_authors(manu_data):
-    pass
+def add_new_authors(authors: list):
+    for author in authors:
+        print(f'Adding {author=}')
+        pqry.possibly_new_person_add_role(
+            author.get(EMAIL),
+            rls.AU,
+            author.get(NAME)
+        )
 
 
 @needs_manuscripts_cache
@@ -222,14 +238,8 @@ def add(manu_data, files=None):
         manu_data = handle_file_entry(manu_data, {})
     else:
         raise ValueError('No text or file submitted')
-
     set_manuscript_defaults(manu_data)
-
-    add_new_authors(manu_data)
-    # Why would we only sometimes get a string?
-    if isinstance(manu_data[AUTHORS], str):
-        manu_data[AUTHORS] = json.loads(manu_data[AUTHORS])
-    # We need emails to add authors to db!
+    add_new_authors(manu_data[AUTHORS])
     # For testing we may add a manuscript that already has refs!
     if not manu_data.get(REFEREES):
         manu_data[REFEREES] = []
@@ -237,7 +247,6 @@ def add(manu_data, files=None):
     update_history(manu_id=ret,
                    action=SUBMITTED,
                    new_state=SUBMITTED)
-
     filename = manu_data.get(FILENAME)
     if filename:
         os.rename(f'{UPLOAD_DIR}/{filename}',

@@ -35,10 +35,6 @@ FILE_DICT = {qry.MANU_FILE: FakeFileObj(good_file=True)}
 NO_FILE_DICT = {}
 BAD_FILE_DICT = {qry.MANU_FILE: FakeFileObj(good_file=False)}
 
-SOME_NAME = 'Cornelius W. Rapp'
-SOME_EMAIL = 'cwr@gmail.com'
-AUTHORS_DICT = {qry.AUTHORS: [{SOME_NAME: SOME_EMAIL}]}
-
 
 def add_test_manuscript():
     sample_dict = deepcopy(qry.TEST_MANU)

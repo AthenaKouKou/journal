@@ -80,6 +80,7 @@ def fetch_by_key(_id):
     return get_cache(COLLECT).fetch_by_key(_id)
 
 
+@needs_people_cache
 def fetch_by_email(email: str) -> dict:
     """
     Email must be unique.
