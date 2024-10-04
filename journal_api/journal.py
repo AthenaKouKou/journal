@@ -68,6 +68,7 @@ api = Namespace(JOURNAL, 'Web-based journal manager.')
 parser = api.parser()
 parser.add_argument(AUTH, location='headers')
 MANU = 'manuscripts'
+MANU_ID = 'manuscript id'
 STATE = 'state'
 ACTION = 'action'
 DASHCOLUMNS = 'dashcolumns'
@@ -236,6 +237,7 @@ class ManuRead(Resource):
         return {JOURNAL_MANU_READ: manuscripts}
 
 
+# Authors is off.
 MANU_CREATE_FLDS = api.model('JournalManuAdd', {
     TITLE: fields.String,
     WCOUNT: fields.Integer,
@@ -257,14 +259,32 @@ class ManuCreate(Resource):
     @api.expect(MANU_CREATE_FLDS)
     def put(self):
         try:
-            jdata = request.form.to_dict()
+            jdata = request.json
             print(f'{jdata=}')
-            files = request.files
-            mqry.add(jdata, files)
+            ret = mqry.add(jdata)
         except Exception as err:
             print(err)
             raise wz.NotAcceptable(f'Manuscript creation error: {err}')
-        return {MESSAGE: 'Manuscript created!'}
+        return {MANU_ID: ret}
+
+
+@api.route(f'/{MANU}/add_file/<manu_id>')  # must constant for add_file!
+@api.expect(parser)
+class ManuAddFile(Resource):
+    """
+    Create a new journal manuscript.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.expect(MANU_CREATE_FLDS)
+    def put(self, manu_id):
+        try:
+            files = request.files
+            mqry.add(manu_id, files)
+        except Exception as err:
+            print(err)
+            raise wz.NotAcceptable(f'Manuscript creation error: {err}')
+        return {MESSAGE: 'File added!'}
 
 
 NEW_STATE = 'New state'

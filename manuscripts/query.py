@@ -218,7 +218,7 @@ def add_authors(authors: list):
 
 
 @needs_manuscripts_cache
-def add(manu_data, files=None):
+def add(manu_data):
     print(f'{manu_data=}')
     set_manuscript_defaults(manu_data)
     # add_authors(manu_data[AUTHORS])
