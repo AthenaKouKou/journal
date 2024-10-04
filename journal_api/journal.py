@@ -237,19 +237,22 @@ class ManuRead(Resource):
         return {JOURNAL_MANU_READ: manuscripts}
 
 
-# Authors is off.
+MANU_AUTHORS_NESTED = api.model('JournalManuAddAuthorsNested', {
+    pflds.NAME: fields.String,
+    pflds.EMAIL: fields.String,
+})
+
+
 MANU_CREATE_FLDS = api.model('JournalManuAdd', {
     TITLE: fields.String,
     WCOUNT: fields.Integer,
-    AUTHORS: fields.String,
+    AUTHORS: fields.List(fields.Nested(MANU_AUTHORS_NESTED)),
     TEXT: fields.String,
     ABSTRACT: fields.String,
-    EDITOR: fields.String
 })
 
 
 @api.route(f'/{MANU}/{CREATE}')
-@api.expect(parser)
 class ManuCreate(Resource):
     """
     Create a new journal manuscript.
@@ -269,18 +272,16 @@ class ManuCreate(Resource):
 
 
 @api.route(f'/{MANU}/add_file/<manu_id>')  # must constant for add_file!
-@api.expect(parser)
 class ManuAddFile(Resource):
     """
     Create a new journal manuscript.
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
-    @api.expect(MANU_CREATE_FLDS)
     def put(self, manu_id):
         try:
             files = request.files
-            mqry.add(manu_id, files)
+            mqry.add_file(manu_id, files)
         except Exception as err:
             print(err)
             raise wz.NotAcceptable(f'Manuscript creation error: {err}')

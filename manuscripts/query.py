@@ -184,7 +184,7 @@ def process_file(file):
     return output, filename
 
 
-def handle_file_entry(_id: str, dict_of_files: dict) -> dict:
+def add_file(_id: str, dict_of_files: dict) -> dict:
     if not dict_of_files:
         raise ValueError('Empty dict_of_files dictionary passed.')
     file_obj = None
@@ -221,7 +221,7 @@ def add_authors(authors: list):
 def add(manu_data):
     print(f'{manu_data=}')
     set_manuscript_defaults(manu_data)
-    # add_authors(manu_data[AUTHORS])
+    add_authors(manu_data[AUTHORS])
     # For testing we may add a manuscript that already has refs!
     if not manu_data.get(REFEREES):
         manu_data[REFEREES] = []

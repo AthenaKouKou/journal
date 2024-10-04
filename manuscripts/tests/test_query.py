@@ -55,7 +55,7 @@ def temp_manu():
 @patch('manuscripts.query.convert_file', return_value='Text submitted', autospec=True)
 def test_handle_file_entry(mock_convert):
     pass
-    new_manu_data = qry.handle_file_entry(MANU_DICT, FILE_DICT)
+    new_manu_data = qry.add_file(MANU_DICT, FILE_DICT)
     assert new_manu_data[qry.TEXT]
     assert isinstance(new_manu_data[qry.TEXT], str)
     # assert something about the file being on disk somewhere...
