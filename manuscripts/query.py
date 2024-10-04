@@ -217,7 +217,7 @@ def set_manuscript_defaults(manu_data):
     manu_data[LAST_UPDATED] = get_curr_datetime()
 
 
-def add_new_authors(authors: list):
+def add_authors(authors: list):
     for author in authors:
         print(f'Adding {author=}')
         pqry.possibly_new_person_add_role(
@@ -239,7 +239,7 @@ def add(manu_data, files=None):
     else:
         raise ValueError('No text or file submitted')
     set_manuscript_defaults(manu_data)
-    add_new_authors(manu_data[AUTHORS])
+    # add_authors(manu_data[AUTHORS])
     # For testing we may add a manuscript that already has refs!
     if not manu_data.get(REFEREES):
         manu_data[REFEREES] = []
