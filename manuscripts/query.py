@@ -25,7 +25,6 @@ import people.roles as rls
 from manuscripts.fields import (
     ABSTRACT,
     AUTHORS,
-    FILENAME,
     HISTORY,
     LAST_UPDATED,
     OBJ_ID_NM,
@@ -39,7 +38,6 @@ from manuscripts.fields import (
 from manuscripts.add_form import ( # noqa E402
     FILE,
     MANU_FILE,
-    TEXT_ENTRY,
 )
 
 import manuscripts.states as mst
@@ -136,7 +134,7 @@ TEST_MANU = {
     ],
     CODE: TEST_CODE,
     REFEREES: [TEST_REFEREE],
-    TEXT_ENTRY: 'When in the course of Boaz events ...',
+    TEXT: 'When in the course of Boaz events ...',
     TITLE: 'Forays into Kaufman Studies',
     WCOUNT: 500,
 }
@@ -186,26 +184,18 @@ def process_file(file):
     return output, filename
 
 
-def handle_text_entry(manu_data: dict) -> dict:
-    manu_data[TEXT] = manu_data[TEXT_ENTRY]
-    del manu_data[TEXT_ENTRY]
-    return manu_data
-
-
-def handle_file_entry(manu_data: dict, dict_of_files: dict) -> dict:
+def handle_file_entry(_id: str, dict_of_files: dict) -> dict:
     if not dict_of_files:
         raise ValueError('Empty dict_of_files dictionary passed.')
     file_obj = None
     file_obj = dict_of_files.get(MANU_FILE, None)
     if not file_obj:
         raise ValueError('No file in dict_of_files.')
-    (manu_data[TEXT], manu_data[FILENAME]) = process_file(file_obj)
-    del manu_data[MANU_FILE]
-    return manu_data
-
-
-def is_text_entry(manu_data: dict) -> bool:
-    return manu_data.get(TEXT_ENTRY)
+    (text, filename) = process_file(file_obj)
+    if filename:
+        os.rename(f'{UPLOAD_DIR}/{filename}',
+                  f'{UPLOAD_DIR}/{_id}.{get_file_ext(filename)}')
+    return (text, filename)
 
 
 def is_file_entry(manu_data: dict) -> bool:
@@ -230,14 +220,6 @@ def add_authors(authors: list):
 @needs_manuscripts_cache
 def add(manu_data, files=None):
     print(f'{manu_data=}')
-    if not manu_data:
-        raise ValueError('Error: no data received')
-    if is_text_entry(manu_data):
-        manu_data = handle_text_entry(manu_data)
-    elif is_file_entry(files):
-        manu_data = handle_file_entry(manu_data, {})
-    else:
-        raise ValueError('No text or file submitted')
     set_manuscript_defaults(manu_data)
     # add_authors(manu_data[AUTHORS])
     # For testing we may add a manuscript that already has refs!
@@ -247,10 +229,6 @@ def add(manu_data, files=None):
     update_history(manu_id=ret,
                    action=SUBMITTED,
                    new_state=SUBMITTED)
-    filename = manu_data.get(FILENAME)
-    if filename:
-        os.rename(f'{UPLOAD_DIR}/{filename}',
-                  f'{UPLOAD_DIR}/{ret}.{get_file_ext(filename)}')
     return ret
 
 
