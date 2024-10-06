@@ -17,6 +17,7 @@ from backendcore.common.constants import (
 
 import backendcore.api.common as acmn
 from backendcore.api.constants import (
+    ADD_FILE,
     CREATE,
     DELETE,
     FIELDS,
@@ -271,7 +272,7 @@ class ManuCreate(Resource):
         return {MANU_ID: ret}
 
 
-@api.route(f'/{MANU}/add_file/<manu_id>')  # must constant for add_file!
+@api.route(f'/{MANU}/{ADD_FILE}/<manu_id>')
 class ManuAddFile(Resource):
     """
     Create a new journal manuscript.
