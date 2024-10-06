@@ -38,6 +38,7 @@ from manuscripts.fields import (
 from manuscripts.add_form import ( # noqa E402
     FILE,
     MANU_FILE,
+    TEXT_ENTRY,
 )
 
 import manuscripts.states as mst
@@ -187,6 +188,7 @@ def process_file(file):
 def add_file(_id: str, dict_of_files: dict) -> dict:
     if not dict_of_files:
         raise ValueError('Empty dict_of_files dictionary passed.')
+    print(f'{dict_of_files=}')
     file_obj = None
     file_obj = dict_of_files.get(MANU_FILE, None)
     if not file_obj:
@@ -195,6 +197,7 @@ def add_file(_id: str, dict_of_files: dict) -> dict:
     if filename:
         os.rename(f'{UPLOAD_DIR}/{filename}',
                   f'{UPLOAD_DIR}/{_id}.{get_file_ext(filename)}')
+    update(_id, {TEXT: text})
     return (text, filename)
 
 
@@ -205,6 +208,7 @@ def is_file_entry(manu_data: dict) -> bool:
 def set_manuscript_defaults(manu_data):
     manu_data[STATE] = mst.SUBMITTED
     manu_data[LAST_UPDATED] = get_curr_datetime()
+    manu_data[TEXT] = manu_data.get(TEXT_ENTRY)
 
 
 def add_authors(authors: list):

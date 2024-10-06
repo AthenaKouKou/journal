@@ -282,7 +282,7 @@ class ManuAddFile(Resource):
     def put(self, manu_id):
         try:
             files = request.files
-            mqry.add_file(manu_id, files)
+            mqry.add_file(manu_id, files.to_dict())
         except Exception as err:
             print(err)
             raise wz.NotAcceptable(f'Manuscript creation error: {err}')
