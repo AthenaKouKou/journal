@@ -494,6 +494,7 @@ PEOPLE_CREATE_FLDS = api.model('AddNewPeopleEntry', {
     pflds.NAME: fields.String,
     pflds.EMAIL: fields.String,
     pflds.AFFILIATION: fields.String,
+    pflds.ROLES: fields.List(fields.String),
     EDITOR: fields.String,
 })
 
