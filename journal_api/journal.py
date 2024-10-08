@@ -9,6 +9,7 @@ from flask import request
 from flask_restx import Namespace, Resource, fields
 
 import werkzeug.exceptions as wz
+import werkzeug
 
 from backendcore.common.constants import (
     AUTH,
@@ -272,6 +273,12 @@ class ManuCreate(Resource):
         return {MANU_ID: ret}
 
 
+file_parser = api.parser()
+file_parser.add_argument(mafrm.MANU_FILE,
+                         type=werkzeug.datastructures.FileStorage,
+                         location='files')
+
+
 @api.route(f'/{MANU}/{ADD_FILE}/<manu_id>')
 class ManuAddFile(Resource):
     """
@@ -279,6 +286,7 @@ class ManuAddFile(Resource):
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.expect(file_parser)
     def put(self, manu_id):
         try:
             files = request.files
