@@ -68,17 +68,9 @@ FORM_FLDS = [
             ENTRY: 'Direct text entry',
         },
         ff.OPT: False,
-        ff.DEFAULT: ENTRY,
+        ff.DEFAULT: FILE,
         ff.MULTI: False,
         ff.SUBFIELDS: [
-            {
-                ff.FLD_NM: TEXT_ENTRY,
-                ff.QSTN: TEXT_ENTRY_DISP_NAME,
-                ff.INPUT_TYPE: ff.MARKDOWN,
-                ff.OPT: True,
-                ff.DISP_ON: ENTRY,
-                ff.FLD_LEN: 255,
-            },
             {
                 ff.FLD_NM: MANU_FILE,
                 ff.QSTN: MANU_FILE_DISP_NAME,
@@ -87,6 +79,14 @@ FORM_FLDS = [
                 ff.DISP_ON: FILE,
                 ff.FULL_WIDTH: True,
                 ff.FILE_TYPES: [ff.DOCX, ff.HTML, ff.TXT, ff.MD]
+            },
+            {
+                ff.FLD_NM: TEXT_ENTRY,
+                ff.QSTN: TEXT_ENTRY_DISP_NAME,
+                ff.INPUT_TYPE: ff.MARKDOWN,
+                ff.OPT: True,
+                ff.DISP_ON: ENTRY,
+                ff.FLD_LEN: 255,
             },
         ]
     },
