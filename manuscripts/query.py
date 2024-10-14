@@ -162,26 +162,37 @@ def is_valid_file(filename):
 TEST_FILE_OBJ = FileStorage(filename=f'good_name.{get_valid_exts()[0]}')
 
 
-def convert_file(filepath):
+def convert_file(filepath, SUBMIT_DIR):
     if get_file_ext(filepath) != 'txt':
-        output = pdc.convert_file(filepath, 'markdown')
+        output = pdc.convert_file(
+            filepath,
+            'markdown',
+            extra_args=[f'--extract-media={SUBMIT_DIR}']
+        )
     else:
         with open(filepath, 'r') as f:
             output = '\n'.join(f.readlines())
     return output
 
 
-def process_file(file):
+def get_submission_directory(upload_dir, id):
+    NEW_PATH = os.path.join(upload_dir, id)
+    if os.path.exists(NEW_PATH):
+        return
+    os.makedirs(NEW_PATH)
+    return NEW_PATH
+
+
+def process_file(file, SUBMIT_DIR):
     output = ''
     if file:
         filename = secure_filename(file.filename)
         if not is_valid_file(filename):
             raise ValueError('Error: valid file types are: '
                              + f'{get_valid_exts()}')
-        print(os.path.join(UPLOAD_DIR, filename))
-        filepath = os.path.join(UPLOAD_DIR, filename)
+        filepath = os.path.join(SUBMIT_DIR, filename)
         file.save(filepath)
-        output = convert_file(filepath)
+        output = convert_file(filepath, SUBMIT_DIR)
     return output, filename
 
 
@@ -193,10 +204,11 @@ def add_file(_id: str, dict_of_files: dict) -> dict:
     file_obj = dict_of_files.get(MANU_FILE, None)
     if not file_obj:
         raise ValueError('No file in dict_of_files.')
-    (text, filename) = process_file(file_obj)
+    SUBMIT_DIR = get_submission_directory(UPLOAD_DIR, _id)
+    (text, filename) = process_file(file_obj, SUBMIT_DIR)
     if filename:
-        os.rename(f'{UPLOAD_DIR}/{filename}',
-                  f'{UPLOAD_DIR}/{_id}.{get_file_ext(filename)}')
+        os.rename(f'{SUBMIT_DIR}/{filename}',
+                  f'{SUBMIT_DIR}/{_id}.{get_file_ext(filename)}')
     update(_id, {TEXT: text})
     return (text, filename)
 
