@@ -5,7 +5,7 @@ from http import HTTPStatus
 
 from urllib.parse import unquote
 
-from flask import request
+from flask import request, send_file
 from flask_restx import Namespace, Resource, fields
 
 import werkzeug.exceptions as wz
@@ -22,6 +22,7 @@ from backendcore.api.constants import (
     CREATE,
     DELETE,
     FIELDS,
+    FILE,
     FORM,
     JOURNAL,
     MESSAGE,
@@ -427,6 +428,23 @@ class DashColumnsRead(Resource):
         """
         return {JOURNAL_MANU_COLUMNS_READ: mdsh.get_choices(),
                 JOURNAL_MANU_COLUMNS_ORDER: mdsh.get_choices_order()}
+
+
+@api.route(f'/{MANU}/{FILE}/{RETRIEVE}/<manu_id>')
+class ManuFetchFile(Resource):
+    """
+    This endpoint returns the file that was
+    originally submitted for a given manuscript.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Data not found')
+    def get(self, manu_id):
+        filepath = mqry.get_original_submission_filename(manu_id)
+        if not filepath:
+            raise wz.NotAcceptable(f'Could not get file for {manu_id}')
+        file = send_file(filepath)
+        print(f'{file=}')
+        return send_file(filepath)
 
 
 #############

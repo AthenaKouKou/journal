@@ -4,6 +4,7 @@ We never expect our users to add or delete manuscripts,
 so we make no provisions for that.
 """
 import os
+import glob
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
 
@@ -178,7 +179,7 @@ def convert_file(filepath, SUBMIT_DIR):
 def get_submission_directory(upload_dir, id):
     NEW_PATH = os.path.join(upload_dir, id)
     if os.path.exists(NEW_PATH):
-        return
+        return NEW_PATH
     os.makedirs(NEW_PATH)
     return NEW_PATH
 
@@ -263,6 +264,16 @@ def fetch_by_state(state: str) -> list:
     if state not in mst.get_valid_states():
         raise ValueError(f'Invalid state: {state}.')
     return get_cache(COLLECT).fetch_by_fld_val(STATE, state)
+
+
+def get_original_submission_filename(manu_id):
+    if not exists(manu_id):
+        raise ValueError(f'No such manuscript id: {manu_id}')
+    SUBMIT_DIR = get_submission_directory(UPLOAD_DIR, manu_id)
+    fileglob = glob.glob(f'{SUBMIT_DIR}/{manu_id}.*')
+    if len(fileglob) < 1:
+        raise ValueError(f'No file saved for manuscript id: {manu_id}')
+    return fileglob[0]
 
 
 def get_curr_datetime():
