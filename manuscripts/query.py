@@ -17,6 +17,7 @@ from backendcore.common.constants import (
     NAME,
 )
 import backendcore.common.time_fmts as tfmt
+from backendcore.emailer.api_send import send_mail
 
 from journal_common.common import get_collect_name
 
@@ -116,6 +117,18 @@ def get_state(manu_id):
     if not exists(manu_id):
         raise ValueError(f'No such manuscript id: {manu_id}')
     return fetch_by_id(manu_id).get(STATE, None)
+
+
+def get_title(manu_id):
+    if not exists(manu_id):
+        raise ValueError(f'No such manuscript id: {manu_id}')
+    return fetch_by_id(manu_id).get(TITLE, None)
+
+
+def get_abstract(manu_id):
+    if not exists(manu_id):
+        raise ValueError(f'No such manuscript id: {manu_id}')
+    return fetch_by_id(manu_id).get(ABSTRACT, None)
 
 
 def exists(code):
@@ -295,31 +308,51 @@ def set_state(manu_id, state):
 REFEREE_ARG = 'referee'
 
 
-def assign_referee(manu_id, **kwargs):
-    referee = kwargs.get(REFEREE_ARG)
-    if not referee:
+def notify_referee(manu_id: str, referee: str):
+    """
+    When a referee is initially added, we send out an email letting them know
+    that someone is asking if they can referee a manuscript. We give them the
+    journal title and abstract
+    """
+    email = pqry.get_email(referee)
+    title = get_title(manu_id)
+    abstract = get_abstract(manu_id)
+    email_content = (f'Hello {email} you\'ve been asked to referee the '
+                     f'manuscript {title}. The abstract is: \n {abstract}')
+    ret = send_mail(to_emails=email, subject='Manuscript Referee',
+                    content=email_content)
+    return ret
+
+
+def assign_referee(manu_id: str, **kwargs):
+    """
+    Assigns a referee to a manuscript and emails them
+    """
+    referee_id = kwargs.get(REFEREE_ARG)
+    if not referee_id:
         raise ValueError(f'Must provide \'{REFEREE_ARG}\' value to assign a '
-                         'referee')
+                         'referee.')
     refs = fetch_by_key(manu_id).get(REFEREES, [])
-    refs.append(referee)
+    refs.append(referee_id)
     update_fld(manu_id, REFEREES, refs)
-    ref = pqry.fetch_by_key(referee)
+    ref = pqry.fetch_by_key(referee_id)
     try:
         pqry.add_role(ref, 'RE')
     except ValueError as e:
         print(f'Adding referee failed {e}; what should we do here?')
+    notify_referee(manu_id, referee_id)
     return REFEREE_REVIEW
 
 
 def remove_referee(manu_id, **kwargs):
-    referee = kwargs.get(REFEREE_ARG)
-    if not referee:
+    referee_id = kwargs.get(REFEREE_ARG)
+    if not referee_id:
         raise ValueError(f'Must provide \'{REFEREE_ARG}\' value to remove a '
-                         'referee')
+                         'referee.')
     refs = fetch_by_key(manu_id).get(REFEREES)
-    if referee not in refs:
-        raise ValueError(f'Referee {referee} not found')
-    refs.remove(referee)
+    if referee_id not in refs:
+        raise ValueError(f'Referee {referee_id} not found')
+    refs.remove(referee_id)
     update_fld(manu_id, REFEREES, refs)
     if len(refs) == 0:
         return SUBMITTED

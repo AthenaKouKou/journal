@@ -10,6 +10,7 @@ from manuscripts.query import (
     HISTORY,
 )
 import manuscripts.states as mst
+from people.tests.test_query import temp_person
 
 
 class FakeFileObj():
@@ -131,15 +132,14 @@ def test_set_last_updated(temp_manu):
 
 
 @patch('people.query.add_role', return_value='Fake ID', autospec=True)
-def test_assign_referee(mock_add_role, temp_manu):
-    NEW_REF = 'A new referee'
+def test_assign_referee(mock_add_role, temp_manu, temp_person):
     manu = qry.fetch_by_id(temp_manu)
     refs = manu.get(REFEREES)
-    assert NEW_REF not in refs
-    qry.assign_referee(temp_manu, referee=NEW_REF)
+    assert temp_person not in refs
+    qry.assign_referee(temp_manu, referee=temp_person)
     manu = qry.fetch_by_id(temp_manu)
     refs = manu.get(REFEREES)
-    assert NEW_REF in refs
+    assert temp_person in refs
 
 
 def test_assign_referee_no_referee(temp_manu):

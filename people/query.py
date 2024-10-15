@@ -177,6 +177,14 @@ def get_masthead():
     return masthead
 
 
+def get_email(_id):
+    person = fetch_by_key(_id)
+    if person:
+        return person.get(EMAIL, None)
+    else:
+        raise ValueError(f'{_id} is not a valid person.')
+
+
 TEST_EMAIL = 'madeup@utopia.com'
 TEST_PERSON = {
     NAME: 'Callahan le Magnifique',
