@@ -285,7 +285,7 @@ def get_original_submission_filename(manu_id):
     SUBMIT_DIR = get_submission_directory(UPLOAD_DIR, manu_id)
     fileglob = glob.glob(f'{SUBMIT_DIR}/{manu_id}.*')
     if len(fileglob) < 1:
-        raise ValueError(f'No file saved for manuscript id: {manu_id}')
+        return ''
     return fileglob[0]
 
 

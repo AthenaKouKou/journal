@@ -440,11 +440,9 @@ class ManuFetchFile(Resource):
     @api.response(HTTPStatus.NOT_FOUND, 'Data not found')
     def get(self, manu_id):
         filepath = mqry.get_original_submission_filename(manu_id)
-        if not filepath:
-            raise wz.NotAcceptable(f'Could not get file for {manu_id}')
-        file = send_file(filepath)
-        print(f'{file=}')
-        return send_file(filepath)
+        if len(filepath) < 1:
+            return ''
+        return send_file(filepath, as_attachment=True)
 
 
 #############
