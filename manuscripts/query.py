@@ -131,6 +131,15 @@ def get_abstract(manu_id):
     return fetch_by_id(manu_id).get(ABSTRACT, None)
 
 
+def get_editor_email(manu_id):
+    """
+    In the future we may have multiple editors in a journal, and individual
+    submissions may have different editors. For now, we use all the editors
+    """
+    editors = pqry.fetch_all_or_some(role=rls.ED)
+    return pqry.get_email(list(editors.keys())[0])
+
+
 def exists(code):
     return code in fetch_dict()
 
@@ -315,12 +324,13 @@ def notify_referee(manu_id: str, referee: str):
     journal title and abstract
     """
     email = pqry.get_email(referee)
+    reply_email = get_editor_email(manu_id)
     title = get_title(manu_id)
     abstract = get_abstract(manu_id)
     email_content = (f'Hello {email} you\'ve been asked to referee the '
-                     f'manuscript {title}. The abstract is: \n {abstract}')
+                     f'manuscript {title}. The abstract is: </br> {abstract}')
     ret = send_mail(to_emails=email, subject='Manuscript Referee',
-                    content=email_content)
+                    content=email_content, reply_email=reply_email)
     return ret
 
 
