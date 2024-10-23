@@ -131,6 +131,12 @@ def get_abstract(manu_id):
     return fetch_by_id(manu_id).get(ABSTRACT, None)
 
 
+def get_text(manu_id):
+    if not exists(manu_id):
+        raise ValueError(f'No such manuscript id: {manu_id}')
+    return fetch_by_id(manu_id).get(TEXT, None)
+
+
 def get_editor_email(manu_id):
     """
     In the future we may have multiple editors in a journal, and individual
@@ -268,6 +274,7 @@ def add(manu_data):
     update_history(manu_id=ret,
                    action=SUBMITTED,
                    new_state=SUBMITTED)
+    notify_editor(ret)
     return ret
 
 
@@ -324,6 +331,8 @@ def notify_referee(manu_id: str, referee: str):
     journal title and abstract
     """
     email = pqry.get_email(referee)
+    if email is None:
+        raise ValueError(f'{referee} does not have an assigned email address')
     reply_email = get_editor_email(manu_id)
     title = get_title(manu_id)
     abstract = get_abstract(manu_id)
@@ -331,6 +340,26 @@ def notify_referee(manu_id: str, referee: str):
                      f'manuscript {title}. The abstract is: </br> {abstract}')
     ret = send_mail(to_emails=email, subject='Manuscript Referee',
                     content=email_content, reply_email=reply_email)
+    return ret
+
+
+def notify_editor(manu_id: str):
+    """
+    When a manuscript is submitted, we email the editor to let them know they
+    have received a new manuscipt, as well as attaching the document.
+    """
+    email = get_editor_email(manu_id)
+    email_content = f'Hello {email}, a new manuscript has been submitted.'
+    text = get_text(manu_id)
+    if False:
+        # File sending stuff goes here
+        print("not supposed to be here!")
+        return
+    else:
+        email_content += (' Only text was provided. It is attached here:'
+                          f' {text}')
+    ret = send_mail(to_emails=email, subject='New Manuscript Submitted',
+                    content=email_content)
     return ret
 
 
