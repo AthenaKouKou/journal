@@ -5,7 +5,7 @@ from http import HTTPStatus
 
 from urllib.parse import unquote
 
-from flask import request, send_file
+from flask import request, send_file, make_response
 from flask_restx import Namespace, Resource, fields
 
 import werkzeug.exceptions as wz
@@ -18,11 +18,13 @@ from backendcore.common.constants import (
 
 import backendcore.api.common as acmn
 from backendcore.api.constants import (
+    AC_EXPOSE_HEADERS,
     ADD_FILE,
     CREATE,
     DELETE,
     FIELDS,
     FILE,
+    FILETYPE,
     FORM,
     JOURNAL,
     MESSAGE,
@@ -429,7 +431,6 @@ class DashColumnsRead(Resource):
         return {JOURNAL_MANU_COLUMNS_READ: mdsh.get_choices(),
                 JOURNAL_MANU_COLUMNS_ORDER: mdsh.get_choices_order()}
 
-
 @api.route(f'/{MANU}/{FILE}/{RETRIEVE}/<manu_id>')
 class ManuFetchFile(Resource):
     """
@@ -442,8 +443,10 @@ class ManuFetchFile(Resource):
         filepath = mqry.get_original_submission_filename(manu_id)
         if len(filepath) < 1:
             return ''
-        return send_file(filepath, as_attachment=True)
-
+        response = make_response(send_file(filepath, as_attachment=True))
+        response.headers[FILETYPE] = mqry.get_file_ext(filepath)
+        response.headers[AC_EXPOSE_HEADERS] = FILETYPE
+        return response
 
 #############
 # People
