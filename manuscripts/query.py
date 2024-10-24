@@ -226,9 +226,11 @@ def process_file(file, SUBMIT_DIR):
 
 
 def add_file(_id: str, dict_of_files: dict) -> dict:
+    """
+    Uploads a file to the local directory, then notifies the editor.
+    """
     if not dict_of_files:
         raise ValueError('Empty dict_of_files dictionary passed.')
-    print(f'{dict_of_files=}')
     file_obj = None
     file_obj = dict_of_files.get(MANU_FILE, None)
     if not file_obj:
@@ -239,6 +241,7 @@ def add_file(_id: str, dict_of_files: dict) -> dict:
         os.rename(f'{SUBMIT_DIR}/{filename}',
                   f'{SUBMIT_DIR}/{_id}.{get_file_ext(filename)}')
     update(_id, {TEXT: text})
+    notify_editor(_id)
     return (text, filename)
 
 
@@ -274,7 +277,6 @@ def add(manu_data):
     update_history(manu_id=ret,
                    action=SUBMITTED,
                    new_state=SUBMITTED)
-    notify_editor(ret)
     return ret
 
 
@@ -337,7 +339,7 @@ def notify_referee(manu_id: str, referee: str):
     title = get_title(manu_id)
     abstract = get_abstract(manu_id)
     email_content = (f'Hello {email} you\'ve been asked to referee the '
-                     f'manuscript {title}. The abstract is: </br> {abstract}')
+                     f'manuscript {title}. The abstract is: <br> {abstract}')
     ret = send_mail(to_emails=email, subject='Manuscript Referee',
                     content=email_content, reply_email=reply_email)
     return ret
@@ -350,16 +352,16 @@ def notify_editor(manu_id: str):
     """
     email = get_editor_email(manu_id)
     email_content = f'Hello {email}, a new manuscript has been submitted.'
-    text = get_text(manu_id)
-    if False:
-        # File sending stuff goes here
-        print("not supposed to be here!")
-        return
+    file = get_original_submission_filename(manu_id)
+    if os.path.isfile(file):
+        email_content += ' It has been attached to this email as a document.'
     else:
+        text = get_text(manu_id)
         email_content += (' Only text was provided. It is attached here:'
                           f' {text}')
+        file = None
     ret = send_mail(to_emails=email, subject='New Manuscript Submitted',
-                    content=email_content)
+                    content=email_content, file=file)
     return ret
 
 
