@@ -431,6 +431,7 @@ class DashColumnsRead(Resource):
         return {JOURNAL_MANU_COLUMNS_READ: mdsh.get_choices(),
                 JOURNAL_MANU_COLUMNS_ORDER: mdsh.get_choices_order()}
 
+
 @api.route(f'/{MANU}/{FILE}/{RETRIEVE}/<manu_id>')
 class ManuFetchFile(Resource):
     """
@@ -447,6 +448,7 @@ class ManuFetchFile(Resource):
         response.headers[FILETYPE] = mqry.get_file_ext(filepath)
         response.headers[AC_EXPOSE_HEADERS] = FILETYPE
         return response
+
 
 #############
 # People
