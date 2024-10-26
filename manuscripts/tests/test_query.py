@@ -53,7 +53,9 @@ def temp_manu():
 
 
 @pytest.mark.skip('Waiting to complete new file submission procedure.')
-@patch('manuscripts.query.convert_file', return_value='Text submitted', autospec=True)
+@patch('manuscripts.query.convert_file',
+       return_value='Text submitted',
+       autospec=True)
 def test_handle_file_entry(mock_convert):
     pass
     new_manu_data = qry.add_file(MANU_DICT, FILE_DICT)
@@ -181,3 +183,42 @@ def test_update_history(temp_manu):
     qry.update_history(temp_manu, mst.TEST_ACTION, mst.TEST_STATE)
     history = qry.fetch_by_id(temp_manu).get(HISTORY)
     assert len(history) == 2
+
+
+@patch('manuscripts.query.send_mail', return_value=True, autospec=True)
+def test_notify_referee(mock_send_mail, temp_manu, temp_person):
+    ret = qry.notify_referee(temp_manu, temp_person)
+    assert ret
+
+
+@patch('manuscripts.query.send_mail', return_value=True, autospec=True)
+def test_notify_referee_bad_person(mock_send_mail, temp_manu):
+    with pytest.raises(ValueError):
+        qry.notify_referee(temp_manu, 'bad person')
+
+
+@patch('manuscripts.query.send_mail', return_value=True, autospec=True)
+def test_notify_referee_bad_manu(mock_send_mail, temp_person):
+    with pytest.raises(ValueError):
+        qry.notify_referee('bad manu', temp_person)
+
+
+FAKE_FILE_NM = '/somerandomplace/test'
+
+
+@patch('manuscripts.query.get_original_submission_filename',
+       return_value=True,
+       autospec=True)
+@patch('manuscripts.query.send_mail', return_value=FAKE_FILE_NM, autospec=True)
+def test_notify_editor(mock_get_submission, mock_send_mail, temp_manu):
+    ret = qry.notify_editor(temp_manu)
+    assert ret
+
+
+@patch('manuscripts.query.get_original_submission_filename',
+       return_value=True,
+       autospec=True)
+@patch('manuscripts.query.send_mail', return_value=FAKE_FILE_NM, autospec=True)
+def test_notify_editor_bad_manu(mock_get_submission, mock_send_mail):
+    with pytest.raises(ValueError):
+        qry.notify_editor('bad manu')

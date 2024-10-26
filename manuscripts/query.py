@@ -350,6 +350,8 @@ def notify_editor(manu_id: str):
     When a manuscript is submitted, we email the editor to let them know they
     have received a new manuscipt, as well as attaching the document.
     """
+    if not exists(manu_id):
+        raise ValueError(f'Invalid manuscript id: {manu_id}')
     email = get_editor_email(manu_id)
     email_content = f'Hello {email}, a new manuscript has been submitted.'
     file = get_original_submission_filename(manu_id)
