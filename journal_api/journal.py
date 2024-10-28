@@ -83,7 +83,7 @@ PROTOCOL_NM = sm.fetch_journal_protocol_name()
 
 def _get_user_info(request):
     user_id = None
-    if request.json:
+    if request.is_json:
         user_id = request.json.get(EDITOR)
     auth_key = acmn.get_auth_key_from_request(request)
     if not user_id:

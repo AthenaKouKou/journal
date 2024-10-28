@@ -10,6 +10,11 @@ class Request():
     def __init__(self, json: dict):
         self.json = json
 
+    def is_json():
+        # DOING THIS BECAUSE WE ARE USING A FAKE REQUEST OBJECR
+        # SHOULD FIND A WAY TO TRULY MOCK REQUESTS
+        return True
+
 
 FAKE_REQUEST = Request({jrnl.EDITOR: TEST_USER})
 

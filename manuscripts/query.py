@@ -541,7 +541,7 @@ def receive_action(manu_id, action, **kwargs):
                          f'{curr_state}')
 
 
-def fetch_manusripts(_id):
+def fetch_manuscripts(_id):
     """
     Fetches manuscripts based on what the user is allowed to see
     """
