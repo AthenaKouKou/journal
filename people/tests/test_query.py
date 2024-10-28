@@ -139,6 +139,29 @@ def test_add_bad_role(temp_person):
         qry.add_role(qry.fetch_by_key(temp_person), 'Bad role!')
 
 
+def test_is_editor(temp_person):
+    qry.add_role(qry.fetch_by_key(temp_person), rls.ED)
+    assert qry.is_editor(temp_person)
+
+
+def test_is_author(temp_person):
+    qry.add_role(qry.fetch_by_key(temp_person), rls.AU)
+    assert qry.is_author(temp_person)
+
+
+def test_is_not_author(temp_person):
+    assert qry.is_author(temp_person) == False
+
+
+def test_is_referee(temp_person):
+    qry.add_role(qry.fetch_by_key(temp_person), rls.RE)
+    assert qry.is_referee(temp_person)
+
+
+def test_is_not_referee(temp_person):
+    assert qry.is_referee(temp_person) == False
+
+
 def test_possibly_new_person_add_role_person_exists(temp_person):
     NEW_ROLE = rls.AU
     temp_person_obj = qry.fetch_by_key(temp_person)

@@ -109,6 +109,18 @@ def has_role(person, role):
     return role in roles
 
 
+def is_editor(_id):
+    return has_role(fetch_by_key(_id), rls.ED)
+
+
+def is_author(_id):
+    return has_role(fetch_by_key(_id), rls.AU)
+
+
+def is_referee(_id):
+    return has_role(fetch_by_key(_id), rls.RE)
+
+
 def add_role(person, role):
     if not person or not role:
         raise ValueError(f'Failed to pass valid {person=} or {role=}.')

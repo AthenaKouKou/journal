@@ -541,6 +541,13 @@ def receive_action(manu_id, action, **kwargs):
                          f'{curr_state}')
 
 
+def fetch_manusripts(_id):
+    """
+    Fetches manuscripts based on what the user is allowed to see
+    """
+    return fetch_dict()
+
+
 def main():
     """
     Run this as a program to see the output formats!
