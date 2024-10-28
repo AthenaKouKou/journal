@@ -240,7 +240,7 @@ class ManuRead(Resource):
         Returns journal manuscript data.
         """
         user_id, auth_key = _get_user_info(request)
-        manuscripts = mqry.fetch_manus(user_id)
+        manuscripts = mqry.fetch_manuscripts(user_id)
         return {JOURNAL_MANU_READ: manuscripts}
 
 
