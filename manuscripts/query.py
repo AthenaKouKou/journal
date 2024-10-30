@@ -226,13 +226,14 @@ def process_file(file, SUBMIT_DIR):
 
 
 def save_text_as_file(_id: str) -> dict:
-    text = fetch_by_id(_id).get(TEXT, None)
+    text = get_text(_id)
     SUBMIT_DIR = get_submission_directory(UPLOAD_DIR, _id)
     filename = f'{SUBMIT_DIR}/{_id}.md'
     with open(filename, 'w') as mdfile:
         mdfile.write(text)
         return (text, filename)
     raise ValueError('Could not write to file.')
+
 
 def add_file(_id: str, dict_of_files: dict) -> dict:
     """
@@ -251,7 +252,7 @@ def add_file(_id: str, dict_of_files: dict) -> dict:
         os.rename(f'{SUBMIT_DIR}/{filename}',
                   f'{SUBMIT_DIR}/{_id}.{get_file_ext(filename)}')
     update(_id, {TEXT: text})
-    # notify_editor(_id)
+    notify_editor(_id)
     return (text, filename)
 
 
