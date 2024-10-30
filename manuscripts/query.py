@@ -225,12 +225,22 @@ def process_file(file, SUBMIT_DIR):
     return output, filename
 
 
+def save_text_as_file(_id: str) -> dict:
+    text = fetch_by_id(_id).get(TEXT, None)
+    SUBMIT_DIR = get_submission_directory(UPLOAD_DIR, _id)
+    filename = f'{SUBMIT_DIR}/{_id}.md'
+    with open(filename, 'w') as mdfile:
+        mdfile.write(text)
+        return (text, filename)
+    raise ValueError('Could not write to file.')
+
 def add_file(_id: str, dict_of_files: dict) -> dict:
     """
     Uploads a file to the local directory, then notifies the editor.
     """
     if not dict_of_files:
-        raise ValueError('Empty dict_of_files dictionary passed.')
+        return save_text_as_file(_id)
+        # raise ValueError('Empty dict_of_files dictionary passed.')
     file_obj = None
     file_obj = dict_of_files.get(MANU_FILE, None)
     if not file_obj:
@@ -241,7 +251,7 @@ def add_file(_id: str, dict_of_files: dict) -> dict:
         os.rename(f'{SUBMIT_DIR}/{filename}',
                   f'{SUBMIT_DIR}/{_id}.{get_file_ext(filename)}')
     update(_id, {TEXT: text})
-    notify_editor(_id)
+    # notify_editor(_id)
     return (text, filename)
 
 
