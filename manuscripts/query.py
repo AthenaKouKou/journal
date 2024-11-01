@@ -308,6 +308,12 @@ def fetch_by_state(state: str) -> list:
     return get_cache(COLLECT).fetch_by_fld_val(STATE, state)
 
 
+def get_referees(manu_id: str) -> list:
+    if not exists(manu_id):
+        raise ValueError(f'No such manuscript id: {manu_id}')
+    return fetch_by_key(manu_id).get(REFEREES, [])
+
+
 def get_original_submission_filename(manu_id):
     if not exists(manu_id):
         raise ValueError(f'No such manuscript id: {manu_id}')
@@ -386,7 +392,7 @@ def assign_referee(manu_id: str, **kwargs):
     if not referee_id:
         raise ValueError(f'Must provide \'{REFEREE_ARG}\' value to assign a '
                          'referee.')
-    refs = fetch_by_key(manu_id).get(REFEREES, [])
+    refs = get_referees(manu_id)
     refs.append(referee_id)
     update_fld(manu_id, REFEREES, refs)
     ref = pqry.fetch_by_key(referee_id)
@@ -403,7 +409,7 @@ def remove_referee(manu_id, **kwargs):
     if not referee_id:
         raise ValueError(f'Must provide \'{REFEREE_ARG}\' value to remove a '
                          'referee.')
-    refs = fetch_by_key(manu_id).get(REFEREES)
+    refs = get_referees(manu_id)
     if referee_id not in refs:
         raise ValueError(f'Referee {referee_id} not found')
     refs.remove(referee_id)
@@ -526,6 +532,9 @@ STATE_TABLE = {
     },
 }
 
+REFEREE_ACTIONS = [DONE]
+REFEREE_STATES = [REFEREE_REVIEW]
+
 
 def receive_action(manu_id, action, **kwargs):
     """
@@ -552,11 +561,24 @@ def receive_action(manu_id, action, **kwargs):
                          f'{curr_state}')
 
 
+ACTIONS = 'actions'
+STATES = 'states'
+
+
 def fetch_manuscripts(_id):
     """
     Fetches manuscripts based on what the user is allowed to see
     """
-    return fetch_dict()
+    manu_dict = fetch_dict()
+    if pqry.is_editor(_id):
+        # Editors see full dict
+        return manu_dict
+    for manu_id in manu_dict:
+        if _id in get_referees(manu_id):
+            print("user is a referee in this manuscript")
+            manu_dict[manu_id][ACTIONS] = REFEREE_ACTIONS
+            manu_dict[manu_id][STATES] = REFEREE_STATES
+    return manu_dict
 
 
 def main():
