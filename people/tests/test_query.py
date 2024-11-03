@@ -123,8 +123,14 @@ def test_has_role():
     assert qry.has_role(get_person(), rls.TEST_ROLE)
 
 
-def test_has_role_no_role():
+def test_has_role_fake_role():
     assert not qry.has_role(get_person(), 'Not a real role')
+
+
+def test_has_role_no_role():
+    test_person = get_person()
+    del test_person[rls.ROLES]
+    assert not qry.has_role(test_person, rls.TEST_ROLE)
 
 
 def test_add_role(temp_person):

@@ -103,7 +103,7 @@ def fetch_all_or_some(name=None, role=None):
 
 
 def has_role(person, role):
-    roles = person.get(ROLES)
+    roles = person.get(ROLES, None)
     if not roles:
         return False
     return role in roles
