@@ -565,12 +565,14 @@ ACTIONS = 'actions'
 STATES = 'states'
 
 
-def fetch_manuscripts(_id):
+def fetch_manuscripts(email):
     """
     Fetches manuscripts based on what the user is allowed to see
     """
     manu_dict = fetch_dict()
-    if pqry.is_editor(_id):
+    person = pqry.fetch_by_email(email)
+    _id = pqry.get_id(person)
+    if pqry.is_editor(person):
         # Editors see full dict
         return manu_dict
     for manu_id in manu_dict:
