@@ -153,9 +153,11 @@ def exists(code):
 TEST_CODE = 'BK'
 TEST_LAST_UPDATED = tfmt.datetime_to_iso(tfmt.TEST_OLD_DATETIME)
 TEST_REFEREE = 'Kris'
+TEST_ABSTRACT = 'TLDR'
+TEST_TEXT = 'When in the course of Boaz events ...'
 
 TEST_MANU = {
-    ABSTRACT: 'TLDR',
+    ABSTRACT: TEST_ABSTRACT,
     AUTHORS: [
         {
             NAME: 'Boaz Kaufman',
@@ -164,7 +166,7 @@ TEST_MANU = {
     ],
     CODE: TEST_CODE,
     REFEREES: [TEST_REFEREE],
-    TEXT: 'When in the course of Boaz events ...',
+    TEXT_ENTRY: TEST_TEXT,
     TITLE: 'Forays into Kaufman Studies',
     WCOUNT: 500,
 }
@@ -176,6 +178,10 @@ ALLOWED_EXTENSIONS = ['txt', 'docx', 'md', 'html']
 
 def get_valid_exts():
     return ALLOWED_EXTENSIONS
+
+
+TEST_EXTENSION = 'txt'
+TEST_FILENM = f'tester.{TEST_EXTENSION}'
 
 
 def get_file_ext(filename):
