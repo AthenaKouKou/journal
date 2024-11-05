@@ -596,6 +596,7 @@ def fetch_manuscripts(email):
     if pqry.is_editor(person):
         # Editors see full dict
         return manu_dict
+    to_del = []
     for manu_id in manu_dict:
         if is_referee_for(_id, manu_id):
             manu_dict[manu_id][ACTIONS] = REFEREE_ACTIONS
@@ -604,8 +605,10 @@ def fetch_manuscripts(email):
             manu_dict[manu_id][ACTIONS] = REFEREE_ACTIONS
             manu_dict[manu_id][STATES] = REFEREE_STATES
         else:
-            del manu_dict[manu_id]
+            to_del.append(manu_id)
             # User does not get to see any information
+    for manu_id in to_del:
+        del manu_dict[manu_id]
     return manu_dict
 
 
