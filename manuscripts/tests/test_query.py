@@ -181,7 +181,6 @@ def test_remove_referee_no_referee(temp_manu):
 
 def test_remove_referee(temp_manu):
     manu = qry.fetch_by_id(temp_manu)
-    print(f'{manu=}')
     old_ref_count = len(manu.get(REFEREES))
     qry.remove_referee(temp_manu, referee=qry.TEST_REFEREE)
     manu = qry.fetch_by_id(temp_manu)
@@ -234,8 +233,14 @@ FAKE_FILE_NM = '/somerandomplace/test'
 @patch('manuscripts.query.get_original_submission_filename',
        return_value=True,
        autospec=True)
+@patch('manuscripts.query.get_editor_email',
+      return_value='fake@email',
+      autospec=True)
 @patch('manuscripts.query.send_mail', return_value=FAKE_FILE_NM, autospec=True)
-def test_notify_editor(mock_get_submission, mock_send_mail, temp_manu):
+def test_notify_editor(mock_get_submission,
+                       mock_get_editor_email,
+                       mock_send_mail,
+                       temp_manu):
     ret = qry.notify_editor(temp_manu)
     assert ret
 

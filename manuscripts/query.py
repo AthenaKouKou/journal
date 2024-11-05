@@ -284,7 +284,6 @@ def add_authors(authors: list):
 
 @needs_manuscripts_cache
 def add(manu_data):
-    print(f'{manu_data=}')
     set_manuscript_defaults(manu_data)
     add_authors(manu_data[AUTHORS])
     # For testing we may add a manuscript that already has refs!
@@ -571,6 +570,22 @@ ACTIONS = 'actions'
 STATES = 'states'
 
 
+def is_referee_for(_id, manu_id):
+    """
+    Takes _id, and manu_id and returns True if the user is a referee for the
+    manuscript.
+    """
+    return _id in get_referees(manu_id)
+
+
+def is_author_for(_id, manu_id):
+    """
+    Takes _id and manu_id and returns True if the user is an author for the
+    manuscript.
+    """
+    return False
+
+
 def fetch_manuscripts(email):
     """
     Fetches manuscripts based on what the user is allowed to see
@@ -582,10 +597,15 @@ def fetch_manuscripts(email):
         # Editors see full dict
         return manu_dict
     for manu_id in manu_dict:
-        if _id in get_referees(manu_id):
-            print("user is a referee in this manuscript")
+        if is_referee_for(_id, manu_id):
             manu_dict[manu_id][ACTIONS] = REFEREE_ACTIONS
             manu_dict[manu_id][STATES] = REFEREE_STATES
+        elif is_author_for(_id, manu_id):
+            manu_dict[manu_id][ACTIONS] = REFEREE_ACTIONS
+            manu_dict[manu_id][STATES] = REFEREE_STATES
+        else:
+            del manu_dict[manu_id]
+            # User does not get to see any information
     return manu_dict
 
 

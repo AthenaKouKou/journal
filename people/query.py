@@ -98,7 +98,7 @@ def get_id(person: dict) -> str:
     """
     Takes in a person dict, returns their id as a string.
     """
-    _id = person.get(USER_ID, None)
+    _id = person.get(OBJ_ID_NM, None)
     if _id:
         return _id
     else:
@@ -175,7 +175,6 @@ def select(people: dict, name=None, role=None):
             if person.get(NAME) == name:
                 matches[person[OBJ_ID_NM]] = people[code]
         elif role:
-            print(f'{role=}')
             if has_role(person, role):
                 matches[person[OBJ_ID_NM]] = people[code]
     return matches
@@ -211,7 +210,6 @@ def get_email(_id):
 TEST_EMAIL = 'madeup@utopia.com'
 TEST_PERSON = {
     NAME: 'Callahan le Magnifique',
-    USER_ID: TEST_EMAIL,
     ROLES: [rls.TEST_ROLE],
     BIO: 'Un homme tres magnifique',
     EMAIL: TEST_EMAIL,
