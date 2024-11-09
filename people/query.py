@@ -94,6 +94,17 @@ def fetch_by_email(email: str) -> dict:
     return person
 
 
+def get_id(person: dict) -> str:
+    """
+    Takes in a person dict, returns their id as a string.
+    """
+    _id = person.get(OBJ_ID_NM, None)
+    if _id:
+        return _id
+    else:
+        raise ValueError(f'No id in: {person}')
+
+
 def fetch_all_or_some(name=None, role=None):
     people = fetch_dict()
     if name or role:
@@ -103,22 +114,22 @@ def fetch_all_or_some(name=None, role=None):
 
 
 def has_role(person, role):
-    roles = person.get(ROLES)
+    roles = person.get(ROLES, None)
     if not roles:
         return False
     return role in roles
 
 
-def is_editor(_id):
-    return has_role(fetch_by_key(_id), rls.ED)
+def is_editor(person):
+    return has_role(person, rls.ED)
 
 
-def is_author(_id):
-    return has_role(fetch_by_key(_id), rls.AU)
+def is_author(person):
+    return has_role(person, rls.AU)
 
 
-def is_referee(_id):
-    return has_role(fetch_by_key(_id), rls.RE)
+def is_referee(person):
+    return has_role(person, rls.RE)
 
 
 def add_role(person, role):
@@ -164,7 +175,6 @@ def select(people: dict, name=None, role=None):
             if person.get(NAME) == name:
                 matches[person[OBJ_ID_NM]] = people[code]
         elif role:
-            print(f'{role=}')
             if has_role(person, role):
                 matches[person[OBJ_ID_NM]] = people[code]
     return matches
@@ -200,7 +210,6 @@ def get_email(_id):
 TEST_EMAIL = 'madeup@utopia.com'
 TEST_PERSON = {
     NAME: 'Callahan le Magnifique',
-    USER_ID: TEST_EMAIL,
     ROLES: [rls.TEST_ROLE],
     BIO: 'Un homme tres magnifique',
     EMAIL: TEST_EMAIL,

@@ -154,9 +154,11 @@ def exists(code):
 TEST_CODE = 'BK'
 TEST_LAST_UPDATED = tfmt.datetime_to_iso(tfmt.TEST_OLD_DATETIME)
 TEST_REFEREE = 'Kris'
+TEST_ABSTRACT = 'TLDR'
+TEST_TEXT = 'When in the course of Boaz events ...'
 
 TEST_MANU = {
-    ABSTRACT: 'TLDR',
+    ABSTRACT: TEST_ABSTRACT,
     AUTHORS: [
         {
             NAME: 'Boaz Kaufman',
@@ -165,7 +167,7 @@ TEST_MANU = {
     ],
     CODE: TEST_CODE,
     REFEREES: [TEST_REFEREE],
-    TEXT: 'When in the course of Boaz events ...',
+    TEXT_ENTRY: TEST_TEXT,
     TITLE: 'Forays into Kaufman Studies',
     WCOUNT: 500,
 }
@@ -177,6 +179,10 @@ ALLOWED_EXTENSIONS = ['txt', 'docx', 'md', 'html']
 
 def get_valid_exts():
     return ALLOWED_EXTENSIONS
+
+
+TEST_EXTENSION = 'txt'
+TEST_FILENM = f'tester.{TEST_EXTENSION}'
 
 
 def get_file_ext(filename):
@@ -269,7 +275,6 @@ def set_manuscript_defaults(manu_data):
 
 def add_authors(authors: list):
     for author in authors:
-        print(f'Adding {author=}')
         pqry.possibly_new_person_add_role(
             author.get(EMAIL),
             rls.AU,
@@ -539,8 +544,40 @@ STATE_TABLE = {
 REFEREE_ACTIONS = [DONE]
 REFEREE_STATES = [REFEREE_REVIEW]
 
+AUTHOR_ACTIONS = [WITHDRAW, DONE]
 
-def receive_action(manu_id, action, **kwargs):
+
+def is_referee_for(_id, manu_id):
+    """
+    Takes _id, and manu_id and returns True if the user is a referee for the
+    manuscript.
+    """
+    return _id in get_referees(manu_id)
+
+
+def is_author_for(_id, manu_id):
+    """
+    Takes _id and manu_id and returns True if the user is an author for the
+    manuscript.
+    """
+    return False
+
+
+def is_valid_action(manu_id, person, action):
+    """
+    Checks whether the given user is able to perform the provided action for
+    a given manuscript, based on their roles.
+    """
+    user_id = pqry.get_id(person)
+    if pqry.is_editor(person):
+        return True
+    elif is_referee_for(user_id, manu_id):
+        return action in REFEREE_ACTIONS
+    elif is_author_for(user_id, manu_id):
+        return action in AUTHOR_ACTIONS
+
+
+def receive_action(manu_id, action, email: str = None, **kwargs):
     """
     Currently we have 'referee', 'state' kwargs.
     """
@@ -548,6 +585,11 @@ def receive_action(manu_id, action, **kwargs):
         raise ValueError(f'Invalid manuscript id: {manu_id}')
     if not mst.is_valid_action(action):
         raise ValueError(f'Invalid action: {action}')
+    if email:
+        person = pqry.fetch_by_email(email)
+        if not is_valid_action(manu_id, person, action):
+            raise ValueError(f'{email} is not allowed to perform {action}'
+                             f' on {manu_id}')
     curr_state = get_state(manu_id)
     action_opts = STATE_TABLE[curr_state].get(action, {})
     func = action_opts.get(FUNC, None)
@@ -569,19 +611,29 @@ ACTIONS = 'actions'
 STATES = 'states'
 
 
-def fetch_manuscripts(_id):
+def fetch_manuscripts(email):
     """
     Fetches manuscripts based on what the user is allowed to see
     """
     manu_dict = fetch_dict()
-    if pqry.is_editor(_id):
+    person = pqry.fetch_by_email(email)
+    _id = pqry.get_id(person)
+    if pqry.is_editor(person):
         # Editors see full dict
         return manu_dict
+    to_del = []
     for manu_id in manu_dict:
-        if _id in get_referees(manu_id):
-            print("user is a referee in this manuscript")
+        if is_referee_for(_id, manu_id):
             manu_dict[manu_id][ACTIONS] = REFEREE_ACTIONS
             manu_dict[manu_id][STATES] = REFEREE_STATES
+        elif is_author_for(_id, manu_id):
+            manu_dict[manu_id][ACTIONS] = REFEREE_ACTIONS
+            manu_dict[manu_id][STATES] = REFEREE_STATES
+        else:
+            to_del.append(manu_id)
+            # User does not get to see any information
+    for manu_id in to_del:
+        del manu_dict[manu_id]
     return manu_dict
 
 

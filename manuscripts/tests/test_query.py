@@ -34,7 +34,6 @@ BAD_FILE_DICT = {qry.MANU_FILE: FakeFileObj(good_file=False)}
 def add_test_manuscript():
     sample_dict = deepcopy(qry.TEST_MANU)
     ret = qry.add(sample_dict)
-    print(ret)
     return ret
 
 
@@ -123,7 +122,33 @@ def test_get_state(temp_manu):
 
 def test_get_state_bad_id():
     with pytest.raises(ValueError):
-        qry.get_last_updated('a bad id')
+        qry.get_state('a bad id')
+
+
+def test_get_abstract(temp_manu):
+    assert qry.get_abstract(temp_manu) == qry.TEST_ABSTRACT
+
+
+def test_get_abstract_bad_id():
+    with pytest.raises(ValueError):
+        qry.get_abstract('a bad id')
+
+
+def test_get_text(temp_manu):
+    assert qry.get_text(temp_manu) == qry.TEST_TEXT
+
+
+def test_get_text_bad_id():
+    with pytest.raises(ValueError):
+        qry.get_text('a bad id')
+
+
+def test_get_file_ext():
+    assert qry.get_file_ext(qry.TEST_FILENM) == qry.TEST_EXTENSION
+
+
+def test_get_file_ext_no_ext():
+    assert qry.get_file_ext('filename without an extension') == None
 
 
 def test_set_last_updated(temp_manu):
@@ -156,7 +181,6 @@ def test_remove_referee_no_referee(temp_manu):
 
 def test_remove_referee(temp_manu):
     manu = qry.fetch_by_id(temp_manu)
-    print(f'{manu=}')
     old_ref_count = len(manu.get(REFEREES))
     qry.remove_referee(temp_manu, referee=qry.TEST_REFEREE)
     manu = qry.fetch_by_id(temp_manu)
@@ -209,8 +233,14 @@ FAKE_FILE_NM = '/somerandomplace/test'
 @patch('manuscripts.query.get_original_submission_filename',
        return_value=True,
        autospec=True)
+@patch('manuscripts.query.get_editor_email',
+      return_value='fake@email',
+      autospec=True)
 @patch('manuscripts.query.send_mail', return_value=FAKE_FILE_NM, autospec=True)
-def test_notify_editor(mock_get_submission, mock_send_mail, temp_manu):
+def test_notify_editor(mock_get_submission,
+                       mock_get_editor_email,
+                       mock_send_mail,
+                       temp_manu):
     ret = qry.notify_editor(temp_manu)
     assert ret
 
