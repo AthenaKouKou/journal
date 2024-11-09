@@ -1,5 +1,5 @@
 from backendcore.data.form_filler import (
-    DESCR, DISP_NAME
+    DISP_NAME
 )
 import backendcore.data.fields as cflds
 from backendcore.common.constants import OBJ_ID_NM
@@ -22,6 +22,8 @@ LAST_UPDATED = 'timeUpdated'
 LAST_UPDATED_DISP_NAME = 'Time last updated'
 REFEREES = 'referees'
 REFEREES_DISP_NAME = 'Referees'
+REF_REPORTS = 'ref_reports'
+REF_REPORTS_DISP_NAME = 'Referee Reports'
 STATE = 'state'
 STATE_DISP_NAME = 'State'
 TEXT = 'text'
@@ -42,16 +44,14 @@ FIELDS = {
     },
     WCOUNT: {
         DISP_NAME: WCOUNT_DISP_NAME,
-        DESCR: 'Approximate number of words',
         FLD_TYPE: cflds.INT,
     },
     AUTHORS: {
         DISP_NAME: AUTHORS_DISP_NAME,
-        DESCR: 'List of authors',
     },
     TEXT: {
         DISP_NAME: TEXT_DISP_NAME,
-        DESCR: 'Text submission; file upload or text entry',
+        cflds.HIDDEN: True,
     },
     ABSTRACT: {
         DISP_NAME: ABSTRACT_DISP_NAME,
@@ -66,12 +66,15 @@ FIELDS = {
     },
     REFEREES: {
         DISP_NAME: REFEREES_DISP_NAME,
-        DESCR: 'The manuscript\'s currently assigned referees.',
+        FLD_TYPE: cflds.LIST,
+    },
+    REF_REPORTS: {
+        DISP_NAME: REF_REPORTS_DISP_NAME,
+        cflds.HIDDEN: True,
         FLD_TYPE: cflds.LIST,
     },
     LAST_UPDATED: {
         DISP_NAME: LAST_UPDATED_DISP_NAME,
-        DESCR: 'The time when the manuscript\'s state was last updated.',
     },
 }
 
