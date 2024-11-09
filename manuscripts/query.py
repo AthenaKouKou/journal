@@ -274,7 +274,6 @@ def set_manuscript_defaults(manu_data):
 
 def add_authors(authors: list):
     for author in authors:
-        print(f'Adding {author=}')
         pqry.possibly_new_person_add_role(
             author.get(EMAIL),
             rls.AU,
@@ -540,8 +539,40 @@ STATE_TABLE = {
 REFEREE_ACTIONS = [DONE]
 REFEREE_STATES = [REFEREE_REVIEW]
 
+AUTHOR_ACTIONS = [WITHDRAW, DONE]
 
-def receive_action(manu_id, action, **kwargs):
+
+def is_referee_for(_id, manu_id):
+    """
+    Takes _id, and manu_id and returns True if the user is a referee for the
+    manuscript.
+    """
+    return _id in get_referees(manu_id)
+
+
+def is_author_for(_id, manu_id):
+    """
+    Takes _id and manu_id and returns True if the user is an author for the
+    manuscript.
+    """
+    return False
+
+
+def is_valid_action(manu_id, person, action):
+    """
+    Checks whether the given user is able to perform the provided action for
+    a given manuscript, based on their roles.
+    """
+    user_id = pqry.get_id(person)
+    if pqry.is_editor(person):
+        return True
+    elif is_referee_for(user_id, manu_id):
+        return action in REFEREE_ACTIONS
+    elif is_author_for(user_id, manu_id):
+        return action in AUTHOR_ACTIONS
+
+
+def receive_action(manu_id, action, email: str = None, **kwargs):
     """
     Currently we have 'referee', 'state' kwargs.
     """
@@ -549,6 +580,11 @@ def receive_action(manu_id, action, **kwargs):
         raise ValueError(f'Invalid manuscript id: {manu_id}')
     if not mst.is_valid_action(action):
         raise ValueError(f'Invalid action: {action}')
+    if email:
+        person = pqry.fetch_by_email(email)
+        if not is_valid_action(manu_id, person, action):
+            raise ValueError(f'{email} is not allowed to perform {action}'
+                             f' on {manu_id}')
     curr_state = get_state(manu_id)
     action_opts = STATE_TABLE[curr_state].get(action, {})
     func = action_opts.get(FUNC, None)
@@ -568,22 +604,6 @@ def receive_action(manu_id, action, **kwargs):
 
 ACTIONS = 'actions'
 STATES = 'states'
-
-
-def is_referee_for(_id, manu_id):
-    """
-    Takes _id, and manu_id and returns True if the user is a referee for the
-    manuscript.
-    """
-    return _id in get_referees(manu_id)
-
-
-def is_author_for(_id, manu_id):
-    """
-    Takes _id and manu_id and returns True if the user is an author for the
-    manuscript.
-    """
-    return False
 
 
 def fetch_manuscripts(email):

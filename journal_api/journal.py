@@ -270,7 +270,6 @@ class ManuCreate(Resource):
     def put(self):
         try:
             jdata = request.json
-            print(f'{jdata=}')
             ret = mqry.add(jdata)
         except Exception as err:
             print(err)
@@ -334,7 +333,7 @@ class ManuReceiveAction(Resource):
         referee = request.json.get(mqry.REFEREE_ARG)
         state = request.json.get(mqry.STATE)
         try:
-            new_state = mqry.receive_action(manu_id, action,
+            new_state = mqry.receive_action(manu_id, action, user_id,
                                             **{EDITOR: editor,
                                                mqry.REFEREE_ARG: referee,
                                                mqry.STATE: state})
