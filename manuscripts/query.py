@@ -31,6 +31,7 @@ from manuscripts.fields import (
     LAST_UPDATED,
     OBJ_ID_NM,
     REFEREES,
+    REF_REPORTS,
     STATE,
     TEXT,
     TITLE,
@@ -276,9 +277,12 @@ def add_authors(authors: list):
         )
 
 
+def add_ref_reports(reports: list):
+    print(REF_REPORTS)
+
+
 @needs_manuscripts_cache
 def add(manu_data):
-    print(f'{manu_data=}')
     set_manuscript_defaults(manu_data)
     add_authors(manu_data[AUTHORS])
     # For testing we may add a manuscript that already has refs!
