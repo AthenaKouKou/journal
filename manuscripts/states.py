@@ -42,6 +42,7 @@ DONE = 'done'
 EDITOR_MOVE = 'editor-move'
 REJECT = 'reject'
 REMOVE_REFEREE = 'remove-referee'
+SUBMIT_REVIEW = 'submit-review'
 WITHDRAW = 'withdraw'
 
 TEST_ACTION = REJECT
@@ -55,6 +56,7 @@ ACTION_MAP = {
     REJECT: 'Reject',
     REMOVE_REFEREE: 'Remove a referee',
     WITHDRAW: 'Author withdraws',
+    SUBMIT_REVIEW: 'Submit your review',
 }
 
 VALID_ACTIONS = list(ACTION_MAP.keys())

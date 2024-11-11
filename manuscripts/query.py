@@ -22,7 +22,12 @@ from backendcore.emailer.api_send import send_mail
 from journal_common.common import get_collect_name
 
 import people.query as pqry
-import people.roles as rls
+from people.roles import (
+    AU,
+    ED,
+    RE,
+    ROLES,
+)
 
 from manuscripts.fields import (
     ABSTRACT,
@@ -49,9 +54,9 @@ import manuscripts.states as mst
 from manuscripts.states import (
     ACCEPT,
     ACCEPT_W_REV,
-    AUTHOR_REVISIONS,
     ASSIGN_REFEREE,
     AUTHOR_REVIEW,
+    AUTHOR_REVISIONS,
     COPY_EDITING,
     DONE,
     EDITOR_MOVE,
@@ -63,6 +68,7 @@ from manuscripts.states import (
     REJECTED,
     REMOVE_REFEREE,
     SUBMITTED,
+    SUBMIT_REVIEW,
     WITHDRAW, WITHDRAWN,
 )
 
@@ -159,7 +165,7 @@ def get_editor_email(manu_id):
     In the future we may have multiple editors in a journal, and individual
     submissions may have different editors. For now, we use all the editors
     """
-    editors = pqry.fetch_all_or_some(role=rls.ED)
+    editors = pqry.fetch_all_or_some(role=ED)
     return pqry.get_email(list(editors.keys())[0])
 
 
@@ -293,7 +299,7 @@ def add_authors(authors: list):
     for author in authors:
         pqry.possibly_new_person_add_role(
             author.get(EMAIL),
-            rls.AU,
+            AU,
             author.get(NAME)
         )
 
@@ -491,9 +497,11 @@ DESTINATION = 'destination'
 
 COMMON_ACTIONS = {EDITOR_MOVE: {
                FUNC: editor_move,
+               ROLES: [ED],
                },
                WITHDRAW: {
                FUNC: lambda x, **kwargs: WITHDRAWN,
+               ROLES: [AU],
                }}
 
 
@@ -501,57 +509,73 @@ STATE_TABLE = {
     AUTHOR_REVIEW: {
         DONE: {
             FUNC: lambda x, **kwargs: FORMATTING,
+            ROLES: [AU],
         },
         **COMMON_ACTIONS,
     },
     AUTHOR_REVISIONS: {
         DONE: {
             FUNC: lambda x, **kwargs: EDITOR_REVIEW,
+            ROLES: [AU],
         },
         **COMMON_ACTIONS,
     },
     COPY_EDITING: {
         DONE: {
             FUNC: lambda x, **kwargs: AUTHOR_REVIEW,
+            ROLES: [ED],
         },
         **COMMON_ACTIONS,
     },
     EDITOR_REVIEW: {
         ACCEPT: {
             FUNC: lambda x, **kwargs: COPY_EDITING,
+            ROLES: [ED],
         },
         **COMMON_ACTIONS,
     },
     FORMATTING: {
         DONE: {
             FUNC: lambda x, **kwargs: PUBLISHED,
+            ROLES: [ED],
         },
         **COMMON_ACTIONS,
     },
     REFEREE_REVIEW: {
         ACCEPT: {
             FUNC: lambda x, **kwargs: COPY_EDITING,
+            ROLES: [ED],
         },
         ACCEPT_W_REV: {
             FUNC: lambda x, **kwargs: AUTHOR_REVISIONS,
+            ROLES: [ED],
         },
         ASSIGN_REFEREE: {
             FUNC: assign_referee,
+            ROLES: [ED],
         },
         REMOVE_REFEREE: {
             FUNC: remove_referee,
+            ROLES: [ED],
         },
         REJECT: {
             FUNC: lambda x, **kwargs: REJECTED,
+            ROLES: [ED],
+        },
+        SUBMIT_REVIEW: {
+            FUNC: lambda x, **kwargs: REFEREE_REVIEW,
+            ROLES: [RE],
         },
         **COMMON_ACTIONS,
     },
     SUBMITTED: {
         REJECT: {
             FUNC: lambda x, **kwargs: REJECTED,
+            ROLES: [ED],
         },
         ASSIGN_REFEREE: {
             FUNC: assign_referee,
+            ROLES: [ED],
         },
         **COMMON_ACTIONS,
     },
@@ -624,7 +648,6 @@ def receive_action(manu_id, action, email: str = None, **kwargs):
 
 
 ACTIONS = 'actions'
-STATES = 'states'
 
 
 def fetch_manuscripts(email):
@@ -641,10 +664,8 @@ def fetch_manuscripts(email):
     for manu_id in manu_dict:
         if is_referee_for(_id, manu_id):
             manu_dict[manu_id][ACTIONS] = REFEREE_ACTIONS
-            manu_dict[manu_id][STATES] = REFEREE_STATES
         elif is_author_for(_id, manu_id):
             manu_dict[manu_id][ACTIONS] = REFEREE_ACTIONS
-            manu_dict[manu_id][STATES] = REFEREE_STATES
         else:
             to_del.append(manu_id)
             # User does not get to see any information
