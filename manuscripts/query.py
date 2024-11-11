@@ -31,7 +31,8 @@ from manuscripts.fields import (
     LAST_UPDATED,
     OBJ_ID_NM,
     REFEREES,
-    REF_REPORTS,
+    REF_REPORT,
+    REF_VERDICT,
     STATE,
     TEXT,
     TITLE,
@@ -69,6 +70,21 @@ from manuscripts.states import (
 DB = 'journalDB'
 COLLECT = 'manuscripts'
 CACHE_NM = COLLECT
+
+# Here's what refs can say about a manuscript.
+VERDICTS = [
+    ACCEPT,
+    ACCEPT_W_REV,
+    REJECT,
+]
+
+
+def get_ref_verdicts() -> list:
+    return VERDICTS
+
+
+def is_valid_verdict(verdict: str) -> bool:
+    return verdict in get_ref_verdicts()
 
 
 def needs_manuscripts_cache(fn):
@@ -166,7 +182,7 @@ TEST_MANU = {
         }
     ],
     CODE: TEST_CODE,
-    REFEREES: [TEST_REFEREE],
+    REFEREES: {TEST_REFEREE: {}},
     TEXT_ENTRY: TEST_TEXT,
     TITLE: 'Forays into Kaufman Studies',
     WCOUNT: 500,
@@ -282,8 +298,9 @@ def add_authors(authors: list):
         )
 
 
-def add_ref_reports(reports: list):
-    print(REF_REPORTS)
+def add_ref_report(reports: list):
+    print(REF_REPORT)
+    print(REF_VERDICT)
 
 
 @needs_manuscripts_cache
@@ -292,7 +309,7 @@ def add(manu_data):
     add_authors(manu_data[AUTHORS])
     # For testing we may add a manuscript that already has refs!
     if not manu_data.get(REFEREES):
-        manu_data[REFEREES] = []
+        manu_data[REFEREES] = {}
     ret = get_cache(COLLECT).add(manu_data)
     update_history(manu_id=ret,
                    action=SUBMITTED,
@@ -320,7 +337,7 @@ def fetch_by_state(state: str) -> list:
 def get_referees(manu_id: str) -> list:
     if not exists(manu_id):
         raise ValueError(f'No such manuscript id: {manu_id}')
-    return fetch_by_key(manu_id).get(REFEREES, [])
+    return fetch_by_key(manu_id).get(REFEREES, {})
 
 
 def get_original_submission_filename(manu_id):
@@ -397,31 +414,30 @@ def assign_referee(manu_id: str, **kwargs):
     """
     Assigns a referee to a manuscript and emails them
     """
-    referee_id = kwargs.get(REFEREE_ARG)
-    if not referee_id:
+    ref_id = kwargs.get(REFEREE_ARG)
+    if not ref_id:
         raise ValueError(f'Must provide \'{REFEREE_ARG}\' value to assign a '
                          'referee.')
     refs = get_referees(manu_id)
-    refs.append(referee_id)
+    if ref_id not in refs:
+        refs[ref_id] = {}
     update_fld(manu_id, REFEREES, refs)
-    ref = pqry.fetch_by_key(referee_id)
-    try:
+    ref = pqry.fetch_by_key(ref_id)
+    if ref:
         pqry.add_role(ref, 'RE')
-    except ValueError as e:
-        print(f'Adding referee failed {e}; what should we do here?')
-    notify_referee(manu_id, referee_id)
+    notify_referee(manu_id, ref_id)
     return REFEREE_REVIEW
 
 
 def remove_referee(manu_id, **kwargs):
-    referee_id = kwargs.get(REFEREE_ARG)
-    if not referee_id:
+    ref_id = kwargs.get(REFEREE_ARG)
+    if not ref_id:
         raise ValueError(f'Must provide \'{REFEREE_ARG}\' value to remove a '
                          'referee.')
     refs = get_referees(manu_id)
-    if referee_id not in refs:
-        raise ValueError(f'Referee {referee_id} not found')
-    refs.remove(referee_id)
+    if ref_id not in refs:
+        raise ValueError(f'Referee {ref_id} not found')
+    del refs[ref_id]
     update_fld(manu_id, REFEREES, refs)
     if len(refs) == 0:
         return SUBMITTED

@@ -22,8 +22,8 @@ LAST_UPDATED = 'timeUpdated'
 LAST_UPDATED_DISP_NAME = 'Time last updated'
 REFEREES = 'referees'
 REFEREES_DISP_NAME = 'Referees'
-REF_REPORTS = 'ref_reports'
-REF_REPORTS_DISP_NAME = 'Referee Reports'
+REF_REPORT = 'report'
+REF_VERDICT = 'verdict'
 STATE = 'state'
 STATE_DISP_NAME = 'State'
 TEXT = 'text'
@@ -32,6 +32,7 @@ TEST_FLD_DISP_NM = 'Sample Code'
 TEST_FLD_NM = OBJ_ID_NM
 TITLE = 'title'
 TITLE_DISP_NAME = 'Title'
+VERDICT = 'verdict'
 WCOUNT = 'wcount'
 WCOUNT_DISP_NAME = 'Word Count'
 
@@ -66,12 +67,8 @@ FIELDS = {
     },
     REFEREES: {
         DISP_NAME: REFEREES_DISP_NAME,
-        FLD_TYPE: cflds.LIST,
-    },
-    REF_REPORTS: {
-        DISP_NAME: REF_REPORTS_DISP_NAME,
         cflds.HIDDEN: True,
-        FLD_TYPE: cflds.LIST,
+        FLD_TYPE: cflds.DICT,
     },
     LAST_UPDATED: {
         DISP_NAME: LAST_UPDATED_DISP_NAME,
