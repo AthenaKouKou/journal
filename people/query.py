@@ -94,6 +94,14 @@ def fetch_by_email(email: str) -> dict:
     return person
 
 
+def fetch_id_by_email(email: str) -> str:
+    person = fetch_by_email(email)
+    if person:
+        return get_id(person)
+    else:
+        return None
+
+
 def get_id(person: dict) -> str:
     """
     Takes in a person dict, returns their id as a string.
@@ -103,6 +111,17 @@ def get_id(person: dict) -> str:
         return _id
     else:
         raise ValueError(f'No id in: {person}')
+
+
+def get_roles(_id: dict) -> list:
+    """
+    Takes in a person dict, returns a list of their roles
+    """
+    person = fetch_by_key(_id)
+    if person:
+        return person.get(ROLES, None)
+    else:
+        raise ValueError(f'No such id: {_id}')
 
 
 def fetch_all_or_some(name=None, role=None):
@@ -207,10 +226,12 @@ def get_email(_id):
         raise ValueError(f'{_id} is not a valid person.')
 
 
+TEST_ROLES = [rls.TEST_ROLE]
+
 TEST_EMAIL = 'madeup@utopia.com'
 TEST_PERSON = {
     NAME: 'Callahan le Magnifique',
-    ROLES: [rls.TEST_ROLE],
+    ROLES: TEST_ROLES,
     BIO: 'Un homme tres magnifique',
     EMAIL: TEST_EMAIL,
 }
