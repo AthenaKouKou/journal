@@ -5,11 +5,31 @@ from backendcore.data.form_filler import (
 import backendcore.data.fields as cflds
 from backendcore.common.constants import EMAIL
 
+from manuscripts.states import (
+    ACCEPT,
+    ACCEPT_W_REV,
+    REJECT,
+)
+
 VERDICT = 'verdict'
 REPORT = 'report'
 
 TEST_FLD_NM = EMAIL
 TEST_FLD_DISP_NM = 'Email'
+
+VERDICT_MAP = {
+    ACCEPT: 'Accept',
+    ACCEPT_W_REV: 'Accept with revisions',
+    REJECT: 'Reject',
+}
+
+
+def is_valid_verdict(verdict: str) -> bool:
+    return verdict in VERDICT_MAP
+
+
+def get_verdict_choices() -> dict:
+    return VERDICT_MAP
 
 
 FIELDS = {
