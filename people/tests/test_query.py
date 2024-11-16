@@ -202,8 +202,18 @@ def test_fetch_by_email(temp_person):
     assert ret[qry.EMAIL] == qry.TEST_EMAIL
 
 
-def test_fetch_by_email_not_there(temp_person):
+def test_fetch_by_email_not_there():
     assert not qry.fetch_by_email('This email not in db!')
+
+
+def test_fetch_id_by_email(temp_person):
+    ret = qry.fetch_id_by_email(qry.TEST_EMAIL)
+    assert isinstance(ret, str)
+    assert ret == temp_person
+
+
+def test_fetch_id_by_email_not_there():
+    assert not qry.fetch_id_by_email('This email not in db!')
 
 
 def test_get_masthead(temp_person):
@@ -211,3 +221,14 @@ def test_get_masthead(temp_person):
     assert isinstance(masthead, dict)
     for section in masthead.values():
         assert isinstance(section, list)
+
+
+def test_get_roles(temp_person):
+    roles = qry.get_roles(temp_person)
+    assert isinstance(roles, list)
+    assert roles == qry.TEST_ROLES
+
+
+def test_get_roles_bad_person():
+    with pytest.raises(ValueError):
+        qry.get_roles('This email not in db!')
