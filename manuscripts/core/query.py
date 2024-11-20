@@ -670,7 +670,6 @@ def get_users_actions_for_manu(person_id: str, manu_id: str) -> list:
     user_role = get_users_role_for_manu(person_id, manu_id)
     state = get_state(manu_id)
     all_actions = STATE_TABLE.get(state)
-    print(all_actions)
     user_actions = []
     for action, action_dict in all_actions.items():
         if user_role in action_dict.get(ROLES):
