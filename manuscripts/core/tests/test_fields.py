@@ -1,4 +1,4 @@
-import manuscripts.fields as flds
+import manuscripts.core.fields as flds
 
 
 def test_get_flds():

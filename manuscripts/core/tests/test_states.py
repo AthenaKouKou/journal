@@ -1,4 +1,4 @@
-import manuscripts.states as mstt
+import manuscripts.core.states as mstt
 
 
 def test_get_valid_states():

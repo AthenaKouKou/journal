@@ -4,7 +4,7 @@ This module provides a sample query form.
 
 import backendcore.data.form_filler as ff
 
-from manuscripts.fields import (
+from manuscripts.core.fields import (
     ABSTRACT,
     ABSTRACT_DISP_NAME,
     AUTHORS,

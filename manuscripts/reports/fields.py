@@ -5,7 +5,7 @@ from backendcore.data.form_filler import (
 import backendcore.data.fields as cflds
 from backendcore.common.constants import EMAIL
 
-from manuscripts.states import (
+from manuscripts.core.states import (
     ACCEPT,
     ACCEPT_W_REV,
     REJECT,

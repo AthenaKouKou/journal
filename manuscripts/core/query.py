@@ -29,7 +29,7 @@ from people.roles import (
     ROLES,
 )
 
-from manuscripts.fields import (
+from manuscripts.core.fields import (
     ABSTRACT,
     AUTHORS,
     HISTORY,
@@ -44,14 +44,14 @@ from manuscripts.fields import (
     WCOUNT,
 )
 
-from manuscripts.add_form import ( # noqa E402
+from manuscripts.core.add_form import ( # noqa E402
     FILE,
     MANU_FILE,
     TEXT_ENTRY,
 )
 
-import manuscripts.states as mst
-from manuscripts.states import (
+import manuscripts.core.states as mst
+from manuscripts.core.states import (
     ACCEPT,
     ACCEPT_W_REV,
     ASSIGN_REFEREE,
@@ -234,6 +234,7 @@ def convert_file(filepath, SUBMIT_DIR):
 
 
 def get_submission_directory(upload_dir, id):
+    print(upload_dir)
     NEW_PATH = os.path.join(upload_dir, id)
     if os.path.exists(NEW_PATH):
         return NEW_PATH
@@ -430,7 +431,7 @@ def assign_referee(manu_id: str, **kwargs):
     update_fld(manu_id, REFEREES, refs)
     ref = pqry.fetch_by_key(ref_id)
     if ref:
-        pqry.add_role(ref, 'RE')
+        pqry.add_role(ref, RE)
     notify_referee(manu_id, ref_id)
     return REFEREE_REVIEW
 
@@ -581,40 +582,52 @@ STATE_TABLE = {
     },
 }
 
-REFEREE_ACTIONS = [DONE]
-REFEREE_STATES = [REFEREE_REVIEW]
 
-AUTHOR_ACTIONS = [WITHDRAW, DONE]
-
-
-def is_referee_for(_id, manu_id):
+def is_referee_for(person_id, manu_id):
     """
-    Takes _id, and manu_id and returns True if the user is a referee for the
-    manuscript.
+    Takes person_id, and manu_id and returns True if the user is a referee for
+    the manuscript.
     """
-    return _id in get_referees(manu_id)
+    return person_id in get_referees(manu_id)
 
 
-def is_author_for(_id, manu_id):
+def is_author_for(person_id, manu_id):
     """
-    Takes _id and manu_id and returns True if the user is an author for the
-    manuscript.
+    Takes person_id and manu_id and returns True if the user is an author for
+    the manuscript.
     """
     return False
 
 
-def is_valid_action(manu_id, person, action):
+def is_editor_for(person_id, manu_id):
+    """
+    Takes person_id and manu_id and returns True if the user is an author for
+    the manuscript. For now we are assuming editors have universal access.
+    """
+    person = pqry.fetch_by_key(person_id)
+    return pqry.is_editor(person)
+
+
+def get_users_role_for_manu(person_id, manu_id):
+    if is_referee_for(person_id, manu_id):
+        return RE
+    elif is_author_for(person_id, manu_id):
+        return AU
+    elif is_editor_for(person_id, manu_id):
+        return ED
+    else:
+        return None
+
+
+def is_valid_action(manu_id, person_id, action):
     """
     Checks whether the given user is able to perform the provided action for
     a given manuscript, based on their roles.
     """
-    user_id = pqry.get_id(person)
-    if pqry.is_editor(person):
-        return True
-    elif is_referee_for(user_id, manu_id):
-        return action in REFEREE_ACTIONS
-    elif is_author_for(user_id, manu_id):
-        return action in AUTHOR_ACTIONS
+    user_role = get_users_role_for_manu(person_id, manu_id)
+    state = get_state(manu_id)
+    valid_roles = STATE_TABLE.get(state).get(action).get(ROLES)
+    return user_role in valid_roles
 
 
 def receive_action(manu_id, action, email: str = None, **kwargs):
@@ -626,8 +639,8 @@ def receive_action(manu_id, action, email: str = None, **kwargs):
     if not mst.is_valid_action(action):
         raise ValueError(f'Invalid action: {action}')
     if email:
-        person = pqry.fetch_by_email(email)
-        if not is_valid_action(manu_id, person, action):
+        person_id = pqry.fetch_id_by_email(email)
+        if not is_valid_action(manu_id, person_id, action):
             raise ValueError(f'{email} is not allowed to perform {action}'
                              f' on {manu_id}')
     curr_state = get_state(manu_id)
@@ -650,25 +663,35 @@ def receive_action(manu_id, action, email: str = None, **kwargs):
 ACTIONS = 'actions'
 
 
-def fetch_manuscripts(email):
+def get_users_actions_for_manu(person_id: str, manu_id: str) -> list:
+    """
+    Returns a list of all the actions a user can take for a given manuscript
+    """
+    user_role = get_users_role_for_manu(person_id, manu_id)
+    state = get_state(manu_id)
+    all_actions = STATE_TABLE.get(state)
+    print(all_actions)
+    user_actions = []
+    for action, action_dict in all_actions.items():
+        if user_role in action_dict.get(ROLES):
+            user_actions.append(action)
+    return user_actions
+
+
+def fetch_manuscripts(email: str) -> dict:
     """
     Fetches manuscripts based on what the user is allowed to see
     """
     manu_dict = fetch_dict()
-    person = pqry.fetch_by_email(email)
-    _id = pqry.get_id(person)
-    if pqry.is_editor(person):
-        # Editors see full dict
-        return manu_dict
+    person_id = pqry.fetch_id_by_email(email)
     to_del = []
     for manu_id in manu_dict:
-        if is_referee_for(_id, manu_id):
-            manu_dict[manu_id][ACTIONS] = REFEREE_ACTIONS
-        elif is_author_for(_id, manu_id):
-            manu_dict[manu_id][ACTIONS] = REFEREE_ACTIONS
+        actions = get_users_actions_for_manu(person_id, manu_id)
+        if actions:
+            manu_dict[manu_id][ACTIONS] = actions
         else:
             to_del.append(manu_id)
-            # User does not get to see any information
+
     for manu_id in to_del:
         del manu_dict[manu_id]
     return manu_dict

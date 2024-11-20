@@ -4,12 +4,12 @@ from unittest.mock import patch
 
 import pytest
 
-import manuscripts.query as qry
-from manuscripts.query import (
+import manuscripts.core.query as qry
+from manuscripts.core.query import (
     REFEREES,
     HISTORY,
 )
-import manuscripts.states as mst
+import manuscripts.core.states as mst
 from people.tests.test_query import temp_person
 
 
@@ -29,6 +29,7 @@ BAD_FILE_VAL = 'some_file.AVeryBadFileExtension'
 FILE_DICT = {qry.MANU_FILE: FakeFileObj(good_file=True)}
 NO_FILE_DICT = {}
 BAD_FILE_DICT = {qry.MANU_FILE: FakeFileObj(good_file=False)}
+QUERY_PATH = 'manuscripts.core.query'
 
 
 def add_test_manuscript():
@@ -52,7 +53,7 @@ def temp_manu():
 
 
 @pytest.mark.skip('Waiting to complete new file submission procedure.')
-@patch('manuscripts.query.convert_file',
+@patch(f'{QUERY_PATH}.convert_file',
        return_value='Text submitted',
        autospec=True)
 def test_handle_file_entry(mock_convert):
@@ -97,9 +98,18 @@ def test_fetch_by_state(temp_manu):
     assert len(samples) > 0
 
 
-def test_fetch_by_bad_state(temp_manu):
+def test_fetch_by_bad_state():
     with pytest.raises(Exception):
         qry.fetch_by_state('pineapple')
+
+
+def test_get_referees(temp_manu):
+    assert qry.TEST_REFEREE in qry.get_referees(temp_manu)
+
+
+def test_get_referees():
+    with pytest.raises(Exception):
+        qry.get_referees('fake')
 
 
 def test_get_original_submission_filename_bad_id():
@@ -209,19 +219,19 @@ def test_update_history(temp_manu):
     assert len(history) == 2
 
 
-@patch('manuscripts.query.send_mail', return_value=True, autospec=True)
+@patch(f'{QUERY_PATH}.send_mail', return_value=True, autospec=True)
 def test_notify_referee(mock_send_mail, temp_manu, temp_person):
     ret = qry.notify_referee(temp_manu, temp_person)
     assert ret
 
 
-@patch('manuscripts.query.send_mail', return_value=True, autospec=True)
+@patch(f'{QUERY_PATH}.send_mail', return_value=True, autospec=True)
 def test_notify_referee_bad_person(mock_send_mail, temp_manu):
     with pytest.raises(ValueError):
         qry.notify_referee(temp_manu, 'bad person')
 
 
-@patch('manuscripts.query.send_mail', return_value=True, autospec=True)
+@patch(f'{QUERY_PATH}.send_mail', return_value=True, autospec=True)
 def test_notify_referee_bad_manu(mock_send_mail, temp_person):
     with pytest.raises(ValueError):
         qry.notify_referee('bad manu', temp_person)
@@ -230,14 +240,14 @@ def test_notify_referee_bad_manu(mock_send_mail, temp_person):
 FAKE_FILE_NM = '/somerandomplace/test'
 
 
-@patch('manuscripts.query.get_original_submission_filename',
-       return_value=True,
+@patch(f'{QUERY_PATH}.get_original_submission_filename',
+       return_value='fake_file.txt',
        autospec=True)
-@patch('manuscripts.query.get_editor_email',
+@patch(f'{QUERY_PATH}.get_editor_email',
       return_value='fake@email',
       autospec=True)
-@patch('manuscripts.query.send_mail', return_value=FAKE_FILE_NM, autospec=True)
-def test_notify_editor(mock_get_submission,
+@patch(f'{QUERY_PATH}.send_mail', return_value=FAKE_FILE_NM, autospec=True)
+def test_notify_editor_w_file(mock_get_submission,
                        mock_get_editor_email,
                        mock_send_mail,
                        temp_manu):
@@ -245,10 +255,25 @@ def test_notify_editor(mock_get_submission,
     assert ret
 
 
-@patch('manuscripts.query.get_original_submission_filename',
+@patch(f'{QUERY_PATH}.get_original_submission_filename',
        return_value=True,
        autospec=True)
-@patch('manuscripts.query.send_mail', return_value=FAKE_FILE_NM, autospec=True)
+@patch(f'{QUERY_PATH}.get_editor_email',
+      return_value='fake@email',
+      autospec=True)
+@patch(f'{QUERY_PATH}.send_mail', return_value=FAKE_FILE_NM, autospec=True)
+def test_notify_editor_w_text(mock_get_submission,
+                       mock_get_editor_email,
+                       mock_send_mail,
+                       temp_manu):
+    ret = qry.notify_editor(temp_manu)
+    assert ret
+
+
+@patch(f'{QUERY_PATH}.get_original_submission_filename',
+       return_value=True,
+       autospec=True)
+@patch(f'{QUERY_PATH}.send_mail', return_value=FAKE_FILE_NM, autospec=True)
 def test_notify_editor_bad_manu(mock_get_submission, mock_send_mail):
     with pytest.raises(ValueError):
         qry.notify_editor('bad manu')

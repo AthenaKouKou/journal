@@ -1,4 +1,4 @@
-import manuscripts.add_form as form
+import manuscripts.core.form as form
 
 
 def test_get_form():

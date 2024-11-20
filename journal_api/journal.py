@@ -41,10 +41,10 @@ from backendcore.users.query import fetch_id_by_auth_key
 from journal_common.constants import (
     MASTHEAD,
 )
-import manuscripts.fields as mflds
-import manuscripts.add_form as mafrm
-import manuscripts.query as mqry
-import manuscripts.dashboard as mdsh
+import manuscripts.core.fields as mflds
+import manuscripts.core.add_form as mafrm
+import manuscripts.core.query as mqry
+import manuscripts.core.dashboard as mdsh
 import people.fields as pflds
 import people.form as pfrm
 import people.query as pqry
@@ -57,14 +57,14 @@ from text.fields import (
 import text.form as tform
 import text.query as tqry
 
-from manuscripts.fields import (
+from manuscripts.core.fields import (
     ABSTRACT,
     AUTHORS,
     TITLE,
     WCOUNT,
 )
 
-from manuscripts.states import (
+from manuscripts.core.states import (
     get_state_choices,
     get_action_choices,
 )
@@ -239,7 +239,10 @@ class ManuRead(Resource):
         """
         Returns journal manuscript data.
         """
-        user_id, auth_key = _get_user_info(request)
+        try:
+            user_id, auth_key = _get_user_info(request)
+        except Exception as err:
+            raise wz.Forbidden(f'Action not permitted: {err}')
         manuscripts = mqry.fetch_manuscripts(user_id)
         return {JOURNAL_MANU_READ: manuscripts}
 

@@ -1,7 +1,7 @@
 from copy import deepcopy
 
-from manuscripts.query import (STATE_TABLE, SUBMITTED)
-import manuscripts.states as st
+from manuscripts.core.query import (STATE_TABLE, SUBMITTED)
+import manuscripts.core.states as st
 
 
 COLUMN_OPTIONS_MAP = deepcopy(STATE_TABLE)
