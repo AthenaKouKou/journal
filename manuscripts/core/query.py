@@ -160,6 +160,12 @@ def get_text(manu_id):
     return fetch_by_id(manu_id).get(TEXT, None)
 
 
+def get_authors(manu_id):
+    if not exists(manu_id):
+        raise ValueError(f'No such manuscript id: {manu_id}')
+    return fetch_by_id(manu_id).get(AUTHORS, None)
+
+
 def get_editor_email(manu_id):
     """
     In the future we may have multiple editors in a journal, and individual
@@ -234,7 +240,6 @@ def convert_file(filepath, SUBMIT_DIR):
 
 
 def get_submission_directory(upload_dir, id):
-    print(upload_dir)
     NEW_PATH = os.path.join(upload_dir, id)
     if os.path.exists(NEW_PATH):
         return NEW_PATH
@@ -596,6 +601,11 @@ def is_author_for(person_id, manu_id):
     Takes person_id and manu_id and returns True if the user is an author for
     the manuscript.
     """
+    authors = get_authors(manu_id)
+    email = pqry.get_email(person_id)
+    for author in authors:
+        if author.get(EMAIL) == email:
+            return True
     return False
 
 
@@ -609,12 +619,17 @@ def is_editor_for(person_id, manu_id):
 
 
 def get_users_role_for_manu(person_id, manu_id):
-    if is_referee_for(person_id, manu_id):
-        return RE
+    """
+    Gets the users role, returns a single string. Currently we are assuming
+    that the user can only have one role per manuscript, and we fetch their
+    highest role for the given manuscript.
+    """
+    if is_editor_for(person_id, manu_id):
+        return ED
     elif is_author_for(person_id, manu_id):
         return AU
-    elif is_editor_for(person_id, manu_id):
-        return ED
+    elif is_referee_for(person_id, manu_id):
+        return RE
     else:
         return None
 
@@ -670,7 +685,6 @@ def get_users_actions_for_manu(person_id: str, manu_id: str) -> list:
     user_role = get_users_role_for_manu(person_id, manu_id)
     state = get_state(manu_id)
     all_actions = STATE_TABLE.get(state)
-    print(all_actions)
     user_actions = []
     for action, action_dict in all_actions.items():
         if user_role in action_dict.get(ROLES):
