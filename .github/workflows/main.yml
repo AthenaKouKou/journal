@@ -37,7 +37,7 @@ jobs:
         uses: supercharge/mongodb-github-action@1.8.0
 
       - name: test var
-        run: echo "The BEC key is: $secrets.BACKENDCORE_KEY"
+        run: echo "The BEC key is $secrets.BACKENDCORE_KEY"
 
       # Set up ssh so that GH Actions VMs can install the private Core repo
       - name: webfactory/ssh-agent
