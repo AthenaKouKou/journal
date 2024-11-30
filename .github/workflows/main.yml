@@ -14,7 +14,7 @@ on:
 
 env:
   LOCAL_MONGO: 1
-  KOUKOU_HOME: /home/runner/work/journal/journal/
+  PYTHON_PATH: /home/runner/work/journal/journal/
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
