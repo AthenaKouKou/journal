@@ -27,7 +27,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v3
         with:
           python-version: '3.10'
@@ -35,9 +35,6 @@ jobs:
 
       - name: Install MongoDB
         uses: supercharge/mongodb-github-action@1.8.0
-
-      - name: test var
-        run: echo "The BEC key is ${{ secrets.BACKENDCORE_KEY }}"
 
       # Set up ssh so that GH Actions VMs can install the private Core repo
       - name: webfactory/ssh-agent
