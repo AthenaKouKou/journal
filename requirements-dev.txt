@@ -1,5 +1,4 @@
 -r requirements.txt
 flake8
-icecream
 pytest
 pytest-cov
