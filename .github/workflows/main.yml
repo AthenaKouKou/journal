@@ -23,6 +23,7 @@ jobs:
     # The type of runner that the job will run on
     # We REALLY don't want to switch envs by changing code!
     runs-on: ubuntu-latest
+    environment: ga-deploy
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
