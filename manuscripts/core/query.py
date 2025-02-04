@@ -698,6 +698,8 @@ def fetch_manuscripts(email: str) -> dict:
     """
     manu_dict = fetch_dict()
     person_id = pqry.fetch_id_by_email(email)
+    if not person_id:
+        return {}
     to_del = []
     for manu_id in manu_dict:
         actions = get_users_actions_for_manu(person_id, manu_id)

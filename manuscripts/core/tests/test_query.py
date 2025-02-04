@@ -11,6 +11,7 @@ from manuscripts.core.query import (
 )
 import manuscripts.core.states as mst
 from people.tests.test_query import temp_person
+from people.query import get_email
 
 
 class FakeFileObj():
@@ -277,3 +278,13 @@ def test_notify_editor_w_text(mock_get_submission,
 def test_notify_editor_bad_manu(mock_get_submission, mock_send_mail):
     with pytest.raises(ValueError):
         qry.notify_editor('bad manu')
+
+
+def test_fetch_manuscripts(temp_person, temp_manu):
+    ret = qry.fetch_manuscripts(get_email(temp_person))
+    assert len(ret) > 1
+
+
+def test_fetch_manuscripts_no_user(temp_manu):
+    ret = qry.fetch_manuscripts('fake user')
+    assert len(ret) == 0
