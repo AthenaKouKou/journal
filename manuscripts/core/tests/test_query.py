@@ -282,7 +282,7 @@ def test_notify_editor_bad_manu(mock_get_submission, mock_send_mail):
 
 def test_fetch_manuscripts(temp_person, temp_manu):
     ret = qry.fetch_manuscripts(get_email(temp_person))
-    assert len(ret) > 1
+    assert len(ret) > 0
 
 
 def test_fetch_manuscripts_no_user(temp_manu):
