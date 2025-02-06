@@ -226,11 +226,20 @@ def get_email(_id):
         raise ValueError(f'{_id} is not a valid person.')
 
 
+def get_name(_id):
+    person = fetch_by_key(_id)
+    if person:
+        return person.get(NAME, None)
+    else:
+        raise ValueError(f'{_id} is not a valid person.')
+
+
 TEST_ROLES = [rls.TEST_ROLE]
 
 TEST_EMAIL = 'madeup@utopia.com'
+TEST_NAME = 'Callahan le Magnifique'
 TEST_PERSON = {
-    NAME: 'Callahan le Magnifique',
+    NAME: TEST_NAME,
     ROLES: TEST_ROLES,
     BIO: 'Un homme tres magnifique',
     EMAIL: TEST_EMAIL,

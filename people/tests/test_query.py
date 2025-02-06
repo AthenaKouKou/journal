@@ -232,3 +232,23 @@ def test_get_roles(temp_person):
 def test_get_roles_bad_person():
     with pytest.raises(ValueError):
         qry.get_roles('This email not in db!')
+
+
+def test_get_email(temp_person):
+    email = qry.get_email(temp_person)
+    assert email == qry.TEST_EMAIL
+
+
+def test_get_email_bad_id():
+    with pytest.raises(ValueError):
+        qry.get_email('fake id')
+
+
+def test_get_name(temp_person):
+    name = qry.get_name(temp_person)
+    assert name == qry.TEST_NAME
+
+
+def test_get_name_bad_id():
+    with pytest.raises(ValueError):
+        qry.get_name('fake id')

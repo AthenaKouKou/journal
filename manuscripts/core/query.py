@@ -381,19 +381,21 @@ def set_state(manu_id, state):
 REFEREE_ARG = 'referee'
 
 
-def notify_referee(manu_id: str, referee: str):
+def notify_referee(manu_id: str, referee_id: str):
     """
     When a referee is initially added, we send out an email letting them know
     that someone is asking if they can referee a manuscript. We give them the
     journal title and abstract
     """
-    email = pqry.get_email(referee)
+    email = pqry.get_email(referee_id)
+    name = pqry.get_name(referee_id)
     if email is None:
-        raise ValueError(f'{referee} does not have an assigned email address')
+        raise ValueError(f'{name} does not have an email address saved in '
+                         'our system.')
     reply_email = get_editor_email(manu_id)
     title = get_title(manu_id)
     abstract = get_abstract(manu_id)
-    email_content = (f'Hello {email} you\'ve been asked to referee the '
+    email_content = (f'Hello {name} you\'ve been asked to referee the '
                      f'manuscript {title}. The abstract is: <br> {abstract}')
     ret = send_mail(to_emails=email, subject='Manuscript Referee',
                     content=email_content, reply_email=reply_email)
