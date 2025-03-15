@@ -133,8 +133,8 @@ class TextRead(Resource):
     """
     This endpoint serves journal text data as a dict.
     """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Data not found')
+    @api.response(HTTPStatus.OK.value, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND.value, 'Data not found')
     def get(self):
         """
         Returns journal text data.
@@ -152,9 +152,9 @@ UPDATE_TEXT_FLDS = api.model('UpdateText', {
 @api.route(f'/{TEXT}/{UPDATE}/<title>')
 @api.expect(parser)
 class TextUpdate(Resource):
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Person not found')
-    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.response(HTTPStatus.OK.value, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND.value, 'Person not found')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE.value, 'Not acceptable')
     @api.expect(UPDATE_TEXT_FLDS)
     def put(self, title):
         text = request.json.get(TEXT)
@@ -174,9 +174,9 @@ class TextUpdate(Resource):
 @api.route(f'/{TEXT}/{DELETE}/<title>')
 @api.expect(parser)
 class TextDelete(Resource):
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Person not found')
-    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.response(HTTPStatus.OK.value, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND.value, 'Person not found')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE.value, 'Not acceptable')
     @api.expect(api.model('Placeholder', {}))
     def delete(self, title):
         editor, auth_key = _get_user_info(request)
@@ -233,8 +233,8 @@ class ManuRead(Resource):
     """
     This endpoint serves journal manuscript data as a dict.
     """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Data not found')
+    @api.response(HTTPStatus.OK.value, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND.value, 'Data not found')
     def get(self):
         """
         Returns journal manuscript data.
@@ -267,8 +267,8 @@ class ManuCreate(Resource):
     """
     Create a new journal manuscript.
     """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.response(HTTPStatus.OK.value, 'Success')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE.value, 'Not acceptable')
     @api.expect(MANU_CREATE_FLDS)
     def put(self):
         try:
@@ -291,8 +291,8 @@ class ManuAddFile(Resource):
     """
     Create a new journal manuscript.
     """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.response(HTTPStatus.OK.value, 'Success')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE.value, 'Not acceptable')
     @api.expect(file_parser)
     def put(self, manu_id):
         try:
@@ -317,9 +317,9 @@ RECEIVE_ACTION_FLDS = api.model('ReceiveAction', {
 @api.route(f'/{MANU}/{RECEIVE_ACTION}/<manu_id>')
 @api.expect(parser)
 class ManuReceiveAction(Resource):
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Entry not found')
-    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.response(HTTPStatus.OK.value, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND.value, 'Entry not found')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE.value, 'Not acceptable')
     @api.expect(RECEIVE_ACTION_FLDS)
     def put(self, manu_id):
         action = request.json.get(ACTION)
@@ -348,9 +348,9 @@ class ManuReceiveAction(Resource):
 @api.route(f'/{MANU}/{DELETE}/<manu_id>')
 @api.expect(parser)
 class ManuDelete(Resource):
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Entry not found')
-    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.response(HTTPStatus.OK.value, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND.value, 'Entry not found')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE.value, 'Not acceptable')
     @api.expect(api.model('Placeholder', {}))
     def put(self,  manu_id):
         user_id, auth_key = _get_user_info(request)
@@ -373,8 +373,8 @@ class ManuStatesRead(Resource):
     """
     This endpoint serves journal manuscript states as a dict
     """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Data not found')
+    @api.response(HTTPStatus.OK.value, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND.value, 'Data not found')
     def get(self):
         """
         Returns journal manuscript state data.
@@ -390,8 +390,8 @@ class ManuActionsRead(Resource):
     """
     This endpoint serves journal manuscript actions as a dict
     """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Data not found')
+    @api.response(HTTPStatus.OK.value, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND.value, 'Data not found')
     def get(self):
         """
         Returns journal manuscript action data.
@@ -407,8 +407,8 @@ class ManuStateFetch(Resource):
     """
     This endpoint returns journal manuscripts that have a given state
     """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Data not found')
+    @api.response(HTTPStatus.OK.value, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND.value, 'Data not found')
     def get(self, state_code):
         """
         Returns journal manuscripts with a given state.
@@ -426,8 +426,8 @@ class DashColumnsRead(Resource):
     This endpoint serves journal manuscript dashboard columns as a dict, as
     well as the order the columns should be displayed in as a list.
     """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Data not found')
+    @api.response(HTTPStatus.OK.value, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND.value, 'Data not found')
     def get(self):
         """
         Returns journal manuscript dashboard columns data.
@@ -442,8 +442,8 @@ class ManuFetchFile(Resource):
     This endpoint returns the file that was
     originally submitted for a given manuscript.
     """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Data not found')
+    @api.response(HTTPStatus.OK.value, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND.value, 'Data not found')
     def get(self, manu_id):
         filepath = mqry.get_original_submission_filename(manu_id)
         if len(filepath) < 1:
@@ -494,8 +494,8 @@ class PeopleRead(Resource):
     """
     This endpoint serves People data as a dict.
     """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Data not found')
+    @api.response(HTTPStatus.OK.value, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND.value, 'Data not found')
     @api.doc(params=pfrm.get_form_descr())
     def get(self):
         """
@@ -542,8 +542,8 @@ class PeopleCreate(Resource):
     """
     Add a person to the journal db.
     """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.response(HTTPStatus.OK.value, 'Success')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE.value, 'Not acceptable')
     @api.expect(PEOPLE_CREATE_FLDS)
     def put(self):
         """
@@ -570,9 +570,9 @@ class PeopleDelete(Resource):
     """
     Deletes an existing person.
     """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Person not found')
-    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.response(HTTPStatus.OK.value, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND.value, 'Person not found')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE.value, 'Not acceptable')
     @api.expect(api.model('Placeholder', {}))
     def delete(self, person_id):
         user_id, auth_key = _get_user_info(request)
@@ -609,9 +609,9 @@ class PeopleUpdate(Resource):
     Update a single person.
     The fields we expect ought to be the same as for create.
     """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Person not found')
-    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.response(HTTPStatus.OK.value, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND.value, 'Person not found')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE.value, 'Not acceptable')
     @api.expect(PEOPLE_CREATE_FLDS)
     def put(self, person_id):
         user_id, auth_key = _get_user_info(request)
