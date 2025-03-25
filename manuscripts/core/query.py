@@ -688,6 +688,8 @@ def get_users_actions_for_manu(person_id: str, manu_id: str) -> list:
     state = get_state(manu_id)
     all_actions = STATE_TABLE.get(state)
     user_actions = []
+    if not all_actions:
+        return user_actions
     for action, action_dict in all_actions.items():
         if user_role in action_dict.get(ROLES):
             user_actions.append(action)
