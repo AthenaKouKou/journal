@@ -32,7 +32,7 @@ from people.roles import (
 from manuscripts.core.fields import (
     ABSTRACT,
     AUTHORS,
-    EMAIL,
+    CONTACT_EMAIL,
     HISTORY,
     LAST_UPDATED,
     OBJ_ID_NM,
@@ -192,7 +192,7 @@ TEST_MANU = {
     AUTHORS: [
         {
             NAME: 'Boaz Kaufman',
-            EMAIL: 'boaz@donthardcorestrings.com',
+            EMAIL: 'boaz@donthardcodestrings.com',
         }
     ],
     CODE: TEST_CODE,
@@ -312,7 +312,7 @@ def add_authors(authors: list):
         )
 
 
-def add_contact_email(contact_name: str, contact_email: str):
+def add_primary_contact(contact_name: str, contact_email: str):
     pqry.possibly_new_person_add_role(
         contact_email,
         AU,
@@ -329,7 +329,8 @@ def add_ref_report(reports: list):
 def add(manu_data):
     set_manuscript_defaults(manu_data)
     add_authors(manu_data[AUTHORS])
-    add_contact_email(manu_data[CONTACT_NAME], manu_data[EMAIL])
+    if manu_data.get(CONTACT_NAME) and manu_data.get(CONTACT_EMAIL):
+        add_primary_contact(manu_data[CONTACT_NAME], manu_data[CONTACT_EMAIL])
     # For testing we may add a manuscript that already has refs!
     if not manu_data.get(REFEREES):
         manu_data[REFEREES] = {}
