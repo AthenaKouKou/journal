@@ -21,6 +21,8 @@ from manuscripts.core.fields import (
 
 NOT_IMPLEMENTED = 'This option has not been implemented, check back later.'
 
+CONTACT_NAME = 'contact_name'
+CONTACT_NAME_DISP_NAME = 'Primary contact (full name)'
 FILE = 'FILE'
 ENTRY = 'ENTRY'
 TEXT_ENTRY = 'textentry'
@@ -54,6 +56,11 @@ FORM_FLDS = [
                 ff.QSTN: 'Author email address',
             },
         ]
+    },
+    {
+        ff.FLD_NM: CONTACT_NAME,
+        ff.QSTN: CONTACT_NAME_DISP_NAME,
+        ff.INPUT_TYPE: ff.QUERY_STR,
     },
     {
         ff.FLD_NM: EMAIL,

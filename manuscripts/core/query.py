@@ -32,6 +32,7 @@ from people.roles import (
 from manuscripts.core.fields import (
     ABSTRACT,
     AUTHORS,
+    EMAIL,
     HISTORY,
     LAST_UPDATED,
     OBJ_ID_NM,
@@ -46,6 +47,7 @@ from manuscripts.core.fields import (
 
 from manuscripts.core.add_form import ( # noqa E402
     FILE,
+    CONTACT_NAME,
     MANU_FILE,
     TEXT_ENTRY,
 )
@@ -310,6 +312,14 @@ def add_authors(authors: list):
         )
 
 
+def add_contact_email(contact_name: str, contact_email: str):
+    pqry.possibly_new_person_add_role(
+        contact_email,
+        AU,
+        contact_name
+    )
+
+
 def add_ref_report(reports: list):
     print(REF_REPORT)
     print(REF_VERDICT)
@@ -319,6 +329,7 @@ def add_ref_report(reports: list):
 def add(manu_data):
     set_manuscript_defaults(manu_data)
     add_authors(manu_data[AUTHORS])
+    add_contact_email(manu_data[CONTACT_NAME], manu_data[EMAIL])
     # For testing we may add a manuscript that already has refs!
     if not manu_data.get(REFEREES):
         manu_data[REFEREES] = {}
