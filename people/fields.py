@@ -45,9 +45,6 @@ FIELDS = {
     EMAIL: {
         DISP_NAME: 'Email',
     },
-    USER_ID: {
-        DISP_NAME: 'User ID',
-    },
     BIO: {
         DISP_NAME: 'Bio',
         cflds.MAX_LEN: 80,
