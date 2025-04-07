@@ -402,8 +402,11 @@ def notify_referee(manu_id: str, referee_id: str):
     email = pqry.get_email(referee_id)
     name = pqry.get_name(referee_id)
     if email is None:
-        raise ValueError(f'{name} does not have an email address saved in '
-                         'our system.')
+        # For now we don't want notify error to raise an error and cause assign
+        # referee to fail, commenting this out temporarily
+        # raise ValueError(f'{name} does not have an email address saved in '
+        #                  'our system.')
+        return "No email!"
     reply_email = get_editor_email(manu_id)
     title = get_title(manu_id)
     abstract = get_abstract(manu_id)

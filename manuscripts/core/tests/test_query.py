@@ -12,6 +12,7 @@ from manuscripts.core.query import (
 import manuscripts.core.states as mst
 from people.tests.test_query import temp_person
 from people.query import get_email
+import people.query as pqry
 
 
 class FakeFileObj():
@@ -236,6 +237,18 @@ def test_notify_referee_bad_person(mock_send_mail, temp_manu):
 def test_notify_referee_bad_manu(mock_send_mail, temp_person):
     with pytest.raises(ValueError):
         qry.notify_referee('bad manu', temp_person)
+
+
+@patch(f'{QUERY_PATH}.send_mail', return_value=True, autospec=True)
+def test_notify_referee_no_email(mock_send_mail, temp_manu, temp_person):
+    # We currently want referee notification to SUCCEED even if the referee
+    # does not have an assigned email
+    # Remove email:
+    new_person_dict = pqry.fetch_by_key(temp_person)
+    new_person_dict[pqry.EMAIL] = None
+    pqry.update(temp_person, new_person_dict)
+    ret = qry.notify_referee(temp_manu, temp_person)
+    assert ret
 
 
 FAKE_FILE_NM = '/somerandomplace/test'
