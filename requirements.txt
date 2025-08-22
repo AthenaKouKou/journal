@@ -11,5 +11,4 @@ pymongo==4.8.0
 pypandoc
 python-dateutil
 requests
-sendgrid
 validators
